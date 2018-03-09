@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.administrator.christie.activity.RegisterActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="13dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/mobile"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"/>
+
+        <EditText
+            android:id="@+id/et_mobile_register"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:hint="@string/pleasemob"
+            android:layout_weight="7"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:digits="1234567890"
+            android:inputType="number"
+            android:maxLength="11"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="4" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="200"
+            android:layout_gravity="bottom"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="4" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/pwd"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"/>
+
+        <EditText
+            android:id="@+id/et_pwd"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:hint="@string/pwdtxthint"
+            android:layout_weight="7"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:maxLength="16"
+            android:inputType="textPassword"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="4" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="200"
+            android:layout_gravity="bottom"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="4" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/repeatpwd"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"/>
+
+        <EditText
+            android:id="@+id/et_repeat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:hint="@string/repeatpwd"
+            android:layout_weight="7"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:maxLength="16"
+            android:inputType="textPassword"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="4" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="200"
+            android:layout_gravity="bottom"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:background="@color/bottom_button_text_blue"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="5dp"
+            android:layout_weight="4" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <EditText
+            android:id="@+id/et_code_register"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:hint="@string/code"
+            android:layout_weight="2"
+            android:layout_gravity="center"
+            android:theme="@style/MyEditText"
+            android:layout_marginLeft="10dp"
+            android:inputType="number"
+            android:digits="1234567890"
+            android:maxLength="6"/>
+
+        <com.example.administrator.christie.view.CountdownButton
+            android:id="@+id/btn_code_register"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="获取验证码"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:background="@drawable/login_button_nor"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="280dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/login_button_style"
+        android:text="@string/register"
+        android:textColor="#FFFFFF"
+        android:textSize="19sp"
+        android:layout_gravity="center_horizontal"/>
+</LinearLayout>

@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.administrator.christie.fragment.CountdownFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cxsf"
+        android:gravity="center"
+        android:layout_marginTop="60dp"/>
+
+    <com.example.administrator.christie.view.CountDownView
+        android:id="@+id/tv_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="60sp"
+        android:textColor="@color/bottom_button_text_black"
+        android:gravity="center"
+        android:layout_marginTop="20dp"/>
+</LinearLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#1296DB</color>
+    <color name="white">#FFFFFF</color>
+    <color name="bottom_button_text_black">#000000</color>
+    <color name="bottom_button_text_blue">#1296DB</color>
+    <color name="bottom_button_text_gray">#999999</color>
+    <color name="colorLogin">#E7E7E7</color>
+    <color name="light_grey">#f0f0f0</color>
+    <color name="super_light_grey">#f6f6f6</color>
+    <color name="red">#FF0000</color>
+</resources>

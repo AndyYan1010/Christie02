@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+    </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#BEBEBE"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="3dp">
+
+            <Button
+                android:id="@+id/btn_menjin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawableTop="@drawable/btn_menjin_selector"
+                android:text="@string/menjin"
+                android:textColor="@color/btn_color"
+                />
+            <Button
+                android:id="@+id/btn_fangke"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawableTop="@drawable/btn_fangke_selector"
+                android:text="@string/fangke"
+                android:textColor="@color/btn_color"
+                />
+            <Button
+                android:id="@+id/btn_park"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawableTop="@drawable/btn_park_selector"
+                android:text="@string/park"
+                android:textColor="@color/btn_color"
+                />
+            <Button
+                android:id="@+id/btn_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawableTop="@drawable/btn_me_selector"
+                android:text="@string/me"
+                android:textColor="@color/btn_color"
+                />
+        </LinearLayout>
+</LinearLayout>
+
