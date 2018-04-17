@@ -1,23 +1,18 @@
 package com.example.administrator.christie.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,11 +63,11 @@ public class MeFragment extends Fragment {
         ll_chepai = (LinearLayout)view.findViewById(R.id.ll_chepai);
         tv_username = (TextView)view.findViewById(R.id.tv_username);
         tv_logorreg = (TextView)view.findViewById(R.id.tv_logorreg);
-        if(!TApplication.user.getFname().equals("")){
-            tv_username.setText(TApplication.user.getFname());
-        }else {
-            tv_username.setText("手机用户"+TApplication.user.getFmobile().substring(7,11));
-        }
+//        if(!TApplication.user.getFname().equals("")){
+//            tv_username.setText(TApplication.user.getFname());
+//        }else {
+//            tv_username.setText("手机用户"+TApplication.user.getFmobile().substring(7,11));
+//        }
         tv_username.setTextSize(20);
         tv_username.setTextColor(Color.WHITE);
         tv_logorreg.setText("");

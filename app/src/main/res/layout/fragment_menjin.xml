@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.administrator.christie.fragment.MenjinFragment">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.example.administrator.christie.fragment.MenjinFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,24 +14,25 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="13dp"
             android:text="@string/menjin"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:layout_marginTop="13dp"/>
+            android:textSize="20sp"/>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/lunbo"/>
 
     <GridView
         android:id="@+id/gv_menjin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:horizontalSpacing="1dp"
-        android:numColumns="3"
-        android:columnWidth="80dp"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="1dp"
-        android:background="#BEBEBE"></GridView>
+        android:background="#fff"
+        android:numColumns="3">
+    </GridView>
 
 </LinearLayout>
