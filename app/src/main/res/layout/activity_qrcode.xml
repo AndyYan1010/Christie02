@@ -7,20 +7,24 @@
     android:orientation="vertical"
     tools:context="com.example.administrator.christie.activity.QrcodeActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorPrimary"
-        android:orientation="vertical">
+        android:background="@color/colorPrimary">
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/back"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="@string/qrcode"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:layout_marginTop="13dp"/>
-    </LinearLayout>
+            android:textSize="20sp"/>
+    </RelativeLayout>
 
     <!--<LinearLayout
         android:layout_width="match_parent"
@@ -46,6 +50,8 @@
         android:id="@+id/iv_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="50dp"/>
 
     <TextView

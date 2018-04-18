@@ -27,12 +27,16 @@
         android:scaleType="centerCrop"
         android:src="@drawable/lunbo"/>
 
-    <GridView
-        android:id="@+id/gv_menjin"
+    <!--<GridView-->
+        <!--android:id="@+id/gv_menjin"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="#fff"-->
+        <!--android:numColumns="3">-->
+    <!--</GridView>-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_icon01"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:numColumns="3">
-    </GridView>
-
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
 </LinearLayout>

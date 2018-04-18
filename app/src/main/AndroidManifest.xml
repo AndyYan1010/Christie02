@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -44,6 +45,7 @@
         <activity android:name=".activity.ShenqingActivity" />
         <activity android:name=".activity.AddPlatenoActivity" />
         <activity android:name=".activity.PlateDetailActivity" />
+        <activity android:name=".activity.AddBluetoothActivity" />
         <activity
             android:name=".activity.PlateActivity"
             android:label="@string/title_activity_plate"

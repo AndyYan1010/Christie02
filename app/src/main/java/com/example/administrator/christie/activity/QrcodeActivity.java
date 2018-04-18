@@ -1,18 +1,17 @@
 package com.example.administrator.christie.activity;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.util.Consts;
 import com.example.administrator.christie.util.HttpUtils;
-import com.example.administrator.christie.view.CustomProgress;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -25,8 +24,8 @@ import org.apache.http.HttpResponse;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class QrcodeActivity extends BaseActivity {
-    ImageView iv_code;
+public class QrcodeActivity extends BaseActivity implements View.OnClickListener {
+    ImageView iv_code,img_back;
     Thread thread;
     private boolean isAlive = true;
 
@@ -41,8 +40,9 @@ public class QrcodeActivity extends BaseActivity {
 
     protected void setViews(){
         iv_code = (ImageView)findViewById(R.id.iv_code);
+        img_back = (ImageView)findViewById(R.id.img_back);
+        img_back.setOnClickListener(this);
     }
-
 
     Bitmap encodeAsBitmap(String str){
         Bitmap bitmap = null;
@@ -77,8 +77,16 @@ public class QrcodeActivity extends BaseActivity {
         }
     };
 
-    class MyThread implements Runnable {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.img_back:
+                finish();
+                break;
+        }
+    }
 
+    class MyThread implements Runnable {
         @Override
         public void run() {
             // TODO Auto-generated method stub

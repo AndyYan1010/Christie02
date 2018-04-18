@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/mydada_item_ll"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:background="#fff"
+              android:layout_centerInParent="true"
               android:gravity="center"
               android:orientation="vertical">
 
@@ -17,21 +18,21 @@
             android:id="@+id/mydada_icon_img"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             android:src="@drawable/code"/>
 
         <ImageView
             android:id="@+id/img_delete_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:src="@drawable/delete_icon"
             android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/img_add_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:src="@drawable/add_icon"
             android:visibility="gone"/>
