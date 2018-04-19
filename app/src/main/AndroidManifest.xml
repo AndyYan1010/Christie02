@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.administrator.christie">
+          package="com.example.administrator.christie">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".TApplication"
@@ -16,54 +16,58 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.LoginActivity"/>
         <activity android:name=".activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.QrcodeActivity" />
-        <activity android:name=".activity.BluetoothActivity" />
-        <activity android:name=".activity.AccessdataActivity" />
-        <activity android:name=".activity.VisitorActivity" />
-        <activity android:name=".activity.InviterecordActivity" />
-        <activity android:name=".activity.VisitrecordActivity" />
-        <activity android:name=".activity.ApplyActivity" />
-        <activity android:name=".activity.MoonpayActivity" />
-        <activity android:name=".activity.TempayActivity" />
-        <activity android:name=".activity.CarlockActivity" />
-        <activity android:name=".activity.PayrecordActivity" />
-        <activity android:name=".activity.MessageActivity" />
-        <activity android:name=".activity.PersonalActivity" />
-        <activity android:name=".activity.CardActivity" />
-        <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.SettingsActivity" />
-        <activity android:name=".activity.MeettingActivity" />
-        <activity android:name=".activity.PwdModifyActivity" />
-        <activity android:name=".activity.ShenqingActivity" />
-        <activity android:name=".activity.AddPlatenoActivity" />
-        <activity android:name=".activity.PlateDetailActivity" />
-        <activity android:name=".activity.AddBluetoothActivity" />
+        <activity android:name=".activity.QrcodeActivity"/>
+        <activity android:name=".activity.BluetoothActivity"/>
+        <activity android:name=".activity.AccessdataActivity"/>
+        <activity android:name=".activity.VisitorActivity"/>
+        <activity android:name=".activity.InviterecordActivity"/>
+        <activity android:name=".activity.VisitrecordActivity"/>
+        <activity android:name=".activity.ApplyActivity"/>
+        <activity android:name=".activity.MoonpayActivity"/>
+        <activity android:name=".activity.TempayActivity"/>
+        <activity android:name=".activity.CarlockActivity"/>
+        <activity android:name=".activity.PayrecordActivity"/>
+        <activity android:name=".activity.MessageActivity"/>
+        <activity android:name=".activity.PersonalActivity"/>
+        <activity android:name=".activity.CardActivity"/>
+        <activity android:name=".activity.RegisterActivity"/>
+        <activity android:name=".activity.SettingsActivity"/>
+        <activity android:name=".activity.MeettingActivity"/>
+        <activity android:name=".activity.PwdModifyActivity"/>
+        <activity android:name=".activity.ShenqingActivity"/>
+        <activity android:name=".activity.AddPlatenoActivity"/>
+        <activity android:name=".activity.PlateDetailActivity"/>
+        <activity android:name=".activity.AddBluetoothActivity"/>
+        <activity android:name=".activity.InvitationRecordActivity"/>
+        <activity android:name=".activity.ReservatParkingActivity"/>
+        <activity android:name=".activity.PayForParkingActivity"/>
+        <activity android:name=".activity.VisitorInvitationActivity"/>
         <activity
             android:name=".activity.PlateActivity"
             android:label="@string/title_activity_plate"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".activity.ConfirmActivity" />
-        <activity android:name=".activity.MobModifyActivity" />
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.ConfirmActivity"/>
+        <activity android:name=".activity.MobModifyActivity"/>
 
         <receiver
             android:name=".receiver.NetWorkStatusReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activity.ValidateActivity" />
-        <activity android:name=".activity.YypzActivity" />
+        <activity android:name=".activity.ValidateActivity"/>
+        <activity android:name=".activity.YypzActivity"/>
         <activity android:name=".activity.TdmjActivity"></activity>
     </application>
 

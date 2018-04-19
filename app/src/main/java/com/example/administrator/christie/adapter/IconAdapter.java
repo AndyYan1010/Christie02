@@ -18,7 +18,11 @@ import android.widget.TextView;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.activity.AccessdataActivity;
 import com.example.administrator.christie.activity.BluetoothActivity;
+import com.example.administrator.christie.activity.InvitationRecordActivity;
+import com.example.administrator.christie.activity.PayForParkingActivity;
 import com.example.administrator.christie.activity.QrcodeActivity;
+import com.example.administrator.christie.activity.ReservatParkingActivity;
+import com.example.administrator.christie.activity.VisitorInvitationActivity;
 import com.example.administrator.christie.entity.MainMenuEntity;
 import com.example.administrator.christie.util.SpUtils;
 import com.example.administrator.christie.util.ThreadUtils;
@@ -168,16 +172,20 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             //                    }
         }
         if ("访客邀请".equals(title)) {
-            ToastUtils.showToast(mContext, "正在开发");
+            Intent intent = new Intent(mContext,VisitorInvitationActivity.class);
+            mContext.startActivity(intent);
         }
         if ("邀请记录".equals(title)) {
-            ToastUtils.showToast(mContext, "正在开发");
+            Intent intent = new Intent(mContext,InvitationRecordActivity.class);
+            mContext.startActivity(intent);
         }
         if ("车位预约".equals(title)) {
-            ToastUtils.showToast(mContext, "正在开发");
+            Intent intent = new Intent(mContext,ReservatParkingActivity.class);
+            mContext.startActivity(intent);
         }
         if ("停车缴费".equals(title)) {
-            ToastUtils.showToast(mContext, "正在开发");
+            Intent intent = new Intent(mContext,PayForParkingActivity.class);
+            mContext.startActivity(intent);
         }
         if ("缴费记录".equals(title)) {
             ToastUtils.showToast(mContext, "正在开发");
