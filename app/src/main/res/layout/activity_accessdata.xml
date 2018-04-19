@@ -7,6 +7,10 @@
               android:orientation="vertical"
               tools:context="com.example.administrator.christie.activity.AccessdataActivity">
 
-    <include layout="@layout/title_view"/>
-
+    <!--<include layout="@layout/title_view"/>-->
+    <FrameLayout
+        android:id="@+id/frame_accessdata"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 </LinearLayout>

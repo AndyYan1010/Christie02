@@ -1,15 +1,17 @@
 package com.example.administrator.christie.activity;
 
 import android.os.Bundle;
-import android.view.View;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.fragment.AccesscontrolInfoFragment;
 
-public class AccessdataActivity extends BaseActivity implements View.OnClickListener {
+public class AccessdataActivity extends BaseActivity {
 
-    private TextView mTv_title;
+    private TextView  mTv_title;
     private ImageView mImg_back;
 
     @Override
@@ -21,22 +23,13 @@ public class AccessdataActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView() {
-        mTv_title = (TextView) findViewById(R.id.tv_title);
-        mImg_back = (ImageView) findViewById(R.id.img_back);
-        mTv_title.setText("门禁数据查询");
-        mImg_back.setOnClickListener(this);
     }
 
     private void initData() {
-
+        Fragment accessdataFt = new AccesscontrolInfoFragment();
+        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+        ftt.add(R.id.frame_accessdata, accessdataFt, "accessdataFt");
+        ftt.commit();
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.img_back:
-                finish();
-                break;
-        }
-    }
 }

@@ -158,7 +158,7 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             //                        startActivity(intent);
             //                    }
         }
-        if ("门禁数据查询".equals(title)) {
+        if ("门禁数据".equals(title)) {
             //                    if (functionlist.contains(Consts.MJSJCX)) {
             mContext.startActivity(new Intent(mContext, AccessdataActivity.class));
             //                    } else {
