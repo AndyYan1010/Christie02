@@ -3,12 +3,13 @@ package com.example.administrator.christie.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -70,12 +71,12 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
         holder.iv_icon.setImageResource(mData.get(position).getResId());
         holder.tv_text.setText(mData.get(position).getText());
         if (mKind == 0) {
-            if (needShow){
+            if (needShow) {
                 holder.img_delete_icon.setVisibility(View.VISIBLE);
                 if (position == 0 || position == 1 || position == (mData.size() - 1)) {
                     holder.img_delete_icon.setVisibility(View.GONE);
                 }
-            }else {
+            } else {
                 holder.img_delete_icon.setVisibility(View.GONE);
             }
         }
@@ -100,30 +101,7 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
                         ToastUtils.showToast(mContext, "该图标不可删除");
                         return true;
                     }
-//                    if (holder.img_delete_icon.getVisibility() == View.VISIBLE) {
-//                        holder.img_delete_icon.setVisibility(View.GONE);
-//                    } else {
-//                        holder.img_delete_icon.setVisibility(View.VISIBLE);
-//                    }
                     return true;
-                }
-            });
-        }
-        if (mKind == 1) {
-            holder.iv_icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mOtherdata.add(mOtherdata.size() - 1, mData.get(position));
-                    mData.remove(position);
-                    notifyDataSetChanged();
-                    ThreadUtils.runOnSubThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Gson gson = new Gson();
-                            String str = gson.toJson(mOtherdata);
-                            SpUtils.putString(mContext, "listStr", str);
-                        }
-                    });
                 }
             });
         }
@@ -159,24 +137,6 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
                 }
             });
         }
-        //        if (holder.img_add_icon != null) {
-        //            holder.img_add_icon.setOnClickListener(new View.OnClickListener() {
-        //                @Override
-        //                public void onClick(View view) {
-        //                    mOtherdata.add(mOtherdata.size() - 1, mData.get(position));
-        //                    mData.remove(position);
-        //                    notifyDataSetChanged();
-        //                    ThreadUtils.runOnSubThread(new Runnable() {
-        //                        @Override
-        //                        public void run() {
-        //                            Gson gson = new Gson();
-        //                            String str = gson.toJson(mOtherdata);
-        //                            SpUtils.putString(mContext, "listStr", str);
-        //                        }
-        //                    });
-        //                }
-        //            });
-        //        }
     }
 
     private void startWhichAct(String title, ImageView icon) {
@@ -232,15 +192,14 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
         }
     }
 
+    private GridView        more_icon;
+    private GridViewAdapter more_iconAdapter;
+
     private void showMoreIcon(ImageView icon) {
-        PopupWindow popupWindow = popupWindow = new PopupWindow(mContext);
-        popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        final PopupWindow popupWindow = new PopupWindow(mContext);
+        popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        View v = LayoutInflater.from(mContext).inflate(R.layout.popup_more_icon, null);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(10, 0, 10, 0);
-        v.setLayoutParams(params);
-        popupWindow.setContentView(v);
+        popupWindow.setContentView(LayoutInflater.from(mContext).inflate(R.layout.popup_more_icon, null));
         popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
         popupWindow.setOutsideTouchable(false);
         popupWindow.setFocusable(true);
@@ -248,17 +207,35 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
         popupWindow.showAtLocation(icon, Gravity.CENTER, 0, 0);
 
         //找到展示条目
-        RecyclerView recyclerView02 = popupWindow.getContentView().findViewById(R.id.recyclerView_icon02);
-        GridLayoutManager mGridManager = new GridLayoutManager(mContext, 3);
-        recyclerView02.setLayoutManager(mGridManager);
-        IconAdapter iconAdapter = new IconAdapter(mContext, mOtherdata, mData, 1);
-        recyclerView02.setAdapter(iconAdapter);
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        more_icon = (GridView) popupWindow.getContentView().findViewById(R.id.gridview_more);
+        more_iconAdapter = new GridViewAdapter(mContext, mOtherdata);
+        more_icon.setAdapter(more_iconAdapter);
+        more_icon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onDismiss() {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                mData.add(mData.size() - 1, mOtherdata.get(position));
+                mOtherdata.remove(position);
+                more_iconAdapter.notifyDataSetChanged();
                 notifyDataSetChanged();
+                if (mOtherdata.size() == 0) {
+                    popupWindow.dismiss();
+                }
+                ThreadUtils.runOnSubThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        String str = gson.toJson(mData);
+                        SpUtils.putString(mContext, "listStr", str);
+                    }
+                });
             }
         });
+        //        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        //            @Override
+        //            public void onDismiss() {
+        //                notifyDataSetChanged();
+        //            }
+        //        });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

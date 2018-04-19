@@ -1,17 +1,13 @@
 package com.example.administrator.christie.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.IconListInfo;
 import com.example.administrator.christie.R;
@@ -248,86 +244,6 @@ public class MenjinFragment extends Fragment {
 //                            }
 //                            listMore.add(list.get(whichOne));
 //                            list.remove(whichOne);
-//                            adapter.notifyDataSetChanged();
-//                            ThreadUtils.runOnSubThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    Gson gson = new Gson();
-//                                    String str = gson.toJson(list);
-//                                    SpUtils.putString(getContext(), "listStr", str);
-//                                }
-//                            });
-//                        }
-//                    });
-//                }
-//                return true;
-//            }
-//        });
-    }
-
-    private void showMoreIcon(TextView tv_grid_name) {
-        final PopupWindow popupWindow = new PopupWindow(getActivity());
-        popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.setContentView(LayoutInflater.from(getActivity()).inflate(R.layout.popup_more_icon, null));
-        popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
-        popupWindow.setOutsideTouchable(false);
-        popupWindow.setFocusable(true);
-        //显示popupwindow,指定位置
-        popupWindow.showAtLocation(tv_grid_name, Gravity.CENTER, 0, 0);
-        //找到展示条目
-        RecyclerView recyclerView02 = popupWindow.getContentView().findViewById(R.id.recyclerView_icon02);
-        GridLayoutManager mGridManager = new GridLayoutManager(getContext(), 3);
-        recyclerView02.setLayoutManager(mGridManager);
-        IconAdapter iconAdapter = new IconAdapter(getContext(),listMore,list,1);
-        recyclerView02.setAdapter(iconAdapter);
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                mIconAdapter.notifyDataSetChanged();
-            }
-        });
-
-
-//        more_icon = (GridView) popupWindow.getContentView().findViewById(R.id.gridview_more);
-//        more_iconAdapter = new GridViewAdapter(mContext, listMore);
-//        more_icon.setAdapter(more_iconAdapter);
-//        more_icon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                ToastUtils.showToast(getContext(), "请点击删除图标");
-//            }
-//        });
-//        more_icon.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
-//                TextView tv_grid_name = (TextView) view.findViewById(R.id.mydada_text_tv);
-//                final String name = String.valueOf(tv_grid_name.getText());
-//                final ImageView img_add = view.findViewById(R.id.img_add_icon);
-//                //记录是对应的是否已删除
-//                if (img_add.getVisibility() == View.VISIBLE) {
-//                    img_add.setVisibility(View.GONE);
-//                } else {
-//                    img_add.setVisibility(View.VISIBLE);
-//                    img_add.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            View parent = (View) img_add.getParent();
-//                            img_add.setVisibility(View.GONE);
-//                            TextView title_name = (TextView) parent.findViewById(R.id.mydada_text_tv);
-//                            String min_title = String.valueOf(title_name.getText());
-//                            int whichOne = 0;
-//                            for (int i = 0; i < listMore.size(); i++) {
-//                                MainMenuEntity menuEntity = listMore.get(i);
-//                                String text = menuEntity.getText();
-//                                if (min_title.equals(text)) {
-//                                    whichOne = i;
-//                                    break;
-//                                }
-//                            }
-//                            list.add(list.size() - 1, listMore.get(whichOne));
-//                            listMore.remove(whichOne);
-//                            popupWindow.dismiss();
 //                            adapter.notifyDataSetChanged();
 //                            ThreadUtils.runOnSubThread(new Runnable() {
 //                                @Override
