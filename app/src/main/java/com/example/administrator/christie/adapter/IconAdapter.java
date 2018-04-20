@@ -20,6 +20,7 @@ import com.example.administrator.christie.activity.AccessdataActivity;
 import com.example.administrator.christie.activity.BluetoothActivity;
 import com.example.administrator.christie.activity.InvitationRecordActivity;
 import com.example.administrator.christie.activity.PayForParkingActivity;
+import com.example.administrator.christie.activity.PaymentRecordActivity;
 import com.example.administrator.christie.activity.QrcodeActivity;
 import com.example.administrator.christie.activity.ReservatParkingActivity;
 import com.example.administrator.christie.activity.VisitorInvitationActivity;
@@ -45,7 +46,9 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
     private List<MainMenuEntity> mData;
     private List<MainMenuEntity> mOtherdata;
     private int                  mKind;
-    private boolean needShow = false;
+    private              boolean needShow                        = false;
+    private static       int     REQUEST_ENABLE                  = 4000;
+    private static final int     BLUETOOTH_DISCOVERABLE_DURATION = 120;//Bluetooth 设备可见时间，单位：秒，不设置默认120s。
 
     public IconAdapter(Context context, List<MainMenuEntity> maindata, List<MainMenuEntity> otherdata, int kind) {
         this.mContext = context;
@@ -155,7 +158,10 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
         }
         if ("蓝牙开门".equals(title)) {
             //                    if (functionlist.contains(Consts.LYKM)) {
-            mContext.startActivity(new Intent(mContext, BluetoothActivity.class));
+            //先请求用户打开蓝牙，否则不能实现摇一摇开门功能。
+//            requestBluetooth();
+            Intent intent = new Intent(mContext, BluetoothActivity.class);
+            mContext.startActivity(intent);
             //                    } else {
             //                        intent.putExtra("title", getString(R.string.bluetooth));
             //                        intent.putExtra("code", Consts.LYKM);
@@ -172,23 +178,24 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             //                    }
         }
         if ("访客邀请".equals(title)) {
-            Intent intent = new Intent(mContext,VisitorInvitationActivity.class);
+            Intent intent = new Intent(mContext, VisitorInvitationActivity.class);
             mContext.startActivity(intent);
         }
         if ("邀请记录".equals(title)) {
-            Intent intent = new Intent(mContext,InvitationRecordActivity.class);
+            Intent intent = new Intent(mContext, InvitationRecordActivity.class);
             mContext.startActivity(intent);
         }
         if ("车位预约".equals(title)) {
-            Intent intent = new Intent(mContext,ReservatParkingActivity.class);
+            Intent intent = new Intent(mContext, ReservatParkingActivity.class);
             mContext.startActivity(intent);
         }
         if ("停车缴费".equals(title)) {
-            Intent intent = new Intent(mContext,PayForParkingActivity.class);
+            Intent intent = new Intent(mContext, PayForParkingActivity.class);
             mContext.startActivity(intent);
         }
         if ("缴费记录".equals(title)) {
-            ToastUtils.showToast(mContext, "正在开发");
+            Intent intent = new Intent(mContext, PaymentRecordActivity.class);
+            mContext.startActivity(intent);
         }
         if ("添加".equals(title)) {
             if (mOtherdata.size() == 0) {
@@ -199,6 +206,29 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             }
         }
     }
+
+//    private void requestBluetooth() {
+//        boolean bluetoothSupported = BluetoothManagerUtils.isBluetoothSupported();
+//        if (bluetoothSupported) {
+//            boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+//            if (!bluetoothEnabled) {
+//                //弹出对话框提示用户是后打开
+//                Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//                // 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
+//                enabler.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//                // 设置 Bluetooth 设备可见时间
+//                enabler.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, BLUETOOTH_DISCOVERABLE_DURATION);
+//                Activity activity = (Activity) mContext;
+//                activity.startActivityForResult(enabler, REQUEST_ENABLE);
+//            } else {
+//                //蓝牙打开可以跳转
+//                Intent intent = new Intent(mContext, BluetoothActivity.class);
+//                mContext.startActivity(intent);
+//            }
+//        } else {
+//            ToastUtils.showToast(mContext, "当前设备不支持蓝牙功能");
+//        }
+//    }
 
     private GridView        more_icon;
     private GridViewAdapter more_iconAdapter;
@@ -247,6 +277,7 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         LinearLayout ll;
         ImageView    iv_icon, img_delete_icon, img_add_icon;
         TextView tv_text;

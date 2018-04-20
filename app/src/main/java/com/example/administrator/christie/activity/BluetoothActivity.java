@@ -12,12 +12,12 @@ import com.example.administrator.christie.util.ShakeHelper;
 
 public class BluetoothActivity extends BaseActivity implements View.OnClickListener {
 
-    private ImageView   mImg_back;
-    private TextView    mTv_title;
-    private ShakeHelper mShakeHelper;
+    private ImageView    mImg_back;
+    private TextView     mTv_title;
+    private ShakeHelper  mShakeHelper;
     private LinearLayout mLiner_add_equipment;
-    private static final int SENSOR_SHAKE = 10;
-    private boolean isShaking = false;
+    private static final int     SENSOR_SHAKE = 10;
+    private              boolean isShaking    = false;
     private ImageView mImg_shake;
 
     @Override
@@ -50,7 +50,7 @@ public class BluetoothActivity extends BaseActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.liner_add_equipment:
-                Intent intent = new Intent(this,AddBluetoothActivity.class);
+                Intent intent = new Intent(this, AddBluetoothActivity.class);
                 startActivity(intent);
                 break;
         }

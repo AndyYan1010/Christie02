@@ -43,9 +43,9 @@ public class MainActivity extends FragmentActivity {
     }
 
     protected void setViews(){
-        btns[0] = (Button) findViewById(R.id.btn_menjin);//门禁
-        btns[1] = (Button) findViewById(R.id.btn_fangke);//访客
-        btns[2] = (Button) findViewById(R.id.btn_park);//停车
+        btns[0] = (Button) findViewById(R.id.btn_menjin);//一卡通
+        btns[1] = (Button) findViewById(R.id.btn_fangke);//消息
+        btns[2] = (Button) findViewById(R.id.btn_park);//菜单
         btns[3] = (Button) findViewById(R.id.btn_me);//个人中心
         btns[0].setSelected(true);
 

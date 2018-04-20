@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
@@ -17,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.LoginActivity"/>
-        <activity android:name=".activity.MainActivity">
+        <activity
+            android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -50,6 +53,7 @@
         <activity android:name=".activity.ReservatParkingActivity"/>
         <activity android:name=".activity.PayForParkingActivity"/>
         <activity android:name=".activity.VisitorInvitationActivity"/>
+        <activity android:name=".activity.PaymentRecordActivity"/>
         <activity
             android:name=".activity.PlateActivity"
             android:label="@string/title_activity_plate"
@@ -65,7 +69,6 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
-
         <activity android:name=".activity.ValidateActivity"/>
         <activity android:name=".activity.YypzActivity"/>
         <activity android:name=".activity.TdmjActivity"></activity>

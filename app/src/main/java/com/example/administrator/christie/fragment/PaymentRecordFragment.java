@@ -18,14 +18,14 @@ import java.util.Calendar;
 
 /**
  * @创建者 AndyYan
- * @创建时间 2018/4/19 12:16
+ * @创建时间 2018/4/20 8:42
  * @描述 ${TODO}
  * @更新者 $Author$
  * @更新时间 $Date$
  * @更新描述 ${TODO}
  */
 
-public class InvitationRecordFragment extends Fragment implements View.OnClickListener {
+public class PaymentRecordFragment extends Fragment implements View.OnClickListener {
     private View     mRootView;
     private TextView mTv_title, mTv_start_time, mTv_end_time;
     private ImageView mImg_back, mImg_select_st, mImg_select_end;
@@ -39,7 +39,6 @@ public class InvitationRecordFragment extends Fragment implements View.OnClickLi
         return mRootView;
     }
 
-
     private void initView() {
         mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
@@ -48,11 +47,12 @@ public class InvitationRecordFragment extends Fragment implements View.OnClickLi
         mImg_select_st = (ImageView) mRootView.findViewById(R.id.img_select_st);
         mImg_select_end = (ImageView) mRootView.findViewById(R.id.img_select_end);
         mBt_search = (Button) mRootView.findViewById(R.id.bt_search);
-        mTv_title.setText("邀请记录");
+        mTv_title.setText("缴费记录");
         mImg_back.setOnClickListener(this);
         mImg_select_st.setOnClickListener(this);
         mImg_select_end.setOnClickListener(this);
         mBt_search.setOnClickListener(this);
+
     }
 
     private void initData() {
@@ -78,11 +78,11 @@ public class InvitationRecordFragment extends Fragment implements View.OnClickLi
             case R.id.bt_search:
                 //获取开始时间 和结束时间，跳转数据结果
                 FragmentTransaction ftt = getFragmentManager().beginTransaction();
-                InvitationResultFragment invitationResultFragment = new InvitationResultFragment();
+                PaymentResultFragment paymentResultFgt = new PaymentResultFragment();
                 String startT = String.valueOf(mTv_start_time.getText());
                 String endT = String.valueOf(mTv_end_time.getText());
-                invitationResultFragment.setData(startT, endT);
-                ftt.add(R.id.frame_accessdata, invitationResultFragment, "invitationResultFragment");
+                paymentResultFgt.setData(startT, endT);
+                ftt.add(R.id.frame_accessdata, paymentResultFgt, "invitationResultFragment");
                 ftt.addToBackStack(null);
                 ftt.commit();
                 break;

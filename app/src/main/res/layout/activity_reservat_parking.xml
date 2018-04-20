@@ -111,6 +111,7 @@
                     android:textSize="22sp"/>
 
                 <TextView
+                    android:id="@+id/tv_park_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"

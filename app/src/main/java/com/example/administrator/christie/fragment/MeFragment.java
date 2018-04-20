@@ -41,7 +41,7 @@ public class MeFragment extends Fragment {
     private ImageView iv_settings;
     private LinearLayout ll_geren,ll_kapian,ll_chepai;
     private Button btn_xiaoxi,btn_huiyi;
-    private TextView tv_username,tv_logorreg;
+    private TextView tv_username;
     private CustomProgress dialog;
 
     @Override
@@ -62,7 +62,7 @@ public class MeFragment extends Fragment {
         ll_kapian = (LinearLayout)view.findViewById(R.id.ll_kapian);
         ll_chepai = (LinearLayout)view.findViewById(R.id.ll_chepai);
         tv_username = (TextView)view.findViewById(R.id.tv_username);
-        tv_logorreg = (TextView)view.findViewById(R.id.tv_logorreg);
+
 //        if(!TApplication.user.getFname().equals("")){
 //            tv_username.setText(TApplication.user.getFname());
 //        }else {
@@ -70,7 +70,7 @@ public class MeFragment extends Fragment {
 //        }
         tv_username.setTextSize(20);
         tv_username.setTextColor(Color.WHITE);
-        tv_logorreg.setText("");
+
     }
 
     protected void setListeners(){
