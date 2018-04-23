@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
@@ -25,9 +26,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class QrcodeActivity extends BaseActivity implements View.OnClickListener {
-    ImageView iv_code,img_back;
-    Thread thread;
+    private ImageView iv_code, img_back;
+    private Thread thread;
     private boolean isAlive = true;
+    private TextView mTv_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,23 +40,25 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
         thread.start();
     }
 
-    protected void setViews(){
-        iv_code = (ImageView)findViewById(R.id.iv_code);
-        img_back = (ImageView)findViewById(R.id.img_back);
+    protected void setViews() {
+        img_back = (ImageView) findViewById(R.id.img_back);
+        mTv_title = (TextView) findViewById(R.id.tv_title);
+        iv_code = (ImageView) findViewById(R.id.iv_code);
         img_back.setOnClickListener(this);
+        mTv_title.setText("二维码开门");
     }
 
-    Bitmap encodeAsBitmap(String str){
+    Bitmap encodeAsBitmap(String str) {
         Bitmap bitmap = null;
         BitMatrix result = null;
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            result = multiFormatWriter.encode(str, BarcodeFormat.QR_CODE, 800, 800);
+            result = multiFormatWriter.encode(str, BarcodeFormat.QR_CODE, 300, 300);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             bitmap = barcodeEncoder.createBitmap(result);
-        } catch (WriterException e){
+        } catch (WriterException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             return null;
         }
         return bitmap;
@@ -68,7 +72,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     iv_code.setImageBitmap(encodeAsBitmap(msg.obj.toString()));
                     break;
@@ -79,7 +83,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.img_back:
                 finish();
                 break;
@@ -92,7 +96,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
             // TODO Auto-generated method stub
             while (isAlive) {
                 try {
-                    String url = Consts.URL+"qrcode?userid="+ TApplication.user.getId();
+                    String url = Consts.URL + "qrcode?userid=" + TApplication.user.getId();
                     HttpResponse response = HttpUtils.GetUtil(url);
                     HttpEntity entity = response.getEntity();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
@@ -102,7 +106,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
                     message.what = 1;
                     message.obj = result;
                     handler.sendMessage(message);// 发送消息
-                    Thread.sleep(5*60*1000);// 线程暂停5分钟，单位毫秒
+                    Thread.sleep(5 * 60 * 1000);// 线程暂停5分钟，单位毫秒
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

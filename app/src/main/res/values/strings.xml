@@ -76,7 +76,7 @@
     <string name="xiaci">下次再说</string>
     <string name="wangji">忘记密码？</string>
     <string name="meiyou">还没有账号？</string>
-    <string name="shuaxin">每隔五分钟刷新一次</string>
+    <string name="shuaxin">把二维码放在摄像头前面，识别成功后开门进入，二维码有效期5分钟</string>
     <string name="fee">本次停车费用：</string>
     <string name="zhifu">立即支付</string>
     <string name="alipay">支付宝</string>

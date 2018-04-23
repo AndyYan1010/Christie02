@@ -1,11 +1,10 @@
 package com.example.administrator.christie.activity;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.support.v4.app.FragmentTransaction;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.fragment.WriteInvitationFragment;
 
 /**
  * @创建者 AndyYan
@@ -16,34 +15,24 @@ import com.example.administrator.christie.R;
  * @更新描述 ${TODO}
  */
 
-public class VisitorInvitationActivity extends BaseActivity implements View.OnClickListener {
-    private ImageView mImg_back;
-    private TextView  mTv_title;
+public class VisitorInvitationActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_visitor_invitation);
+        setContentView(R.layout.activity_accessdata);
         initView();
         initData();
     }
 
     private void initView() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
-        mTv_title = (TextView) findViewById(R.id.tv_title);
+
     }
 
     private void initData() {
-        mImg_back.setOnClickListener(this);
-        mTv_title.setText("访客邀请");
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.img_back:
-                finish();
-                break;
-        }
+        WriteInvitationFragment writeInvitationFgt = new WriteInvitationFragment();
+        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+        ftt.add(R.id.frame_accessdata, writeInvitationFgt, "writeInvitationFgt");
+        ftt.commit();
     }
 }
