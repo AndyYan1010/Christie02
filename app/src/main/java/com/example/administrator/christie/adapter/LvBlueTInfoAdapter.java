@@ -1,9 +1,11 @@
 package com.example.administrator.christie.adapter;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 
@@ -46,16 +48,26 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         MyViewHolder viewHolder;
         if (view == null) {
-            view = View.inflate(mContext, R.layout.listview_mjinfo_bl, null);
+            view = View.inflate(mContext, R.layout.listview_bluetinfo, null);
             viewHolder = new LvBlueTInfoAdapter.MyViewHolder();
+            viewHolder.tv_btinfo = (TextView) view.findViewById(R.id.tv_btinfo);
+            viewHolder.tv_state = (TextView) view.findViewById(R.id.tv_state);
             view.setTag(viewHolder);
         } else {
             viewHolder = (LvBlueTInfoAdapter.MyViewHolder) view.getTag();
+        }
+        BluetoothDevice btDevice = (BluetoothDevice) mList.get(i);
+        viewHolder.tv_btinfo.setText(String.valueOf(btDevice));
+        int bondState = btDevice.getBondState();
+        if (bondState == BluetoothDevice.BOND_BONDED) {
+            viewHolder.tv_state.setText("已配对过");
+        } else {
+            viewHolder.tv_state.setText("未配对过");
         }
         return view;
     }
 
     private class MyViewHolder {
-
+        TextView tv_btinfo, tv_state;
     }
 }

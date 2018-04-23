@@ -1,5 +1,6 @@
 package com.example.administrator.christie.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -7,8 +8,13 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +25,7 @@ import com.example.administrator.christie.broadcastReceiver.SearchBlueThBcr;
 import com.example.administrator.christie.util.BluetoothManagerUtils;
 import com.example.administrator.christie.util.ToastUtils;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +46,9 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private              boolean isSearchBT                      = false;
     private static       int     REQUEST_ENABLE                  = 400;
     private static final int     BLUETOOTH_DISCOVERABLE_DURATION = 120;//Bluetooth 设备可见时间，单位：秒，不设置默认120s。
-    private BluetoothAdapter   mBtmAdapter;
-    private List               mBtData;
-    private LvBlueTInfoAdapter mBlueTInfoAdapter;
+    private BluetoothAdapter      mBtmAdapter;
+    private List<BluetoothDevice> mBtData;
+    private LvBlueTInfoAdapter    mBlueTInfoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +70,34 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
 
     private void initData() {
         mBtData = new ArrayList();
-        mBtData.add("1");
-        mBtData.add("1");
-        mBtData.add("1");
         mBlueTInfoAdapter = new LvBlueTInfoAdapter(this, mBtData);
         mLv_blt.setAdapter(mBlueTInfoAdapter);
+        mLv_blt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //连接点击的蓝牙设备
+                connectBT(i);
+            }
+        });
+    }
+
+    private void connectBT(int position) {
+        BluetoothDevice btDevice = mBtData.get(position);
+        int bondState = btDevice.getBondState();
+        if (bondState == BluetoothDevice.BOND_BONDED) {
+            ToastUtils.showToast(this, "已配对过");
+        } else {
+            try {
+                boolean bond = createBond(btDevice.getClass(), btDevice);
+                if (bond) {
+                    ToastUtils.showToast(this, "配对成功");
+                } else {
+                    ToastUtils.showToast(this, "配对失败");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -78,6 +108,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 break;
             case R.id.tv_search:
                 if (!isSearchBT) {
+                    mBtData.clear();
+                    mBlueTInfoAdapter.notifyDataSetChanged();
                     boolean bluetoothSupported = BluetoothManagerUtils.isBluetoothSupported();
                     if (bluetoothSupported) {
                         boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
@@ -90,8 +122,9 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                             enabler.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, BLUETOOTH_DISCOVERABLE_DURATION);
                             startActivityForResult(enabler, REQUEST_ENABLE);
                         } else {
-                            //开始搜索
-                            startSearchBluetooth();
+                            needLoactionRight();
+                            //                            //开始搜索
+                            //                            startSearchBluetooth();
                         }
                     } else {
                         ToastUtils.showToast(this, "当前设备不支持蓝牙功能");
@@ -119,10 +152,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             switch (resultCode) {
                 // 点击确认按钮
                 case Activity.RESULT_OK: {
-                    //用户选择开启 Bluetooth，Bluetooth 会被开启
-                    ToastUtils.showToast(this, "蓝牙开启了");
-                    //开始搜索
-                    startSearchBluetooth();
+                    needLoactionRight();
                 }
                 break;
                 // 点击取消按钮或点击返回键
@@ -134,6 +164,22 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 default:
                     break;
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                //用户选择开启 Bluetooth，Bluetooth 会被开启
+                ToastUtils.showToast(this, "蓝牙开启了");
+                //开始搜索
+                startSearchBluetooth();
+                break;
+            default:
+
+                break;
         }
     }
 
@@ -149,7 +195,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         //获取BluetoothAdapter
         if (bluetoothManager != null) {
             mBtmAdapter = bluetoothManager.getAdapter();
-            if (null != mBtmAdapter)
+            if (null != mBtmAdapter && !mBtmAdapter.isDiscovering())
                 mBtmAdapter.startDiscovery();
         }
     }
@@ -161,5 +207,53 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);//搜索结束
         registerReceiver(mReceiver, filter);
+    }
+
+    //申请定位权限
+    private void needLoactionRight() {
+        //判断是否已经赋予权限
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            //如果应用之前请求过此权限但用户拒绝了请求，此方法将返回 true。
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {//这里可以写个对话框之类的项向用户解释为什么要申请权限，并在对话框的确认键后续再次申请权限
+                ToastUtils.showToast(this, "请手动开启相关权限");
+            } else {
+                //申请权限，字符串数组内是一个或多个要申请的权限，1是申请权限结果的返回参数，在onRequestPermissionsResult可以得知申请结果
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,}, 1);
+            }
+        } else {
+            startSearchBluetooth();
+        }
+    }
+
+    /**
+     * 蓝牙配对
+     *
+     * @param btClass
+     * @param btDevice
+     * @return
+     * @throws Exception
+     */
+    public boolean createBond(Class btClass, BluetoothDevice btDevice) throws Exception {
+        Method createBondMethod = btClass.getMethod("createBond");//获取蓝牙的连接方法
+        Boolean returnValue = (Boolean) createBondMethod.invoke(btDevice);
+        return returnValue.booleanValue();//返回连接状态
+    }
+
+    private boolean removeBond(BluetoothDevice device) {
+        Class btDeviceCls = BluetoothDevice.class;
+        Method removeBond = null;
+        boolean cancelConnect = false;
+        try {
+            removeBond = btDeviceCls.getMethod("removeBond");
+            removeBond.setAccessible(true);
+            cancelConnect = (boolean) removeBond.invoke(device);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cancelConnect;
     }
 }

@@ -5,9 +5,9 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.BaseAdapter;
 import android.widget.Toast;
 
+import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
 import com.example.administrator.christie.util.ToastUtils;
 
 import java.util.List;
@@ -22,10 +22,11 @@ import java.util.List;
  */
 
 public class SearchBlueThBcr extends BroadcastReceiver {
-    private List        mList;
-    private BaseAdapter mAdapter;
+    private List<BluetoothDevice> mList;
+    private LvBlueTInfoAdapter    mAdapter;
+    private boolean isHad = false;
 
-    public SearchBlueThBcr(List mData, BaseAdapter adapter) {
+    public SearchBlueThBcr(List mData, LvBlueTInfoAdapter adapter) {
         this.mList = mData;
         this.mAdapter = adapter;
     }
@@ -37,15 +38,25 @@ public class SearchBlueThBcr extends BroadcastReceiver {
         switch (action) {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String address = device.getAddress();
                 Toast.makeText(context, "找到设备" + device.getName(), Toast.LENGTH_SHORT).show();
                 if (mAdapter != null) {
-                    mList.add(device);
-                    mAdapter.notifyDataSetChanged();
+                    for (int i = 0; i < mList.size(); i++) {
+                        BluetoothDevice bluetoothDevice = mList.get(i);
+                        String address1 = bluetoothDevice.getAddress();
+                        if (address.equals(address1)) {
+                            isHad = true;
+                        }
+                    }
+                    if (!isHad) {
+                        mList.add(device);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    isHad = false;
                 }
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                ToastUtils.showToast(context,"搜索结束");
-                //                mMessageAdapter.addMessage("搜索结束");
+                ToastUtils.showToast(context, "搜索结束");
                 break;
         }
     }
