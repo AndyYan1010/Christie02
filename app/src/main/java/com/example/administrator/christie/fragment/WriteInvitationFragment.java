@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.ToastUtils;
 
 /**
@@ -78,6 +79,9 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 }
                 if (phone.equals("") || phone.equals("请输入来访人电话")) {
                     ToastUtils.showToast(mContext, "来访人电话不能为空");
+                    return;
+                }else if (!RegexUtils.checkMobile(phone)){
+                    ToastUtils.showToast(mContext, "电话格式不正确");
                     return;
                 }
                 if (date.equals("") || date.equals("请输入来访日期")) {
