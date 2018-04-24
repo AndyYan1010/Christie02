@@ -13,6 +13,7 @@ import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.util.Consts;
 import com.example.administrator.christie.util.HttpUtils;
+import com.example.administrator.christie.util.ZxingUtils;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -74,7 +75,9 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    iv_code.setImageBitmap(encodeAsBitmap(msg.obj.toString()));
+//                    generateQr(msg.obj.toString());
+                    generateQr("哈哈，猜猜我是什么内容？");
+//                    iv_code.setImageBitmap(encodeAsBitmap(msg.obj.toString()));
                     break;
             }
             super.handleMessage(msg);
@@ -112,6 +115,13 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
                     e.printStackTrace();
                 }
             }
+        }
+    }
+    private void generateQr(String data) {
+        Bitmap bitmap = ZxingUtils.createQRImage(data, 200, 200);
+        System.out.println(bitmap);
+        if (null!=bitmap){
+            iv_code.setImageBitmap(bitmap);
         }
     }
 }
