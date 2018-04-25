@@ -72,6 +72,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void setData() {
         mTv_register.setOnClickListener(this);
         mTv_forgot.setOnClickListener(this);
+        mBt_login.setOnClickListener(this);
     }
 
     @Override
@@ -84,6 +85,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case R.id.tv_forgot:
                 Intent intent2 = new Intent(this, PwdModifyActivity.class);
                 startActivity(intent2);
+                break;
+            case R.id.bt_login:
+                Intent intent3 = new Intent(this, MainActivity.class);
+                startActivity(intent3);
+                finish();
                 break;
         }
     }
