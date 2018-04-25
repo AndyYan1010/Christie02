@@ -30,7 +30,7 @@
     <string name="huiyi">会议</string>
     <string name="settings">设置</string>
     <string name="pwdmodify">密码重置</string>
-    <string name="register">注册</string>
+    <string name="register">确认注册</string>
     <string name="mobile">手机号</string>
     <string name="pleasemob">请输入手机号</string>
     <string name="newpwd">新密码</string>
