@@ -8,6 +8,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.LoginInfo;
+import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.ProgressDialogUtils;
+import com.example.administrator.christie.util.RegexUtils;
+import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import okhttp3.Request;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private EditText mEt_acct_num;
@@ -87,12 +98,53 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 startActivity(intent2);
                 break;
             case R.id.bt_login:
-                Intent intent3 = new Intent(this, MainActivity.class);
-                startActivity(intent3);
-                finish();
+                String phone = String.valueOf(mEt_acct_num.getText()).trim();
+                String password = String.valueOf(mEt_password.getText()).trim();
+                if (!RegexUtils.checkMobile(phone)) {
+                    ToastUtils.showToast(LoginActivity.this, "请输入正确的手机号码");
+                    return;
+                }
+                if ("".equals(password) || "请输入密码".equals(password)) {
+                    ToastUtils.showToast(LoginActivity.this, "请输入密码");
+                    return;
+                }
+                //登录
+                loginToSeverce(phone, password);
                 break;
         }
     }
+
+    private void loginToSeverce(String phone, String password) {
+        ProgressDialogUtils.getInstance().show(LoginActivity.this, "正在登录请稍后");
+        String url = NetConfig.LOGINURL + "?telephone=" + phone + "&password=" + password;
+        HttpOkhUtils.getInstance().doGet(url, new HttpOkhUtils.HttpCallBack() {
+
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(LoginActivity.this, "网络异常");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                ProgressDialogUtils.getInstance().dismiss();
+                if (code != 200) {
+                    ToastUtils.showToast(LoginActivity.this, "登录失败");
+                    return;
+                }
+                Gson gson = new Gson();
+                final LoginInfo mLoginInfo = gson.fromJson(resbody, LoginInfo.class);
+                String result = mLoginInfo.getResult();
+                if ("2".equals(result)) {
+                    ToastUtils.showToast(LoginActivity.this, mLoginInfo.getMessage());
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+            }
+        });
+    }
+
     //
     //    public void setViews() {
     //        et_user = (EditText) findViewById(R.id.login_edtId);

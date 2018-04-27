@@ -27,7 +27,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity"
+            android:launchMode="singleTask">
             
         </activity>
         <activity android:name=".activity.QrcodeActivity"/>
@@ -57,6 +58,7 @@
         <activity android:name=".activity.PayForParkingActivity"/>
         <activity android:name=".activity.VisitorInvitationActivity"/>
         <activity android:name=".activity.PaymentRecordActivity"/>
+        <activity android:name=".activity.BindProjectActivity"/>
         <activity
             android:name=".activity.PlateActivity"
             android:label="@string/title_activity_plate"

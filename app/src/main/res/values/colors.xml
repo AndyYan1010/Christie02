@@ -5,6 +5,7 @@
     <color name="colorAccent">#1296DB</color>
     <color name="white">#FFFFFF</color>
     <color name="bottom_button_text_black">#000000</color>
+    <color name="black">#000000</color>
     <color name="bottom_button_text_blue">#1296DB</color>
     <color name="bottom_button_text_gray">#999999</color>
     <color name="colorLogin">#E7E7E7</color>

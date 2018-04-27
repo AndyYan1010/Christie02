@@ -80,7 +80,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     if (!RegexUtils.checkMobile(mPhone_num)) {
                         ToastUtils.showToast(this, "手机号码格式不正确");
                     } else {
-                        sendTointnet();
+                        //发送验证码
+                        sendMsgFromIntnet();
                     }
                 }
                 break;
@@ -125,7 +126,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void sendTointnet() {
+    private void sendMsgFromIntnet() {
+
         //        HttpUtil.get(checkMessage, params, new HttpUtil.JsonHttpResponseUtil() {
         //            @Override
         //            public void onStart() {

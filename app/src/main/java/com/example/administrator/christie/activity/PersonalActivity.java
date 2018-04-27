@@ -2,11 +2,10 @@ package com.example.administrator.christie.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,21 +20,16 @@ import com.example.administrator.christie.view.CustomProgress;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 public class PersonalActivity extends BaseActivity {
-    private LinearLayout ll_yhm,ll_sjh,ll_xb;
+    private LinearLayout ll_yhm,ll_sjh,ll_xb,ll_bd;
     private TextView tv_username,tv_mob,tv_address,tv_gender;
     public static final int SHOW_RESPONSE = 0;
     private CustomProgress dialog;
@@ -52,6 +46,7 @@ public class PersonalActivity extends BaseActivity {
         ll_yhm = (LinearLayout)findViewById(R.id.ll_yhm);
         ll_sjh = (LinearLayout)findViewById(R.id.ll_sjh);
         ll_xb = (LinearLayout)findViewById(R.id.ll_xb);
+        ll_bd = (LinearLayout)findViewById(R.id.ll_bd);
         tv_username = (TextView)findViewById(R.id.tv_username);
         tv_mob = (TextView)findViewById(R.id.tv_mob);
         tv_address = (TextView)findViewById(R.id.tv_address);
@@ -110,6 +105,13 @@ public class PersonalActivity extends BaseActivity {
                     }
                 });
                 builder.show();
+            }
+        });
+        ll_bd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PersonalActivity.this,BindProjectActivity.class);
+                startActivity(intent);
             }
         });
     }
