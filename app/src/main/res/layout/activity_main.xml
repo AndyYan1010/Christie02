@@ -45,16 +45,16 @@
             android:textColor="@color/btn_color"
             />
 
-        <Button
-            android:id="@+id/btn_park"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawableTop="@drawable/btn_fangke_selector"
-            android:text="@string/park"
-            android:textColor="@color/btn_color"
-            />
+        <!--<Button-->
+        <!--android:id="@+id/btn_park"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@null"-->
+        <!--android:drawableTop="@drawable/btn_fangke_selector"-->
+        <!--android:text="@string/park"-->
+        <!--android:textColor="@color/btn_color"-->
+        <!--/>-->
 
         <Button
             android:id="@+id/btn_me"

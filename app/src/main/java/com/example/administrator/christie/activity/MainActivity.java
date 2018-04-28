@@ -14,14 +14,13 @@ import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.fragment.FangkeFragment;
 import com.example.administrator.christie.fragment.MeFragment;
 import com.example.administrator.christie.fragment.MenjinFragment;
-import com.example.administrator.christie.fragment.ParkFragment;
 
 public class MainActivity extends FragmentActivity {
     MenjinFragment menjin;
     FangkeFragment fangke;
-    ParkFragment   park;
+//    ParkFragment   park;//菜单
     MeFragment     me;
-    Button[] btns = new Button[4];
+    Button[] btns = new Button[3];
     //    Fragment[] fragments = null;
     private long exitTime = 0;
     /**
@@ -45,8 +44,8 @@ public class MainActivity extends FragmentActivity {
     protected void setViews() {
         btns[0] = (Button) findViewById(R.id.btn_menjin);//一卡通
         btns[1] = (Button) findViewById(R.id.btn_fangke);//消息
-        btns[2] = (Button) findViewById(R.id.btn_park);//菜单
-        btns[3] = (Button) findViewById(R.id.btn_me);//个人中心
+//        btns[2] = (Button) findViewById(R.id.btn_park);//菜单
+        btns[2] = (Button) findViewById(R.id.btn_me);//个人中心
         btns[0].setSelected(true);
 
         //        menjin = new MenjinFragment();
@@ -142,21 +141,21 @@ public class MainActivity extends FragmentActivity {
                             }
                             showBtImg(btns[1]);
                             break;
-                        case R.id.btn_park:
-                            if (park == null) {
-                                park = new ParkFragment();
-                                // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
-                                if (!park.isHidden()) {
-                                    addFragment(park);
-                                    showFragment(park);
-                                }
-                            } else {
-                                if (park.isHidden()) {
-                                    showFragment(park);
-                                }
-                            }
-                            showBtImg(btns[2]);
-                            break;
+//                        case R.id.btn_park:
+//                            if (park == null) {
+//                                park = new ParkFragment();
+//                                // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+//                                if (!park.isHidden()) {
+//                                    addFragment(park);
+//                                    showFragment(park);
+//                                }
+//                            } else {
+//                                if (park.isHidden()) {
+//                                    showFragment(park);
+//                                }
+//                            }
+//                            showBtImg(btns[2]);
+//                            break;
                         case R.id.btn_me:
                             if (me == null) {
                                 me = new MeFragment();
@@ -170,7 +169,7 @@ public class MainActivity extends FragmentActivity {
                                     showFragment(me);
                                 }
                             }
-                            showBtImg(btns[3]);
+                            showBtImg(btns[2]);
                             break;
                     }
                 }
@@ -220,9 +219,9 @@ public class MainActivity extends FragmentActivity {
         if (fangke != null) {
             ft.hide(fangke);
         }
-        if (park != null) {
-            ft.hide(park);
-        }
+//        if (park != null) {
+//            ft.hide(park);
+//        }
         if (me != null) {
             ft.hide(me);
         }
