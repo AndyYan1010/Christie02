@@ -9,9 +9,11 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.modelInfo.LoginInfo;
+import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.ProgressDialogUtils;
 import com.example.administrator.christie.util.RegexUtils;
+import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
@@ -26,6 +28,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private TextView mTv_register;
     private TextView mTv_forgot;
     private Button   mBt_login;
+    private String   mPhone;
+    private String   mPassword;
     //    protected static final String TAG = "LoginActivity";
     //    private EditText et_user, et_pwd;//用户名,密码
     //    private Button          btn_log;//登录按钮
@@ -98,18 +102,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 startActivity(intent2);
                 break;
             case R.id.bt_login:
-                String phone = String.valueOf(mEt_acct_num.getText()).trim();
-                String password = String.valueOf(mEt_password.getText()).trim();
-                if (!RegexUtils.checkMobile(phone)) {
+                mPhone = String.valueOf(mEt_acct_num.getText()).trim();
+                mPassword = String.valueOf(mEt_password.getText()).trim();
+                if (!RegexUtils.checkMobile(mPhone)) {
                     ToastUtils.showToast(LoginActivity.this, "请输入正确的手机号码");
                     return;
                 }
-                if ("".equals(password) || "请输入密码".equals(password)) {
+                if ("".equals(mPassword) || "请输入密码".equals(mPassword)) {
                     ToastUtils.showToast(LoginActivity.this, "请输入密码");
                     return;
                 }
                 //登录
-                loginToSeverce(phone, password);
+                loginToSeverce(mPhone, mPassword);
                 break;
         }
     }
@@ -138,6 +142,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     ToastUtils.showToast(LoginActivity.this, mLoginInfo.getMessage());
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
+                    UserInfo userInfo = new UserInfo();
+                    userInfo.setPhone(mPhone);
+                    userInfo.setPsw(mPassword);
+                    SPref.setObject(LoginActivity.this, UserInfo.class, "userinfo", userInfo);
                     finish();
                 }
 

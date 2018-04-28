@@ -13,7 +13,9 @@ import com.example.administrator.christie.InformationMessege.ProjectInfo;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.ProSpinnerAdapter;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
@@ -48,6 +50,8 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
     private String mProjectID, mDetailID;
     private EditText mEt_place;
     private EditText mEt_relation;
+    private String   mPlace;
+    private String   mRelation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +80,13 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         dataProList.add(projectInfo);
         dataInfoList = new ArrayList<>();
         dataInfoList.add(projectInfo);
-        //从网络获取项目
-        getProjectFromServer("1");
         mProjAdapter = new ProSpinnerAdapter(BindProjectActivity.this, dataProList);
         mSpinner_village.setAdapter(mProjAdapter);
-        mSpinner_village.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //从网络获取项目
+        getProjectFromServer("1");
+        mSpinner_village.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //获取点击条目ID，给spinner2设置数据
                 ProjectInfo projectInfo = dataProList.get(i);
                 String project_name = projectInfo.getProject_name();
@@ -92,17 +96,27 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                     getDetailFromInt(mProjectID);
                 }
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
         });
         mDetailAdapter = new ProSpinnerAdapter(BindProjectActivity.this, dataInfoList);
         mSpinner_unit.setAdapter(mDetailAdapter);
-        mSpinner_unit.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mSpinner_unit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ProjectInfo projectInfo = dataInfoList.get(i);
                 String project_name = projectInfo.getProject_name();
                 if (!project_name.equals("请选择公司")) {
                     mDetailID = projectInfo.getId();
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
         mBt_submit.setOnClickListener(this);
@@ -191,13 +205,13 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.bt_submit:
-                String place = String.valueOf(mEt_place.getText()).trim();
-                String relation = String.valueOf(mEt_relation.getText()).trim();
-                if ("".equals(place) || "请输入房屋具体地址".equals(place)) {
+                mPlace = String.valueOf(mEt_place.getText()).trim();
+                mRelation = String.valueOf(mEt_relation.getText()).trim();
+                if ("".equals(mPlace) || "请输入房屋具体地址".equals(mPlace)) {
                     ToastUtils.showToast(BindProjectActivity.this, "请输入地址");
                     return;
                 }
-                if ("".equals(relation) || "请输入和房屋的关系".equals(relation)) {
+                if ("".equals(mRelation) || "请输入和房屋的关系".equals(mRelation)) {
                     ToastUtils.showToast(BindProjectActivity.this, "请输入关系");
                     return;
                 }
@@ -216,15 +230,18 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void sendToIntnet() {
+        UserInfo userinfo = SPref.getObject(BindProjectActivity.this, UserInfo.class, "userinfo");
+        String phone = userinfo.getPhone();
+        String psw = userinfo.getPsw();
         String url = NetConfig.AUTHENTICATION;
         RequestParamsFM requestParams = new RequestParamsFM();
-        requestParams.put("mobile","13962862067");
-        requestParams.put("project_id","7777");
-        requestParams.put("password","123456");
-        requestParams.put("projectdetail_id","8888");
-        requestParams.put("relation","屋主");
-        requestParams.put("faddress","校园18号");
-        requestParams.put("img","aa.pig");
+        requestParams.put("mobile", phone);
+        requestParams.put("password", psw);
+        requestParams.put("project_id", mProjectID);
+        requestParams.put("projectdetail_id", mDetailID);
+        requestParams.put("relation", mRelation);
+        requestParams.put("faddress", mPlace);
+        requestParams.put("img", "aa.pig");
         requestParams.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPostJson(url, requestParams, new HttpOkhUtils.HttpCallBack() {
             @Override
@@ -243,31 +260,31 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         });
 
 
-//        OkHttpClient client = new OkHttpClient.Builder()
-//                .readTimeout(10, TimeUnit.SECONDS)
-//                .build();
-//        ProjectInfo book = new ProjectInfo();
-//        Gson gson = new Gson();
-//        //使用Gson将对象转换为json字符串
-//        String json = gson.toJson(book);
-//        //MediaType  设置Content-Type 标头中包含的媒体类型值
-//        RequestBody requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8")
-//                , json);
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .post(requestBody)
-//                .build();
-//        Call call = client.newCall(request);
-//        call.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//
-//            }
-//        });
+        //        OkHttpClient client = new OkHttpClient.Builder()
+        //                .readTimeout(10, TimeUnit.SECONDS)
+        //                .build();
+        //        ProjectInfo book = new ProjectInfo();
+        //        Gson gson = new Gson();
+        //        //使用Gson将对象转换为json字符串
+        //        String json = gson.toJson(book);
+        //        //MediaType  设置Content-Type 标头中包含的媒体类型值
+        //        RequestBody requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8")
+        //                , json);
+        //        Request request = new Request.Builder()
+        //                .url(url)
+        //                .post(requestBody)
+        //                .build();
+        //        Call call = client.newCall(request);
+        //        call.enqueue(new Callback() {
+        //            @Override
+        //            public void onFailure(Call call, IOException e) {
+        //
+        //            }
+        //
+        //            @Override
+        //            public void onResponse(Call call, Response response) throws IOException {
+        //
+        //            }
+        //        });
     }
 }
