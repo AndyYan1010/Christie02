@@ -122,7 +122,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         ProgressDialogUtils.getInstance().show(LoginActivity.this, "正在登录请稍后");
         String url = NetConfig.LOGINURL + "?telephone=" + phone + "&password=" + password;
         HttpOkhUtils.getInstance().doGet(url, new HttpOkhUtils.HttpCallBack() {
-
             @Override
             public void onError(Request request, IOException e) {
                 ToastUtils.showToast(LoginActivity.this, "网络异常");
@@ -132,7 +131,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             public void onSuccess(int code, String resbody) {
                 ProgressDialogUtils.getInstance().dismiss();
                 if (code != 200) {
-                    ToastUtils.showToast(LoginActivity.this, "登录失败");
+                    ToastUtils.showToast(LoginActivity.this, "网络异常");
                     return;
                 }
                 Gson gson = new Gson();

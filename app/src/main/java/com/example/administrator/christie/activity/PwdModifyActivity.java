@@ -1,11 +1,23 @@
 package com.example.administrator.christie.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.RegexUtils;
+import com.example.administrator.christie.util.ToastUtils;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import okhttp3.Request;
 
 /**
  * 密码重置
@@ -16,13 +28,21 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
     //    private Button          btn_next;
     //    private CustomProgress  dialog;
     //    private String          code;
+    private Context   mContext;
     private ImageView mImg_back;
     private TextView  mTv_title;
+    private EditText  mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass;
+    private Button mBt_get_test, mBt_register;
+    private String mPhone_num;//手机号
+    private String mtest_pass;//验证码
+    private String mPassword, mAgainPassword;//密码和重复密码
+    private String markVerification = "-12345678";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pwd_modify);
+        mContext = PwdModifyActivity.this;
         setViews();
         setData();
         //        setListeners();
@@ -37,12 +57,19 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
         //        btn_next = (Button)findViewById(R.id.btn_next);
         mImg_back = (ImageView) findViewById(R.id.img_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
-
+        mEt_phone_num = (EditText) findViewById(R.id.et_phone_num);
+        mEt_password = (EditText) findViewById(R.id.et_password);
+        mEt_again = (EditText) findViewById(R.id.et_again);
+        mEdit_test_pass = (EditText) findViewById(R.id.edit_test_pass);
+        mBt_get_test = (Button) findViewById(R.id.bt_get_test);
+        mBt_register = (Button) findViewById(R.id.bt_register);
     }
 
     private void setData() {
         mImg_back.setOnClickListener(this);
         mTv_title.setText("忘记密码");
+        mBt_get_test.setOnClickListener(this);
+        mBt_register.setOnClickListener(this);
     }
 
     @Override
@@ -51,6 +78,131 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
             case R.id.img_back:
                 finish();
                 break;
+            case R.id.bt_get_test:
+                //判断一下是否填写手机号
+                mPhone_num = String.valueOf(mEt_phone_num.getText()).trim();
+                if (mPhone_num.equals("") || mPhone_num.equals("请输入11位手机号")) {
+                    ToastUtils.showToast(this, "请输入手机号码");
+                } else {
+                    // 账号不匹配手机号格式（11位数字且以1开头）
+                    if (!RegexUtils.checkMobile(mPhone_num)) {
+                        ToastUtils.showToast(this, "手机号码格式不正确");
+                    } else {
+                        //发送验证码
+                        sendMsgFromIntnet();
+                    }
+                }
+                break;
+            case R.id.bt_register:
+                mPassword = String.valueOf(mEt_password.getText()).trim();
+                mAgainPassword = String.valueOf(mEt_again.getText()).trim();
+                //判断两次密码是否一样
+                boolean b = compareTowPass(mPassword, mAgainPassword);
+                if (!b) {
+                    ToastUtils.showToast(this, "两次密码不一致，请重新输入");
+                    return;
+                }
+                mPhone_num = String.valueOf(mEt_phone_num.getText()).trim();
+                mtest_pass = String.valueOf(mEdit_test_pass.getText()).trim();
+                if (mPhone_num.equals("") || mPhone_num.equals("请输入11位手机号")) {
+                    ToastUtils.showToast(this, "请输入手机号码");
+                    return;
+                }
+                if (!RegexUtils.checkMobile(mPhone_num)) {
+                    ToastUtils.showToast(this, "请输入正确的手机号码");
+                    return;
+                }
+                if (mtest_pass.equals("") || mtest_pass.equals("请输入6位验证码")) {
+                    ToastUtils.showToast(this, "请输入验证号码");
+                    return;
+                }
+                boolean isRight = checkVerification();
+                if (isRight) {
+                    //注册
+                    sendToRegister();
+                } else {
+                    ToastUtils.showToast(this, "验证码错误，请从新获取验证码");
+                }
+                break;
+        }
+    }
+
+    private void sendToRegister() {
+        String urlToRegist = "";
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("mobile", mPhone_num);
+        params.put("password", mPassword);
+        HttpOkhUtils.getInstance().doPost(urlToRegist, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(mContext, "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code != 200) {
+                    ToastUtils.showToast(mContext, "网络错误");
+                    return;
+                }
+                ToastUtils.showToast(mContext, "修改成功，请登录");
+                finish();
+            }
+        });
+    }
+
+    private void sendMsgFromIntnet() {
+        String urlSendMsg = "";
+        RequestParamsFM requestParam = new RequestParamsFM();
+        requestParam.put("mobile", mPhone_num);
+        HttpOkhUtils.getInstance().doGetWithParams(urlSendMsg, requestParam, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(mContext, "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code != 200) {
+                    ToastUtils.showToast(mContext, "网络错误");
+                    return;
+                }
+                Gson gson = new Gson();
+                //                ClubDetailInfo clubDetailInfo = gson.fromJson(response.toString(), ClubDetailInfo.class);
+                //                boolean valid = clubDetailInfo.getValid();
+                //                if (valid) {
+                //                    String validateCode = clubDetailInfo.getValidateCode();
+                //                    markVerification = validateCode;
+                //                    ToastUtils.showToast(mContext, "验证码发送成功");
+                //                    handler.postDelayed(new Runnable() {
+                //                        public void run() {
+                //                            handler.postDelayed(this, 1000);//递归执行，一秒执行一次
+                //                            if (count > 0) {
+                //                                count--;
+                //                                mBt_get_test.setText(count + "秒后可重新发送");
+                //                                mBt_get_test.setClickable(false);
+                //                            } else {
+                //                                mBt_get_test.setText("发送验证码");
+                //                                mBt_get_test.setClickable(true);
+                //                                handler.removeCallbacks(this);
+                //                            }
+                //                        }
+                //                    }, 1000);    //第一次执行，一秒之后。第一次执行完就没关系了
+                //                } else {
+                //                    ToastUtils.showToast(mContext, "验证码发送失败，请重新请求");
+                //                }
+            }
+        });
+    }
+
+    private boolean compareTowPass(String password, String againPassword) {
+        return password.equals(againPassword) ? true : false;
+    }
+
+    private boolean checkVerification() {
+        if (!mtest_pass.equals(markVerification)) {
+            return false;
+        } else {
+            return true;
         }
     }
 

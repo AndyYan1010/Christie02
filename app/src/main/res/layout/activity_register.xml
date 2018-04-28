@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
@@ -24,7 +25,7 @@
         <EditText
             android:id="@+id/et_phone_num"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
@@ -35,7 +36,7 @@
             android:paddingRight="10dp"
             android:paddingTop="5dp"
             android:phoneNumber="true"
-            android:textSize="18sp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <View
@@ -80,7 +81,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
@@ -92,18 +94,19 @@
         <EditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/bg_round_frame"
-            android:hint="请输入密码"
+            android:digits="0123456789qwertyuioplkjhgfdsazxcvbnm"
+            android:hint="请输入密码(密码由数字和字母组成)"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
-            android:phoneNumber="true"
-            android:textSize="18sp"/>
+            android:password="true"
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <View
@@ -115,7 +118,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -127,18 +130,19 @@
         <EditText
             android:id="@+id/et_again"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/bg_round_frame"
+            android:digits="0123456789qwertyuioplkjhgfdsazxcvbnm"
             android:hint="请再次输入密码"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
-            android:phoneNumber="true"
-            android:textSize="18sp"/>
+            android:password="true"
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <View
@@ -227,7 +231,7 @@
             android:maxLength="6"
             android:phoneNumber="true"
             android:textColor="@color/vm_black_54"
-            android:textSize="16dp"/>
+            android:textSize="16sp"/>
 
         <Button
             android:id="@+id/bt_get_test"
@@ -238,7 +242,7 @@
             android:background="@color/vm_blue_38"
             android:text="发送验证码"
             android:textColor="@color/white"
-            android:textSize="12dp"/>
+            android:textSize="12sp"/>
     </LinearLayout>
     <!--<LinearLayout-->
     <!--android:layout_width="match_parent"-->

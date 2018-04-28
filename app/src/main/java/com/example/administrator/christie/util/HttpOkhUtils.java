@@ -4,6 +4,7 @@ import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +53,28 @@ public class HttpOkhUtils {
         client.newCall(request).enqueue(new StringCallBack(request, httpCallBack));
     }
 
-    public void doPostJson(String url, RequestParamsFM bean, HttpCallBack httpCallBack) {
+    public void doGetWithParams(String url, RequestParamsFM bean, HttpCallBack httpCallBack) {
+        url = url + "?";
+        Iterator iter = bean.entrySet().iterator();
+        while (iter.hasNext()) {
+            Object next = iter.next();
+            if (null != next) {
+                RequestParamsFM.Entry entry = (RequestParamsFM.Entry) next;
+                Object key = entry.getKey();
+                Object value = entry.getValue();
+                url = url + key + "=" + value + "&";
+            } else {
+                RequestParamsFM.Entry entry = (RequestParamsFM.Entry) next;
+                Object key = entry.getKey();
+                Object value = entry.getValue();
+                url = url + key + "=" + value;
+            }
+        }
+        Request request = new Request.Builder().url(url).build();
+        client.newCall(request).enqueue(new StringCallBack(request, httpCallBack));
+    }
+
+    public void doPost(String url, RequestParamsFM bean, HttpCallBack httpCallBack) {
         RequestBody requestBody;
         boolean toJson = bean.getIsUseJsonStreamer();
         if (toJson) {
@@ -114,6 +136,7 @@ public class HttpOkhUtils {
     }
 
     public interface HttpCallBack {
+
         void onError(Request request, IOException e);
 
         void onSuccess(int code, String resbody);

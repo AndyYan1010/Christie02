@@ -243,7 +243,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         requestParams.put("faddress", mPlace);
         requestParams.put("img", "aa.pig");
         requestParams.setUseJsonStreamer(true);
-        HttpOkhUtils.getInstance().doPostJson(url, requestParams, new HttpOkhUtils.HttpCallBack() {
+        HttpOkhUtils.getInstance().doPost(url, requestParams, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
                 ToastUtils.showToast(BindProjectActivity.this, "网络错误");

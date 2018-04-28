@@ -1,5 +1,6 @@
 package com.example.administrator.christie.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -9,8 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.ToastUtils;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import okhttp3.Request;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
     private EditText mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass;
@@ -23,6 +31,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private String markVerification = "-12345678";
     private int    count            = 60;//验证码可重新点击发送时间间隔
     private Handler handler;
+    private Context mContext;
     //    private EditText et_mobile_register,et_code_register,et_pwd,et_repeat;
     //    private CountdownButton btn_code_register;
     //    private Button btn_register;
@@ -34,6 +43,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        mContext = RegisterActivity.this;
         setViews();
         setData();
         handler = new Handler();
@@ -101,76 +111,101 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     return;
                 }
                 if (!RegexUtils.checkMobile(mPhone_num)) {
-                    ToastUtils.showToast(this, "请输入手机号码");
+                    ToastUtils.showToast(this, "请输入正确的手机号码");
                     return;
                 }
                 if (mtest_pass.equals("") || mtest_pass.equals("请输入6位验证码")) {
                     ToastUtils.showToast(this, "请输入验证号码");
                     return;
                 }
-                checkVerification();
+                boolean isRight = checkVerification();
+                if (isRight){
+                    //注册
+                    sendToRegister();
+                }else {
+                    ToastUtils.showToast(this, "验证码错误，请从新获取验证码");
+                }
                 break;
         }
+    }
+
+    private void sendToRegister() {
+        String urlToRegist="";
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("mobile",mPhone_num);
+        params.put("password",mPassword);
+        HttpOkhUtils.getInstance().doPost(urlToRegist, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(mContext, "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code!=200){
+                    ToastUtils.showToast(mContext,"网络错误");
+                    return;
+                }
+                ToastUtils.showToast(mContext, "注册成功，请登录");
+                finish();
+            }
+        });
     }
 
     private boolean compareTowPass(String password, String againPassword) {
         return password.equals(againPassword) ? true : false;
     }
 
-    private void checkVerification() {
+    private boolean checkVerification() {
         if (!mtest_pass.equals(markVerification)) {
-            ToastUtils.showToast(this, "验证码错误，请从新获取验证码");
+            return false;
         } else {
-            ToastUtils.showToast(this, "注册成功，请登录");
-            finish();
+            return true;
         }
     }
 
     private void sendMsgFromIntnet() {
+        String urlSendMsg = "";
+        RequestParamsFM requestParam = new RequestParamsFM();
+        requestParam.put("mobile", mPhone_num);
+        HttpOkhUtils.getInstance().doGetWithParams(urlSendMsg, requestParam, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(mContext, "网络错误");
+            }
 
-        //        HttpUtil.get(checkMessage, params, new HttpUtil.JsonHttpResponseUtil() {
-        //            @Override
-        //            public void onStart() {
-        //                super.onStart();
-        //            }
-        //
-        //            @Override
-        //            public void onFinish() {
-        //                super.onFinish();
-        //            }
-        //
-        //            @Override
-        //            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-        //                super.onSuccess(statusCode, headers, response);
-        //                ClubDetailInfo clubDetailInfo;
-        //                Gson gson = new Gson();
-        //                clubDetailInfo = gson.fromJson(response.toString(), ClubDetailInfo.class);
-        //                boolean valid = clubDetailInfo.getValid();
-        //                if (valid) {
-        //                    String validateCode = clubDetailInfo.getValidateCode();
-        //                    markVerification = validateCode;
-        //                    ToastUtils.makeShortText("验证码发送成功", getActivity());
-        //
-        //                    handler.postDelayed(new Runnable() {
-        //                        public void run() {
-        //                            handler.postDelayed(this, 1000);//递归执行，一秒执行一次
-        //                            if (count > 0) {
-        //                                count--;
-        //                                mBt_get_test.setText(count + "秒后可重新发送");
-        //                                mBt_get_test.setClickable(false);
-        //                            } else {
-        //                                mBt_get_test.setText("发送验证码");
-        //                                mBt_get_test.setClickable(true);
-        //                                handler.removeCallbacks(this);
-        //                            }
-        //                        }
-        //                    }, 1000);    //第一次执行，一秒之后。第一次执行完就没关系了
-        //                } else {
-        //                    ToastUtils.makeShortText("验证码发送失败，请重新请求", getActivity());
-        //                }
-        //
-        //            }
-        //        });
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code!=200){
+                    ToastUtils.showToast(mContext,"网络错误");
+                    return;
+                }
+                Gson gson = new Gson();
+//                ClubDetailInfo clubDetailInfo = gson.fromJson(response.toString(), ClubDetailInfo.class);
+//                boolean valid = clubDetailInfo.getValid();
+//                if (valid) {
+//                    String validateCode = clubDetailInfo.getValidateCode();
+//                    markVerification = validateCode;
+//                    ToastUtils.showToast(mContext, "验证码发送成功");
+//                    handler.postDelayed(new Runnable() {
+//                        public void run() {
+//                            handler.postDelayed(this, 1000);//递归执行，一秒执行一次
+//                            if (count > 0) {
+//                                count--;
+//                                mBt_get_test.setText(count + "秒后可重新发送");
+//                                mBt_get_test.setClickable(false);
+//                            } else {
+//                                mBt_get_test.setText("发送验证码");
+//                                mBt_get_test.setClickable(true);
+//                                handler.removeCallbacks(this);
+//                            }
+//                        }
+//                    }, 1000);    //第一次执行，一秒之后。第一次执行完就没关系了
+//                } else {
+//                    ToastUtils.showToast(mContext, "验证码发送失败，请重新请求");
+//                }
+            }
+        });
     }
 
     //    protected void setListeners(){
