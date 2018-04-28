@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
@@ -52,6 +53,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TApplication.flag = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setViews();

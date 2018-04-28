@@ -16,14 +16,16 @@
             android:id="@+id/spinner_village"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:spinnerMode="dialog">
         </Spinner>
 
         <Spinner
             android:id="@+id/spinner_unit"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:spinnerMode="dialog">
         </Spinner>
     </LinearLayout>
 
