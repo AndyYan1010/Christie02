@@ -197,6 +197,12 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             Intent intent = new Intent(mContext, PaymentRecordActivity.class);
             mContext.startActivity(intent);
         }
+        if ("车位锁定".equals(title)){
+            ToastUtils.showToast(mContext,"正在开发");
+        }
+        if ("菜单".equals(title)){
+            ToastUtils.showToast(mContext,"正在开发");
+        }
         if ("添加".equals(title)) {
             if (mOtherdata.size() == 0) {
                 ToastUtils.showToast(mContext, "没有可添加的内容了");
