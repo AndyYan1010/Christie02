@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.administrator.christie.InformationMessege.ProjectInfo;
+import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
 
 import java.util.List;
@@ -21,8 +21,8 @@ import java.util.List;
  */
 
 public class ProSpinnerAdapter extends BaseAdapter {
-    private List<ProjectInfo> mList;
-    private Context           mContext;
+    private List<ProjectMsg> mList;
+    private Context          mContext;
 
     public ProSpinnerAdapter(Context context, List list) {
         this.mList = list;
@@ -55,7 +55,7 @@ public class ProSpinnerAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        ProjectInfo projectInfo = mList.get(i);
+        ProjectMsg projectInfo = mList.get(i);
         String project_name = projectInfo.getProject_name();
         viewHolder.tv_name.setText(project_name);
         return view;

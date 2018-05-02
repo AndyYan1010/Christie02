@@ -14,6 +14,7 @@ import java.io.Serializable;
 public class UserInfo implements Serializable {
     public String phone;
     public String psw;
+    public String id;
 
     public void setPhone(String phone) {
         this.phone = phone;
@@ -29,5 +30,13 @@ public class UserInfo implements Serializable {
 
     public String getPsw() {
         return psw;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 }

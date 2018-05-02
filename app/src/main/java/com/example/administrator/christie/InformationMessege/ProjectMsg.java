@@ -9,7 +9,7 @@ package com.example.administrator.christie.InformationMessege;
  * @更新描述 ${TODO}
  */
 
-public class ProjectInfo {
+public class ProjectMsg {
     /**
      * id : 4028f39d62bd7fc60162bd82a7660058
      * project_name : A公司

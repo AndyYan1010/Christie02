@@ -20,4 +20,10 @@ public class NetConfig {
     public static String PROJECT        = ROOT + "project";
     //认证信息
     public static String AUTHENTICATION = ROOT + "register1";
+    //发送验证码
+    public static String SENDMSG        = ROOT + "sendMsg";
+    //上传图片
+    public static String UPLOADBASE64   = ROOT + "uploadBase64";
+    //获取个人资料
+    public static String PERSONALDATA   = ROOT + "detail";
 }

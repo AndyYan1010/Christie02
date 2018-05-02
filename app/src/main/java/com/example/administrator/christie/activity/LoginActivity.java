@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.modelInfo.LoginInfo;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.ProgressDialogUtils;
@@ -122,8 +123,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private void loginToSeverce(String phone, String password) {
         ProgressDialogUtils.getInstance().show(LoginActivity.this, "正在登录请稍后");
-        String url = NetConfig.LOGINURL + "?telephone=" + phone + "&password=" + password;
-        HttpOkhUtils.getInstance().doGet(url, new HttpOkhUtils.HttpCallBack() {
+        String url = NetConfig.LOGINURL;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("telephone", phone);
+        params.put("password", password);
+        HttpOkhUtils.getInstance().doPost(url, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
                 ToastUtils.showToast(LoginActivity.this, "网络异常");
@@ -133,7 +137,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             public void onSuccess(int code, String resbody) {
                 ProgressDialogUtils.getInstance().dismiss();
                 if (code != 200) {
-                    ToastUtils.showToast(LoginActivity.this, "网络异常");
+                    ToastUtils.showToast(LoginActivity.this, "登录异常");
                     return;
                 }
                 Gson gson = new Gson();
@@ -149,7 +153,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     SPref.setObject(LoginActivity.this, UserInfo.class, "userinfo", userInfo);
                     finish();
                 }
-
             }
         });
     }

@@ -10,10 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UpDataInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -21,13 +24,13 @@ import java.io.IOException;
 import okhttp3.Request;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
-    private EditText mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass;
+    private EditText mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass,mEt_user_name;
     private Button mBt_get_test, mBt_register;
     private ImageView mImg_back;
     private TextView  mTv_title;
     private String    mPhone_num;//手机号
     private String    mtest_pass;//验证码
-    private String    mPassword, mAgainPassword;//密码和重复密码
+    private String    mPassword, mAgainPassword,mUser_name;//密码和重复密码
     private String markVerification = "-12345678";
     private int    count            = 60;//验证码可重新点击发送时间间隔
     private Handler handler;
@@ -59,6 +62,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         //        et_repeat = (EditText)findViewById(R.id.et_repeat);
         mImg_back = (ImageView) findViewById(R.id.img_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
+        mEt_user_name = (EditText) findViewById(R.id.et_user_name);
         mEt_phone_num = (EditText) findViewById(R.id.et_phone_num);
         mEt_password = (EditText) findViewById(R.id.et_password);
         mEt_again = (EditText) findViewById(R.id.et_again);
@@ -104,8 +108,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     ToastUtils.showToast(this, "两次密码不一致，请重新输入");
                     return;
                 }
+                mUser_name = String.valueOf(mEt_user_name.getText()).trim();
                 mPhone_num = String.valueOf(mEt_phone_num.getText()).trim();
                 mtest_pass = String.valueOf(mEdit_test_pass.getText()).trim();
+                if (mUser_name.equals("")||mUser_name.equals("请输入用户名")){
+                    ToastUtils.showToast(this, "请输入用户名");
+                    return;
+                }
                 if (mPhone_num.equals("") || mPhone_num.equals("请输入11位手机号")) {
                     ToastUtils.showToast(this, "请输入手机号码");
                     return;
@@ -130,10 +139,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void sendToRegister() {
-        String urlToRegist="";
+        String urlToRegist= NetConfig.REGISTERURL;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("mobile",mPhone_num);
+        params.put("telephone",mPhone_num);
         params.put("password",mPassword);
+        params.put("username",mUser_name);
+        params.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPost(urlToRegist, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -143,11 +154,16 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onSuccess(int code, String resbody) {
                 if (code!=200){
-                    ToastUtils.showToast(mContext,"网络错误");
+                    ToastUtils.showToast(mContext,"注册失败，请重新注册");
                     return;
                 }
-                ToastUtils.showToast(mContext, "注册成功，请登录");
-                finish();
+                Gson gson = new Gson();
+                final LoginInfo register = gson.fromJson(resbody, LoginInfo.class);
+                String result = register.getResult();
+                ToastUtils.showToast(mContext, register.getMessage());
+                if ("2".equals(result)) {
+                    finish();
+                }
             }
         });
     }
@@ -165,7 +181,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void sendMsgFromIntnet() {
-        String urlSendMsg = "";
+        String urlSendMsg = NetConfig.SENDMSG;
         RequestParamsFM requestParam = new RequestParamsFM();
         requestParam.put("mobile", mPhone_num);
         HttpOkhUtils.getInstance().doGetWithParams(urlSendMsg, requestParam, new HttpOkhUtils.HttpCallBack() {
@@ -177,33 +193,33 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onSuccess(int code, String resbody) {
                 if (code!=200){
-                    ToastUtils.showToast(mContext,"网络错误");
+                    ToastUtils.showToast(mContext,"发送失败");
                     return;
                 }
                 Gson gson = new Gson();
-//                ClubDetailInfo clubDetailInfo = gson.fromJson(response.toString(), ClubDetailInfo.class);
-//                boolean valid = clubDetailInfo.getValid();
-//                if (valid) {
-//                    String validateCode = clubDetailInfo.getValidateCode();
-//                    markVerification = validateCode;
-//                    ToastUtils.showToast(mContext, "验证码发送成功");
-//                    handler.postDelayed(new Runnable() {
-//                        public void run() {
-//                            handler.postDelayed(this, 1000);//递归执行，一秒执行一次
-//                            if (count > 0) {
-//                                count--;
-//                                mBt_get_test.setText(count + "秒后可重新发送");
-//                                mBt_get_test.setClickable(false);
-//                            } else {
-//                                mBt_get_test.setText("发送验证码");
-//                                mBt_get_test.setClickable(true);
-//                                handler.removeCallbacks(this);
-//                            }
-//                        }
-//                    }, 1000);    //第一次执行，一秒之后。第一次执行完就没关系了
-//                } else {
-//                    ToastUtils.showToast(mContext, "验证码发送失败，请重新请求");
-//                }
+                UpDataInfo sendMsgInfo = gson.fromJson(resbody, UpDataInfo.class);
+                boolean valid = sendMsgInfo.isValid();
+                if (valid) {
+                    String validateCode = sendMsgInfo.getValidateCode();
+                    markVerification = validateCode;
+                    ToastUtils.showToast(mContext, "验证码发送成功");
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            handler.postDelayed(this, 1000);//递归执行，一秒执行一次
+                            if (count > 0) {
+                                count--;
+                                mBt_get_test.setText(count + "秒后可重新发送");
+                                mBt_get_test.setClickable(false);
+                            } else {
+                                mBt_get_test.setText("发送验证码");
+                                mBt_get_test.setClickable(true);
+                                handler.removeCallbacks(this);
+                            }
+                        }
+                    }, 1000);    //第一次执行，一秒之后。第一次执行完就没关系了
+                } else {
+                    ToastUtils.showToast(mContext, "验证码发送失败，请重新请求");
+                }
             }
         });
     }

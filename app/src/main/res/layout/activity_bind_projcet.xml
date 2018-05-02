@@ -156,7 +156,7 @@
             android:padding="10dp">
 
             <ImageView
-                android:id="@+id/img_ID_pic"
+                android:id="@+id/img_id_pic"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:scaleType="centerCrop"
@@ -182,7 +182,7 @@
         android:background="@drawable/bg_round_blue_30"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:text="发 送"
+        android:text="绑 定"
         android:textColor="@color/white"
         android:textSize="20sp"/>
 </LinearLayout>
