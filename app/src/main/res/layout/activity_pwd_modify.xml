@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -89,7 +89,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -109,7 +109,7 @@
             android:layout_marginRight="10dp"
             android:background="@drawable/bg_round_frame"
             android:digits="0123456789qwertyuioplkjhgfdsazxcvbnm"
-            android:hint="请输入新的密码(密码由数字和字母组成)"
+            android:hint="请输入新密码(由数字和字母组成)"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -146,7 +146,7 @@
             android:layout_marginRight="10dp"
             android:background="@drawable/bg_round_frame"
             android:digits="0123456789qwertyuioplkjhgfdsazxcvbnm"
-            android:hint="请再次输入密码"
+            android:hint="请再次确认密码"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
