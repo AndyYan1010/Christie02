@@ -2,6 +2,7 @@ package com.example.administrator.christie.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UpDataInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.ToastUtils;
@@ -37,6 +39,8 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
     private String mtest_pass;//验证码
     private String mPassword, mAgainPassword;//密码和重复密码
     private String markVerification = "-12345678";
+    private Handler handler;
+    private int count = 60;//验证码可重新点击发送时间间隔
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,7 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
         mContext = PwdModifyActivity.this;
         setViews();
         setData();
+        handler = new Handler();
         //        setListeners();
     }
 
@@ -167,29 +172,29 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
                     return;
                 }
                 Gson gson = new Gson();
-                //                ClubDetailInfo clubDetailInfo = gson.fromJson(response.toString(), ClubDetailInfo.class);
-                //                boolean valid = clubDetailInfo.getValid();
-                //                if (valid) {
-                //                    String validateCode = clubDetailInfo.getValidateCode();
-                //                    markVerification = validateCode;
-                //                    ToastUtils.showToast(mContext, "验证码发送成功");
-                //                    handler.postDelayed(new Runnable() {
-                //                        public void run() {
-                //                            handler.postDelayed(this, 1000);//递归执行，一秒执行一次
-                //                            if (count > 0) {
-                //                                count--;
-                //                                mBt_get_test.setText(count + "秒后可重新发送");
-                //                                mBt_get_test.setClickable(false);
-                //                            } else {
-                //                                mBt_get_test.setText("发送验证码");
-                //                                mBt_get_test.setClickable(true);
-                //                                handler.removeCallbacks(this);
-                //                            }
-                //                        }
-                //                    }, 1000);    //第一次执行，一秒之后。第一次执行完就没关系了
-                //                } else {
-                //                    ToastUtils.showToast(mContext, "验证码发送失败，请重新请求");
-                //                }
+                UpDataInfo sendMsgInfo = gson.fromJson(resbody, UpDataInfo.class);
+                boolean valid = sendMsgInfo.isValid();
+                if (valid) {
+                    String validateCode = sendMsgInfo.getValidateCode();
+                    markVerification = validateCode;
+                    ToastUtils.showToast(mContext, "验证码发送成功");
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            handler.postDelayed(this, 1000);//递归执行，一秒执行一次
+                            if (count > 0) {
+                                count--;
+                                mBt_get_test.setText(count + "秒后可重新发送");
+                                mBt_get_test.setClickable(false);
+                            } else {
+                                mBt_get_test.setText("发送验证码");
+                                mBt_get_test.setClickable(true);
+                                handler.removeCallbacks(this);
+                            }
+                        }
+                    }, 1000);    //第一次执行，一秒之后。第一次执行完就没关系了
+                } else {
+                    ToastUtils.showToast(mContext, "验证码发送失败，请重新请求");
+                }
             }
         });
     }
