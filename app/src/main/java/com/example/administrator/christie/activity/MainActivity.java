@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.christie.R;
@@ -16,11 +17,21 @@ import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.fragment.FangkeFragment;
 import com.example.administrator.christie.fragment.MeFragment;
 import com.example.administrator.christie.fragment.MenjinFragment;
+import com.example.administrator.christie.modelInfo.LoginInfo;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.ProgressDialogUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
+import com.google.gson.Gson;
 
-public class MainActivity extends FragmentActivity {
+import java.io.IOException;
+
+import okhttp3.Request;
+
+public class MainActivity extends FragmentActivity implements View.OnClickListener {
     MenjinFragment menjin;
     FangkeFragment fangke;
     //    ParkFragment   park;//菜单
@@ -36,6 +47,7 @@ public class MainActivity extends FragmentActivity {
      * 选中的button,显示下一个fragment
      */
     int selectedIndex;
+    private AlertDialog mAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +69,16 @@ public class MainActivity extends FragmentActivity {
             boolean fstatus = userinfo.getFstatus();
             if (!fstatus) {
                 //弹一个dailog提示
-                new AlertDialog.Builder(MainActivity.this).setView(View.inflate(MainActivity.this, R.layout.dialog_remind_bd, null)).show();
+                View view = View.inflate(MainActivity.this, R.layout.dialog_remind_bd, null);
+                TextView tv_cancel = view.findViewById(R.id.tv_cancel);
+                TextView tv_refresh = view.findViewById(R.id.tv_refresh);
+                TextView tv_ok = view.findViewById(R.id.tv_ok);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                mAlertDialog = builder.setView(view).create();
+                mAlertDialog.show();
+                tv_cancel.setOnClickListener(this);
+                tv_refresh.setOnClickListener(this);
+                tv_ok.setOnClickListener(this);
             }
         }
     }
@@ -269,5 +290,87 @@ public class MainActivity extends FragmentActivity {
             finish();
             TApplication.exit();
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_cancel:
+                if (null != mAlertDialog) {
+                    mAlertDialog.dismiss();
+                }
+                break;
+            case R.id.tv_refresh:
+                //后台登录重新获取，认证状态
+                refreshFstatus();
+                break;
+            case R.id.tv_ok:
+                if (null != mAlertDialog) {
+                    mAlertDialog.dismiss();
+                }
+                break;
+        }
+    }
+
+    private void refreshFstatus() {
+        UserInfo userinfo = SPref.getObject(MainActivity.this, UserInfo.class, "userinfo");
+        if (null != userinfo) {
+            String phone = userinfo.getPhone();
+            String psw = userinfo.getPsw();
+            //隐形登录
+            loginToSeverce(phone, psw);
+        } else {
+            if (null != mAlertDialog) {
+                mAlertDialog.dismiss();
+            }
+            ToastUtils.showToast(MainActivity.this, "请重新登录");
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.putExtra("autoNext", 0);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void loginToSeverce(String phone, final String password) {
+        ProgressDialogUtils.getInstance().show(MainActivity.this, "正在刷新请稍后");
+        String url = NetConfig.LOGINURL;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("telephone", phone);
+        params.put("password", password);
+        HttpOkhUtils.getInstance().doPost(url, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(MainActivity.this, "网络异常,刷新失败");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                ProgressDialogUtils.getInstance().dismiss();
+                if (code != 200) {
+                    ToastUtils.showToast(MainActivity.this, "刷新异常");
+                    return;
+                }
+                Gson gson = new Gson();
+                final LoginInfo mLoginInfo = gson.fromJson(resbody, LoginInfo.class);
+                String result = mLoginInfo.getResult();
+                if ("2".equals(result)) {
+                    if (null != mAlertDialog) {
+                        mAlertDialog.dismiss();
+                    }
+                    UserInfo userInfo = new UserInfo();
+                    userInfo.setPhone(mLoginInfo.getTelephone());
+                    userInfo.setPsw(password);
+                    String fstatus = mLoginInfo.getFstatus();
+                    if (null == fstatus || "".equals(fstatus) || "0".equals(fstatus)) {
+                        userInfo.setFstatus(false);
+                    } else {
+                        userInfo.setFstatus(true);
+                    }
+                    SPref.setObject(MainActivity.this, UserInfo.class, "userinfo", userInfo);
+                }else {
+                    ToastUtils.showToast(MainActivity.this, "刷新失败");
+                }
+            }
+        });
     }
 }

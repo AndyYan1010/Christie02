@@ -56,8 +56,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         TApplication.flag = 0;
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        int autoNext = intent.getIntExtra("autoNext",1);
         //创建界面前先判断手机之前是否登录过，登录过跳过登录阶段，直接显示主页面
-        startMainAct();
+        startMainAct(autoNext);
         setContentView(R.layout.activity_login);
         setViews();
         setData();
@@ -81,11 +83,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         //        mUserIdListView.setAdapter(mAdapter);
     }
 
-    private void startMainAct() {
+    private void startMainAct(int autoNext) {
         UserInfo userinfo = SPref.getObject(LoginActivity.this, UserInfo.class, "userinfo");
         if (null != userinfo) {
             String phone = userinfo.getPhone();
-            if (null != phone && !"".equals(phone)) {
+            if (null != phone && !"".equals(phone) && 1 == autoNext) {
                 //跳转mainactivity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
