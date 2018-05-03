@@ -25,5 +25,7 @@ public class NetConfig {
     //上传图片
     public static String UPLOADBASE64   = ROOT + "uploadBase64";
     //获取个人资料
-    public static String PERSONALDATA   = ROOT + "detail";
+    public static String PERSONALDATA   = ROOT + "serDetailInfo";
+    //菜品展示
+    public static String GOODSLIST   = ROOT + "serGoodsList";
 }

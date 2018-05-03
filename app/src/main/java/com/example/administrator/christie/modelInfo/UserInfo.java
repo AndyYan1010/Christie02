@@ -12,9 +12,14 @@ import java.io.Serializable;
  */
 
 public class UserInfo implements Serializable {
-    public String phone;
-    public String psw;
-    public String id;
+    private String phone;
+    private String psw;
+    private String id;
+    /**
+     * fstatus : 0
+     */
+
+    private boolean fstatus;
 
     public void setPhone(String phone) {
         this.phone = phone;
@@ -38,5 +43,13 @@ public class UserInfo implements Serializable {
 
     public String getId() {
         return id;
+    }
+
+    public boolean getFstatus() {
+        return fstatus;
+    }
+
+    public void setFstatus(boolean fstatus) {
+        this.fstatus = fstatus;
     }
 }

@@ -18,6 +18,13 @@ public class LoginInfo {
 
     private String result;
     private String message;
+    /**
+     * fstatus : 0
+     * telephone : 18036215618
+     */
+
+    private String fstatus;
+    private String telephone;
 
     public String getResult() {
         return result;
@@ -33,5 +40,21 @@ public class LoginInfo {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getFstatus() {
+        return fstatus;
+    }
+
+    public void setFstatus(String fstatus) {
+        this.fstatus = fstatus;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 }

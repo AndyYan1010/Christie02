@@ -56,6 +56,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         TApplication.flag = 0;
         super.onCreate(savedInstanceState);
+        //创建界面前先判断手机之前是否登录过，登录过跳过登录阶段，直接显示主页面
+        startMainAct();
         setContentView(R.layout.activity_login);
         setViews();
         setData();
@@ -77,6 +79,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         //        mUserIdListView.setOnItemClickListener(this); // 设置点击事
         //        mAdapter = new MyAapter(mUsers);
         //        mUserIdListView.setAdapter(mAdapter);
+    }
+
+    private void startMainAct() {
+        UserInfo userinfo = SPref.getObject(LoginActivity.this, UserInfo.class, "userinfo");
+        if (null != userinfo) {
+            String phone = userinfo.getPhone();
+            if (null != phone && !"".equals(phone)) {
+                //跳转mainactivity
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
     }
 
     private void setViews() {
@@ -148,8 +163,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     UserInfo userInfo = new UserInfo();
-                    userInfo.setPhone(mPhone);
+                    userInfo.setPhone(mLoginInfo.getTelephone());
                     userInfo.setPsw(mPassword);
+                    String fstatus = mLoginInfo.getFstatus();
+                    if (null == fstatus || "".equals(fstatus) || "0".equals(fstatus)) {
+                        userInfo.setFstatus(false);
+                    } else {
+                        userInfo.setFstatus(true);
+                    }
                     SPref.setObject(LoginActivity.this, UserInfo.class, "userinfo", userInfo);
                     finish();
                 }

@@ -19,6 +19,7 @@ import com.example.administrator.christie.R;
 import com.example.administrator.christie.activity.AccessdataActivity;
 import com.example.administrator.christie.activity.BluetoothActivity;
 import com.example.administrator.christie.activity.InvitationRecordActivity;
+import com.example.administrator.christie.activity.MenuIntroduceActivity;
 import com.example.administrator.christie.activity.PayForParkingActivity;
 import com.example.administrator.christie.activity.PaymentRecordActivity;
 import com.example.administrator.christie.activity.QrcodeActivity;
@@ -148,34 +149,14 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
 
     private void startWhichAct(String title, ImageView icon) {
         if ("二维码开门".equals(title)) {
-            //                    if (functionlist.contains(Consts.QRKM)) {
             mContext.startActivity(new Intent(mContext, QrcodeActivity.class));
-            //                    } else {
-            //                        intent.putExtra("title", getString(R.string.qrcode));
-            //                        intent.putExtra("code", Consts.QRKM);
-            //                        startActivity(intent);
-            //                    }
         }
         if ("蓝牙开门".equals(title)) {
-            //                    if (functionlist.contains(Consts.LYKM)) {
-            //先请求用户打开蓝牙，否则不能实现摇一摇开门功能。
-//            requestBluetooth();
             Intent intent = new Intent(mContext, BluetoothActivity.class);
             mContext.startActivity(intent);
-            //                    } else {
-            //                        intent.putExtra("title", getString(R.string.bluetooth));
-            //                        intent.putExtra("code", Consts.LYKM);
-            //                        startActivity(intent);
-            //                    }
         }
         if ("门禁数据".equals(title)) {
-            //                    if (functionlist.contains(Consts.MJSJCX)) {
             mContext.startActivity(new Intent(mContext, AccessdataActivity.class));
-            //                    } else {
-            //                        intent.putExtra("title", getString(R.string.accessdata));
-            //                        intent.putExtra("code", Consts.MJSJCX);
-            //                        startActivity(intent);
-            //                    }
         }
         if ("访客邀请".equals(title)) {
             Intent intent = new Intent(mContext, VisitorInvitationActivity.class);
@@ -201,7 +182,8 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             ToastUtils.showToast(mContext,"正在开发");
         }
         if ("菜单".equals(title)){
-            ToastUtils.showToast(mContext,"正在开发");
+            Intent intent = new Intent(mContext, MenuIntroduceActivity.class);
+            mContext.startActivity(intent);
         }
         if ("添加".equals(title)) {
             if (mOtherdata.size() == 0) {

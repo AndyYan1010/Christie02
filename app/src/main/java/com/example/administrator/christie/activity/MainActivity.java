@@ -1,9 +1,11 @@
 package com.example.administrator.christie.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +16,9 @@ import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.fragment.FangkeFragment;
 import com.example.administrator.christie.fragment.MeFragment;
 import com.example.administrator.christie.fragment.MenjinFragment;
+import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.SPref;
+import com.example.administrator.christie.util.ToastUtils;
 
 public class MainActivity extends FragmentActivity {
     MenjinFragment menjin;
@@ -40,6 +45,21 @@ public class MainActivity extends FragmentActivity {
         TApplication.listActivity.add(this);
         setViews();
         setListeners();
+        //查看用户是否认证过
+        UserInfo userinfo = SPref.getObject(MainActivity.this, UserInfo.class, "userinfo");
+        if (null == userinfo) {
+            //为空让用户重新登录，获取登录信息
+            ToastUtils.showToast(MainActivity.this, "请重新登录，获取账号信息");
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            boolean fstatus = userinfo.getFstatus();
+            if (!fstatus) {
+                //弹一个dailog提示
+                new AlertDialog.Builder(MainActivity.this).setView(View.inflate(MainActivity.this, R.layout.dialog_remind_bd, null)).show();
+            }
+        }
     }
 
     protected void setViews() {

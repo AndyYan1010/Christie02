@@ -87,14 +87,12 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void setData() {
-        mTv_title.setText("绑定项目");
         mImg_back.setOnClickListener(this);
+        mTv_title.setText("绑定项目");
         dataProList = new ArrayList<>();
         ProjectMsg projectInfo = new ProjectMsg();
         projectInfo.setProject_name("请选择公司");
         dataProList.add(projectInfo);
-        dataInfoList = new ArrayList<>();
-        dataInfoList.add(projectInfo);
         mProjAdapter = new ProSpinnerAdapter(BindProjectActivity.this, dataProList);
         mSpinner_village.setAdapter(mProjAdapter);
         //从网络获取项目
@@ -117,6 +115,8 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
 
             }
         });
+        dataInfoList = new ArrayList<>();
+        dataInfoList.add(projectInfo);
         mDetailAdapter = new ProSpinnerAdapter(BindProjectActivity.this, dataInfoList);
         mSpinner_unit.setAdapter(mDetailAdapter);
         mSpinner_unit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -355,7 +355,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                 Gson gson = new Gson();
                 UpDataInfo upDataInfo = gson.fromJson(resbody, UpDataInfo.class);
                 int result = upDataInfo.getResult();
-                if (result != 1) {
+                if (result != 2) {
                     ToastUtils.showToast(BindProjectActivity.this, "图片上传失败,返回值" + result);
                     return;
                 }
