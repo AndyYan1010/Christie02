@@ -58,6 +58,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setViews();
         setListeners();
         //查看用户是否认证过
+        checkIsAuthentication();
+    }
+
+    private void checkIsAuthentication() {
         UserInfo userinfo = SPref.getObject(MainActivity.this, UserInfo.class, "userinfo");
         if (null == userinfo) {
             //为空让用户重新登录，获取登录信息
@@ -162,9 +166,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                                 addFragment(menjin);
                                 showFragment(menjin);
                             } else {
-                                if (menjin.isHidden()) {
+//                                if (menjin.isHidden()) {
                                     showFragment(menjin);
-                                }
+//                                }
                             }
                             showBtImg(btns[0]);
                             break;
@@ -177,9 +181,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                                     showFragment(fangke);
                                 }
                             } else {
-                                if (fangke.isHidden()) {
+//                                if (fangke.isHidden()) {
                                     showFragment(fangke);
-                                }
+//                                }
                             }
                             showBtImg(btns[1]);
                             break;
@@ -207,9 +211,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                                     showFragment(me);
                                 }
                             } else {
-                                if (me.isHidden()) {
+//                                if (me.isHidden()) {
                                     showFragment(me);
-                                }
+//                                }
                             }
                             showBtImg(btns[2]);
                             break;
@@ -269,7 +273,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
         ft.show(fragment);
         ft.commitAllowingStateLoss();
-
     }
 
     @Override

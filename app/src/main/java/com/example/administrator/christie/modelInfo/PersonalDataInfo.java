@@ -51,6 +51,11 @@ public class PersonalDataInfo {
         private String                id_pic;
         private String                relation;
         private List<ListProjectBean> listProject;
+        /**
+         * user_name : Andy
+         */
+
+        private String user_name;
 
         public String getFstatus() {
             return fstatus;
@@ -130,6 +135,14 @@ public class PersonalDataInfo {
 
         public void setListProject(List<ListProjectBean> listProject) {
             this.listProject = listProject;
+        }
+
+        public String getUser_name() {
+            return user_name;
+        }
+
+        public void setUser_name(String user_name) {
+            this.user_name = user_name;
         }
 
         public static class ListProjectBean {

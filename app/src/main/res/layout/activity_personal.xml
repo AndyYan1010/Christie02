@@ -7,21 +7,7 @@
               android:orientation="vertical"
               tools:context="com.example.administrator.christie.activity.PersonalActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorAccent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="13dp"
-            android:text="@string/person"
-            android:textColor="@color/white"
-            android:textSize="20sp"/>
-    </LinearLayout>
+    <include layout="@layout/title_view"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -59,6 +45,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="10dp"
+                    android:visibility="invisible"
                     android:src="@drawable/my_mine_next"/>
             </LinearLayout>
 
@@ -94,6 +81,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="10dp"
+                    android:visibility="invisible"
                     android:src="@drawable/my_mine_next"/>
             </LinearLayout>
 
@@ -121,9 +109,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"
                     android:text="@string/more"/>
-
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:visibility="invisible"
+                    android:src="@drawable/my_mine_next"/>
             </LinearLayout>
 
             <View

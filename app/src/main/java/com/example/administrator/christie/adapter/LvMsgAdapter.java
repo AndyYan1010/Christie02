@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -50,7 +51,12 @@ public class LvMsgAdapter extends BaseAdapter {
         if (view == null) {
             view = View.inflate(mContext, R.layout.lv_item_msg, null);
             viewHolder = new MyViewHolder();
-            viewHolder.liner_msg = (LinearLayout) view.findViewById(R.id.liner_msg);
+            viewHolder.liner_msg = view.findViewById(R.id.liner_msg);
+            viewHolder.img_head = view.findViewById(R.id.img_head);
+            viewHolder.tv_kind = view.findViewById(R.id.tv_kind);
+            viewHolder.tv_msg = view.findViewById(R.id.tv_msg);
+            viewHolder.tv_time = view.findViewById(R.id.tv_time);
+            viewHolder.tv_state = view.findViewById(R.id.tv_state);
             view.setTag(viewHolder);
         } else {
             viewHolder = (MyViewHolder) view.getTag();
@@ -66,6 +72,7 @@ public class LvMsgAdapter extends BaseAdapter {
 
     class MyViewHolder {
         LinearLayout liner_msg;
-        TextView     tv_date, tv_door_name, tv_area;
+        ImageView    img_head;
+        TextView     tv_kind, tv_msg, tv_time, tv_state;
     }
 }

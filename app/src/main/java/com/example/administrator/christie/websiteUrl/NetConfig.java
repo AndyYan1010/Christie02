@@ -27,5 +27,11 @@ public class NetConfig {
     //获取个人资料
     public static String PERSONALDATA   = ROOT + "serDetailInfo";
     //菜品展示
-    public static String GOODSLIST   = ROOT + "serGoodsList";
+    public static String GOODSLIST      = ROOT + "serGoodsList";
+    //获取车牌
+    public static String GETPLATE       = ROOT + "getplate";
+    //添加车牌
+    public static String ADDPLATE       = ROOT + "addplate";
+    //删除车牌
+    public static String DELPLATE       = ROOT + "addplate";
 }

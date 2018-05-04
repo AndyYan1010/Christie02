@@ -2,7 +2,6 @@ package com.example.administrator.christie.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,8 +17,6 @@ import android.widget.Toast;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.activity.CardActivity;
-import com.example.administrator.christie.activity.MeettingActivity;
-import com.example.administrator.christie.activity.MessageActivity;
 import com.example.administrator.christie.activity.PersonalActivity;
 import com.example.administrator.christie.activity.PlateActivity;
 import com.example.administrator.christie.activity.SettingsActivity;
@@ -40,7 +36,7 @@ public class MeFragment extends Fragment {
     private View view;
     private ImageView iv_settings;
     private LinearLayout ll_geren,ll_kapian,ll_chepai;
-    private Button btn_xiaoxi,btn_huiyi;
+//    private Button btn_xiaoxi,btn_huiyi;
     private TextView tv_username;
     private CustomProgress dialog;
 
@@ -56,21 +52,17 @@ public class MeFragment extends Fragment {
 
     protected void setViews(){
         iv_settings = (ImageView)view.findViewById(R.id.iv_settings);
-        btn_xiaoxi = (Button)view.findViewById(R.id.btn_xiaoxi);
-        btn_huiyi = (Button)view.findViewById(R.id.btn_huiyi);
+        tv_username = (TextView)view.findViewById(R.id.tv_username);
+        //        btn_xiaoxi = (Button)view.findViewById(R.id.btn_xiaoxi);
+        //        btn_huiyi = (Button)view.findViewById(R.id.btn_huiyi);
         ll_geren = (LinearLayout)view.findViewById(R.id.ll_geren);
         ll_kapian = (LinearLayout)view.findViewById(R.id.ll_kapian);
         ll_chepai = (LinearLayout)view.findViewById(R.id.ll_chepai);
-        tv_username = (TextView)view.findViewById(R.id.tv_username);
-
 //        if(!TApplication.user.getFname().equals("")){
 //            tv_username.setText(TApplication.user.getFname());
 //        }else {
 //            tv_username.setText("手机用户"+TApplication.user.getFmobile().substring(7,11));
 //        }
-        tv_username.setTextSize(20);
-        tv_username.setTextColor(Color.WHITE);
-
     }
 
     protected void setListeners(){
@@ -95,18 +87,18 @@ public class MeFragment extends Fragment {
                 startActivity(new Intent(mContext,SettingsActivity.class));
             }
         });
-        btn_xiaoxi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(mContext,MessageActivity.class));
-            }
-        });
-        btn_huiyi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(mContext,MeettingActivity.class));
-            }
-        });
+//        btn_xiaoxi.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(mContext,MessageActivity.class));
+//            }
+//        });
+//        btn_huiyi.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(mContext,MeettingActivity.class));
+//            }
+//        });
         ll_geren.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

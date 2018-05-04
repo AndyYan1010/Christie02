@@ -26,6 +26,8 @@ import com.example.administrator.christie.activity.QrcodeActivity;
 import com.example.administrator.christie.activity.ReservatParkingActivity;
 import com.example.administrator.christie.activity.VisitorInvitationActivity;
 import com.example.administrator.christie.entity.MainMenuEntity;
+import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.SpUtils;
 import com.example.administrator.christie.util.ThreadUtils;
 import com.example.administrator.christie.util.ToastUtils;
@@ -148,6 +150,25 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
     }
 
     private void startWhichAct(String title, ImageView icon) {
+        if ("添加".equals(title)) {
+            if (mOtherdata.size() == 0) {
+                ToastUtils.showToast(mContext, "没有可添加的内容了");
+            } else {
+                //弹出一个popupwindow让用户选择添加icon
+                showMoreIcon(icon);
+            }
+        }
+        UserInfo userinfo = SPref.getObject(mContext, UserInfo.class, "userinfo");
+        if (null==userinfo){
+            ToastUtils.showToast(mContext,"读取账号信息失败，请退出重新登录");
+            return;
+        }else {
+            boolean fstatus = userinfo.getFstatus();
+            if (!fstatus){
+                ToastUtils.showToast(mContext,"您还没有绑定，部分功能无法使用。请立即去个人中心绑定");
+                return;
+            }
+        }
         if ("二维码开门".equals(title)) {
             mContext.startActivity(new Intent(mContext, QrcodeActivity.class));
         }
@@ -184,14 +205,6 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
         if ("菜单".equals(title)){
             Intent intent = new Intent(mContext, MenuIntroduceActivity.class);
             mContext.startActivity(intent);
-        }
-        if ("添加".equals(title)) {
-            if (mOtherdata.size() == 0) {
-                ToastUtils.showToast(mContext, "没有可添加的内容了");
-            } else {
-                //弹出一个popupwindow让用户选择添加icon
-                showMoreIcon(icon);
-            }
         }
     }
 
