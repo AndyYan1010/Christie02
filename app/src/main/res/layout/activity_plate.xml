@@ -13,12 +13,12 @@
 
         <include layout="@layout/title_view"/>
 
-        <ListView
-            android:id="@+id/lv_plate"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcv_plate"
             android:layout_marginTop="50dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </ListView>
+        </android.support.v7.widget.RecyclerView>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_back"
@@ -28,7 +28,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="16dp"
-            app:srcCompat="@drawable/back"/>
+            app:srcCompat="@drawable/delete"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_add"

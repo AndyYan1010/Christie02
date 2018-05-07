@@ -40,7 +40,7 @@ public class HttpOkhUtils {
 
     public static HttpOkhUtils getInstance() {
         if (okhUtils == null) {
-            synchronized (HttpUtils.class) {
+            synchronized (HttpOkhUtils.class) {
                 if (okhUtils == null)
                     okhUtils = new HttpOkhUtils();
             }

@@ -1,34 +1,49 @@
 package com.example.administrator.christie.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.christie.InformationMessege.IconListInfo;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
+import com.example.administrator.christie.activity.LoginActivity;
 import com.example.administrator.christie.adapter.GridViewAdapter;
 import com.example.administrator.christie.adapter.IconAdapter;
 import com.example.administrator.christie.entity.MainMenuEntity;
+import com.example.administrator.christie.modelInfo.LoginInfo;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.ProgressDialogUtils;
+import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.SpUtils;
+import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.view.bannerview.AbSlidingPlayView;
+import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MenjinFragment extends Fragment {
+import okhttp3.Request;
+
+public class MenjinFragment extends Fragment implements View.OnClickListener {
     private Context mContext = null;
     private View view;
     //    private GridView gv_menjin, more_icon;
@@ -43,6 +58,7 @@ public class MenjinFragment extends Fragment {
     private IconAdapter       mIconAdapter;
     private AbSlidingPlayView mVp_banner;
     private ArrayList<View>   allListView;//存储首页轮播的界面
+    private AlertDialog       mAlertDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,7 +69,35 @@ public class MenjinFragment extends Fragment {
         setViews();
         setIntData();
         setListeners();
+        //查看用户是否认证过
+        checkIsAuthentication();
         return view;
+    }
+
+    private void checkIsAuthentication() {
+        UserInfo userinfo = SPref.getObject(mContext, UserInfo.class, "userinfo");
+        if (null == userinfo) {
+            //为空让用户重新登录，获取登录信息
+            ToastUtils.showToast(mContext, "请重新登录，获取账号信息");
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+        } else {
+            boolean fstatus = userinfo.getFstatus();
+            if (!fstatus) {
+                //弹一个dailog提示
+                View view = View.inflate(mContext, R.layout.dialog_remind_bd, null);
+                TextView tv_cancel = view.findViewById(R.id.tv_cancel);
+                TextView tv_refresh = view.findViewById(R.id.tv_refresh);
+                TextView tv_ok = view.findViewById(R.id.tv_ok);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                mAlertDialog = builder.setView(view).create();
+                mAlertDialog.show();
+                tv_cancel.setOnClickListener(this);
+                tv_refresh.setOnClickListener(this);
+                tv_ok.setOnClickListener(this);
+            }
+        }
     }
 
     private void initIconData() {
@@ -289,6 +333,86 @@ public class MenjinFragment extends Fragment {
         //                return true;
         //            }
         //        });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_cancel:
+                if (null != mAlertDialog) {
+                    mAlertDialog.dismiss();
+                }
+                break;
+            case R.id.tv_refresh:
+                //后台登录重新获取，认证状态
+                refreshFstatus();
+                break;
+            case R.id.tv_ok:
+                if (null != mAlertDialog) {
+                    mAlertDialog.dismiss();
+                }
+                break;
+        }
+    }
+    private void refreshFstatus() {
+        UserInfo userinfo = SPref.getObject(mContext, UserInfo.class, "userinfo");
+        if (null != userinfo) {
+            String phone = userinfo.getPhone();
+            String psw = userinfo.getPsw();
+            //隐形登录
+            loginToSeverce(phone, psw);
+        } else {
+            if (null != mAlertDialog) {
+                mAlertDialog.dismiss();
+            }
+            ToastUtils.showToast(mContext, "请重新登录");
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            intent.putExtra("autoNext", 0);
+            startActivity(intent);
+            getActivity().finish();
+        }
+    }
+    private void loginToSeverce(String phone, final String password) {
+        ProgressDialogUtils.getInstance().show(getActivity(), "正在刷新请稍后");
+        String url = NetConfig.LOGINURL;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("telephone", phone);
+        params.put("password", password);
+        HttpOkhUtils.getInstance().doPost(url, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(mContext, "网络异常,刷新失败");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                ProgressDialogUtils.getInstance().dismiss();
+                if (code != 200) {
+                    ToastUtils.showToast(mContext, "刷新异常");
+                    return;
+                }
+                Gson gson = new Gson();
+                final LoginInfo mLoginInfo = gson.fromJson(resbody, LoginInfo.class);
+                String result = mLoginInfo.getResult();
+                if ("2".equals(result)) {
+                    if (null != mAlertDialog) {
+                        mAlertDialog.dismiss();
+                    }
+                    UserInfo userInfo = new UserInfo();
+                    userInfo.setPhone(mLoginInfo.getTelephone());
+                    userInfo.setPsw(password);
+                    String fstatus = mLoginInfo.getFstatus();
+                    if (null == fstatus || "".equals(fstatus) || "0".equals(fstatus)) {
+                        userInfo.setFstatus(false);
+                    } else {
+                        userInfo.setFstatus(true);
+                    }
+                    SPref.setObject(mContext, UserInfo.class, "userinfo", userInfo);
+                }else {
+                    ToastUtils.showToast(mContext, "刷新失败");
+                }
+            }
+        });
     }
     //    private static int REQUEST_ENABLE = 4000;
     //    @Override

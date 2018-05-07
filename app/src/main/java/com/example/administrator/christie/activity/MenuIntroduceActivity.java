@@ -14,8 +14,11 @@ import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.LvMenuIntrAdapter;
 import com.example.administrator.christie.adapter.ProSpinnerAdapter;
 import com.example.administrator.christie.modelInfo.GoodsListInfo;
+import com.example.administrator.christie.modelInfo.ProjectByTelInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
@@ -109,7 +112,51 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
             }
         });
         //访问网络获取菜品
-        getMenuFromIntnet(menuId);
+//        getMenuFromIntnet(menuId);
+        //获取个人绑定项目id
+        getProjectId();
+    }
+
+    private void getProjectId() {
+        UserInfo userinfo = SPref.getObject(MenuIntroduceActivity.this, UserInfo.class, "userinfo");
+        String phone = userinfo.getPhone();
+        String proId = NetConfig.PROJECTBYTEL;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("telephone", phone);
+        HttpOkhUtils.getInstance().doGetWithParams(proId, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(MenuIntroduceActivity.this, "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code == 200) {
+                    Gson gson = new Gson();
+                    ProjectByTelInfo projectByTelInfo = gson.fromJson(resbody, ProjectByTelInfo.class);
+                    List<ProjectByTelInfo.ProjectlistBean> projectlist = projectByTelInfo.getProjectlist();
+                    for (ProjectByTelInfo.ProjectlistBean bean : projectlist) {
+                        String project_id = bean.getProject_id();
+                        String project_name = bean.getProject_name();
+                        ProjectMsg projectInfo = new ProjectMsg();
+                        projectInfo.setProject_name(project_name);
+                        projectInfo.setId(project_id);
+                        mListProId.add(projectInfo);
+                    }
+                    mProjAdapter.notifyDataSetChanged();
+                    if (projectlist.size() > 0) {
+                        ProjectByTelInfo.ProjectlistBean bean = projectlist.get(0);
+                        String project_id = bean.getProject_id();
+                        menuId = project_id;
+                    }
+                } else {
+                    ToastUtils.showToast(MenuIntroduceActivity.this, "获取个人项目id失败");
+                }
+                //访问网络获取菜品
+                getMenuFromIntnet(menuId);
+            }
+        });
+
     }
 
     private void getMenuFromIntnet(String projectID) {

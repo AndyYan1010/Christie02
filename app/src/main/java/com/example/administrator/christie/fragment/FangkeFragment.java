@@ -11,23 +11,80 @@ import android.widget.ListView;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.adapter.LvMsgAdapter;
+import com.example.administrator.christie.modelInfo.MeetingDataInfo;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.SPref;
+import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Request;
 
 public class FangkeFragment extends Fragment {
     private Context mContext = null;
     private View view;
     private List<String> functionlist = TApplication.user.getFunctionlist();
     private ListView mLv_messege;
+    private List<MeetingDataInfo.JsonObjectBean> mData;
+    private LvMsgAdapter mLvMsgAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         view = inflater.inflate(R.layout.fragment_fangke, container, false);
         setViews();
+        setData();
         setListeners();
         return view;
+    }
+
+    private void setData() {
+        mData = new ArrayList();
+        mLvMsgAdapter = new LvMsgAdapter(mContext, mData);
+        mLv_messege.setAdapter(mLvMsgAdapter);
+        //获取公告会议内容
+        getNoticeAndMeeting();
+    }
+
+    private void getNoticeAndMeeting() {
+        UserInfo userinfo = SPref.getObject(getActivity(), UserInfo.class, "userinfo");
+        String phone = userinfo.getPhone();
+        String meetingUrl = NetConfig.MEETINGSEARCH;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("fmobile", phone);
+        HttpOkhUtils.getInstance().doPost(meetingUrl, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(getActivity(), "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code == 200) {
+                    Gson gson = new Gson();
+                    MeetingDataInfo meetingInfo = gson.fromJson(resbody, MeetingDataInfo.class);
+                    String message = meetingInfo.getMessage();
+                    if ("查找成功".equals(message)){
+                        List<MeetingDataInfo.JsonObjectBean> jsonObject = meetingInfo.getJsonObject();
+                        for (int i=0;i<jsonObject.size();i++){
+                            MeetingDataInfo.JsonObjectBean jsonBean = jsonObject.get(i);
+                            mData.add(jsonBean);
+                        }
+                        mLvMsgAdapter.notifyDataSetChanged();
+                    }else {
+                        ToastUtils.showToast(getActivity(), "数据未查找到");
+                    }
+                } else {
+                    ToastUtils.showToast(getActivity(), "网络错误");
+                }
+            }
+        });
     }
 
     protected void setViews() {
@@ -35,12 +92,6 @@ public class FangkeFragment extends Fragment {
     }
 
     protected void setListeners() {
-        List mData= new ArrayList();
-        mData.add("1");
-        mData.add("1");
-        mData.add("1");
-        mData.add("1");
-        LvMsgAdapter lvMsgAdapter = new LvMsgAdapter(mContext,mData);
-        mLv_messege.setAdapter(lvMsgAdapter);
+
     }
 }

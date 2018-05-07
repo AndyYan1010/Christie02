@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setViews();
         setListeners();
         //查看用户是否认证过
-        checkIsAuthentication();
+//        checkIsAuthentication();
     }
 
     private void checkIsAuthentication() {

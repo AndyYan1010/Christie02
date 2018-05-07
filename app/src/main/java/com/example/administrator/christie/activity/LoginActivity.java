@@ -161,7 +161,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 final LoginInfo mLoginInfo = gson.fromJson(resbody, LoginInfo.class);
                 String result = mLoginInfo.getResult();
                 if ("2".equals(result)) {
-                    ToastUtils.showToast(LoginActivity.this, mLoginInfo.getMessage());
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     UserInfo userInfo = new UserInfo();
@@ -176,6 +175,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     SPref.setObject(LoginActivity.this, UserInfo.class, "userinfo", userInfo);
                     finish();
                 }
+                ToastUtils.showToast(LoginActivity.this, mLoginInfo.getMessage());
             }
         });
     }

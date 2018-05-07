@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.MeetingDataInfo;
 
 import java.util.List;
 
@@ -22,8 +23,8 @@ import java.util.List;
  */
 
 public class LvMsgAdapter extends BaseAdapter {
-    private List    mList;
-    private Context mContext;
+    private List<MeetingDataInfo.JsonObjectBean> mList;
+    private Context                              mContext;
 
     public LvMsgAdapter(Context context, List data) {
         this.mList = data;
@@ -65,6 +66,23 @@ public class LvMsgAdapter extends BaseAdapter {
             viewHolder.liner_msg.setBackgroundResource(R.color.white);
         } else {
             viewHolder.liner_msg.setBackgroundResource(R.color.blue_06);
+        }
+        MeetingDataInfo.JsonObjectBean jsonBean = mList.get(i);
+        String ftype = jsonBean.getFtype();
+        String meeting_status = jsonBean.getMeeting_status();
+        String meeting_content = jsonBean.getMeeting_content();
+        MeetingDataInfo.JsonObjectBean.CreateDateBean create_date = jsonBean.getCreate_date();
+        int day = create_date.getDay();
+        if ("1".equals(ftype)){
+            viewHolder.tv_kind.setText("公告");
+        }else if ("2".equals(ftype)){
+            viewHolder.tv_kind.setText("会议");
+        }
+        viewHolder.tv_msg.setText(meeting_content);
+        if ("0".equals(meeting_status)){
+            viewHolder.tv_state.setText("未读");
+        }else {
+            viewHolder.tv_state.setText("已读");
         }
 
         return view;
