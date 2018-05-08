@@ -12,9 +12,10 @@ import java.io.Serializable;
  */
 
 public class UserInfo implements Serializable {
-    private String phone;
-    private String psw;
-    private String id;
+    private String  phone;
+    private String  psw;
+    private String  userid;
+    private String  username;
     /**
      * fstatus : 0
      */
@@ -37,12 +38,20 @@ public class UserInfo implements Serializable {
         return psw;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
-    public String getId() {
-        return id;
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public boolean getFstatus() {

@@ -14,6 +14,7 @@ import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UpDataInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.MD5Util;
 import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
@@ -139,10 +140,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void sendToRegister() {
+        String MD5 = MD5Util.MD5Encode(mPassword, "utf-8", false);
         String urlToRegist= NetConfig.REGISTERURL;
         RequestParamsFM params = new RequestParamsFM();
         params.put("telephone",mPhone_num);
-        params.put("password",mPassword);
+        params.put("password",MD5);
         params.put("username",mUser_name);
         params.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPost(urlToRegist, params, new HttpOkhUtils.HttpCallBack() {

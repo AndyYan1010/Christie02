@@ -119,10 +119,10 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
 
     private void getProjectId() {
         UserInfo userinfo = SPref.getObject(MenuIntroduceActivity.this, UserInfo.class, "userinfo");
-        String phone = userinfo.getPhone();
+        String userid = userinfo.getUserid();
         String proId = NetConfig.PROJECTBYTEL;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("telephone", phone);
+        params.put("userid", userid);
         HttpOkhUtils.getInstance().doGetWithParams(proId, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -136,7 +136,7 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
                     ProjectByTelInfo projectByTelInfo = gson.fromJson(resbody, ProjectByTelInfo.class);
                     List<ProjectByTelInfo.ProjectlistBean> projectlist = projectByTelInfo.getProjectlist();
                     for (ProjectByTelInfo.ProjectlistBean bean : projectlist) {
-                        String project_id = bean.getProject_id();
+                        String project_id = bean.getId();
                         String project_name = bean.getProject_name();
                         ProjectMsg projectInfo = new ProjectMsg();
                         projectInfo.setProject_name(project_name);
@@ -146,7 +146,7 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
                     mProjAdapter.notifyDataSetChanged();
                     if (projectlist.size() > 0) {
                         ProjectByTelInfo.ProjectlistBean bean = projectlist.get(0);
-                        String project_id = bean.getProject_id();
+                        String project_id = bean.getId();
                         menuId = project_id;
                     }
                 } else {

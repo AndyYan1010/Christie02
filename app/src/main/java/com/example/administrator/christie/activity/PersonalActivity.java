@@ -77,10 +77,11 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
 
     private void getPersonalData() {
         UserInfo userinfo = SPref.getObject(mContext, UserInfo.class, "userinfo");
-        String phone = userinfo.getPhone();
+        final String phone = userinfo.getPhone();
+        String userid = userinfo.getUserid();
         String personalDetailUrl = NetConfig.PERSONALDATA;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("telephone", phone);
+        params.put("userid", userid);
         HttpOkhUtils.getInstance().doGetWithParams(personalDetailUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -96,11 +97,11 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
                 Gson gson = new Gson();
                 PersonalDataInfo personalDataInfo = gson.fromJson(resbody, PersonalDataInfo.class);
                 PersonalDataInfo.ArrBean arr = personalDataInfo.getArr();
-                String telephone = arr.getTelephone();
+//                String telephone = arr.getTelephone();
                 String faddress = arr.getFaddress();
                 String user_name = arr.getUser_name();
                 tv_username.setText(user_name);
-                tv_mob.setText(telephone);
+                tv_mob.setText(phone);
                 tv_address.setText(faddress);
                 if (null == mBangList) {
                     mBangList = new ArrayList<>();

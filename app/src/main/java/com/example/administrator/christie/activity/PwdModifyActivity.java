@@ -13,8 +13,10 @@ import com.example.administrator.christie.R;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UpDataInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.MD5Util;
 import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -133,11 +135,12 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void sendToRegister() {
-        String urlToRegist = "";
+        String MD5 = MD5Util.MD5Encode(mPassword, "utf-8", false);
+        String urlChangePass = NetConfig.MODIFYPSW;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("mobile", mPhone_num);
-        params.put("password", mPassword);
-        HttpOkhUtils.getInstance().doPost(urlToRegist, params, new HttpOkhUtils.HttpCallBack() {
+        params.put("telephone", mPhone_num);
+        params.put("new_psw", MD5);
+        HttpOkhUtils.getInstance().doPost(urlChangePass, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
                 ToastUtils.showToast(mContext, "网络错误");
@@ -156,7 +159,7 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void sendMsgFromIntnet() {
-        String urlSendMsg = "";
+        String urlSendMsg = NetConfig.SENDMSG;
         RequestParamsFM requestParam = new RequestParamsFM();
         requestParam.put("mobile", mPhone_num);
         HttpOkhUtils.getInstance().doGetWithParams(urlSendMsg, requestParam, new HttpOkhUtils.HttpCallBack() {

@@ -18,6 +18,7 @@ public class LoginInfo {
 
     private String result;
     private String message;
+    private String userid;
     /**
      * fstatus : 0
      * telephone : 18036215618
@@ -25,6 +26,7 @@ public class LoginInfo {
 
     private String fstatus;
     private String telephone;
+    private String username;
 
     public String getResult() {
         return result;
@@ -56,5 +58,21 @@ public class LoginInfo {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

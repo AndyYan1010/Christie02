@@ -132,10 +132,10 @@ public class AddPlatenoActivity extends AppCompatActivity implements View.OnClic
 
     private void addPersonalCar(String plateno, String model, String color, String mobile) {
         UserInfo userinfo = SPref.getObject(AddPlatenoActivity.this, UserInfo.class, "userinfo");
-        String phone = userinfo.getPhone();
+        String userid = userinfo.getUserid();
         String addCarUrl = NetConfig.ADDPLATE;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("user_id", phone);
+        params.put("user_id", userid);
         params.put("plateno", plateno);
         params.put("model", model);
         params.put("color", color);
@@ -153,6 +153,7 @@ public class AddPlatenoActivity extends AppCompatActivity implements View.OnClic
                     ToastUtils.showToast(AddPlatenoActivity.this, "网络请求失败");
                 } else {
                     ToastUtils.showToast(AddPlatenoActivity.this, "添加成功");
+                    finish();
                 }
             }
         });

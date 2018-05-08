@@ -201,7 +201,7 @@
     <!--android:src="@drawable/pwd"/>-->
 
     <!--<EditText-->
-    <!--android:id="@+id/et_pwd"-->
+    <!--andruseridd:iduserid@+id/et_pwd"-->
     <!--android:layout_width="0dp"-->
     <!--android:layout_height="match_parent"-->
     <!--android:layout_gravity="center"-->
@@ -227,7 +227,7 @@
     <!--android:src="@drawable/repeatpwd"/>-->
 
     <!--<EditText-->
-    <!--android:id="@+id/et_repeat"-->
+    <!--andruseridd:iduserid@+id/et_repeat"-->
     <!--android:layout_width="0dp"-->
     <!--android:layout_height="match_parent"-->
     <!--android:layout_gravity="center"-->
@@ -286,7 +286,7 @@
     <!--android:orientation="horizontal">-->
 
     <!--<EditText-->
-    <!--android:id="@+id/et_code_register"-->
+    <!--andruseridd:iduserid@+id/et_code_register"-->
     <!--android:layout_width="0dp"-->
     <!--android:layout_height="match_parent"-->
     <!--android:layout_gravity="center"-->
@@ -299,7 +299,7 @@
     <!--android:theme="@style/MyEditText"/>-->
 
     <!--<com.example.administrator.christie.view.CountdownButton-->
-    <!--android:id="@+id/btn_code_register"-->
+    <!--andruseridd:iduserid@+id/btn_code_register"-->
     <!--android:layout_width="0dp"-->
     <!--android:layout_height="match_parent"-->
     <!--android:layout_weight="1"-->

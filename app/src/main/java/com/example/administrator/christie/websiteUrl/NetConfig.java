@@ -11,16 +11,18 @@ package com.example.administrator.christie.websiteUrl;
 
 public class NetConfig {
     //服务器总地址
-    public static String ROOT           = "http://118.89.109.106:8080/YKTJK/";
-//    public static String ROOT           = "http://205.168.1.113:8082/";
+//    public static String ROOT           = "http://118.89.109.106:8080/YKTJK/";
+    public static String ROOT           = "http://205.168.1.113:8082/";
     //用户登录
     public static String LOGINURL       = ROOT + "login";
     //用户注册
     public static String REGISTERURL    = ROOT + "register";
+    //修改密码
+    public static String MODIFYPSW    = ROOT + "modifyPsw";
     //绑定项目-公司查询
     public static String PROJECT        = ROOT + "project";
     //认证信息
-    public static String AUTHENTICATION = ROOT + "register1";
+    public static String AUTHENTICATION = ROOT + "identify";
     //发送验证码
     public static String SENDMSG        = ROOT + "sendMsg";
     //上传图片
@@ -34,7 +36,7 @@ public class NetConfig {
     //添加车牌
     public static String ADDPLATE       = ROOT + "addplate";
     //删除车牌
-    public static String DELPLATE       = ROOT + "addplate";
+    public static String DELPLATE       = ROOT + "delplate";
     //更改默认车牌
     public static String CHANGEPLATE    = ROOT + "changeplate";
     //获取消息

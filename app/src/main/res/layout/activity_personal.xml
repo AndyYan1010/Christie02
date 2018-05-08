@@ -125,7 +125,7 @@
                 android:background="@color/bottom_button_text_gray"/>
 
             <!--<LinearLayout-->
-                <!--android:id="@+id/ll_xb"-->
+                <!--andruseridd:iduserid@+id/ll_xb"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="50dp"-->
                 <!--android:orientation="horizontal"-->
@@ -141,7 +141,7 @@
                     <!--android:textColor="@color/bottom_button_text_black"/>-->
 
                 <!--<TextView-->
-                    <!--android:id="@+id/tv_gender"-->
+                    <!--andruseridd:iduserid@+id/tv_gender"-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
                     <!--android:layout_gravity="center_vertical"-->

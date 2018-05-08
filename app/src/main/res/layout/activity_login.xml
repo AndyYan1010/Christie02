@@ -127,7 +127,7 @@
         android:textColor="@color/white"
         android:textSize="18sp"/>
     <!--<LinearLayout-->
-    <!--android:id="@+id/login_linearLayout"-->
+    <!--andruseridd:iduserid@+id/login_linearLayout"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_gravity="center"-->
@@ -143,7 +143,7 @@
     <!--android:orientation="vertical">-->
 
     <!--<LinearLayout-->
-    <!--android:id="@+id/userId_LinearLayout"-->
+    <!--andruseridd:iduserid@+id/userId_LinearLayout"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:gravity="right"-->
@@ -152,7 +152,7 @@
     <!--&lt;!&ndash; android:ems="10"表示EditText内最多只显示10个字符，超出不显示 &ndash;&gt;-->
     <!--&lt;!&ndash; android:singleLine="true"表示不能全部显示时，后面用“…”来表示 &ndash;&gt;-->
     <!--<EditText-->
-    <!--android:id="@+id/login_edtId"-->
+    <!--andruseridd:iduserid@+id/login_edtId"-->
     <!--android:layout_width="0dp"-->
     <!--android:layout_height="44dp"-->
     <!--android:layout_weight="1"-->
@@ -171,7 +171,7 @@
     <!--</EditText>-->
 
     <!--<ImageView-->
-    <!--android:id="@+id/login_more_user"-->
+    <!--andruseridd:iduserid@+id/login_more_user"-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="44dp"-->
     <!--android:layout_marginRight="15dp"-->
@@ -186,7 +186,7 @@
     <!--android:background="#CACDD1"/>-->
 
     <!--<EditText-->
-    <!--android:id="@+id/login_edtPwd"-->
+    <!--andruseridd:iduserid@+id/login_edtPwd"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="44dp"-->
     <!--android:background="@null"-->
@@ -200,7 +200,7 @@
     <!--</LinearLayout>-->
 
     <!--<Button-->
-    <!--android:id="@+id/login_btnLogin"-->
+    <!--andruseridd:iduserid@+id/login_btnLogin"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="45dp"-->
     <!--android:layout_marginTop="20dp"-->
@@ -216,7 +216,7 @@
     <!--android:orientation="horizontal">-->
 
     <!--<TextView-->
-    <!--android:id="@+id/tv_pwd_change"-->
+    <!--andruseridd:iduserid@+id/tv_pwd_change"-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_weight="1"-->
@@ -226,7 +226,7 @@
 
 
     <!--<TextView-->
-    <!--android:id="@+id/tv_register"-->
+    <!--andruseridd:iduserid@+id/tv_register"-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_weight="1"-->

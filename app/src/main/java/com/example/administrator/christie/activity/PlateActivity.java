@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.RcvPlateInfoAdapter;
-import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.PersonalPlateInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
@@ -38,8 +37,9 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
     private RecyclerView            mRcv_plate;
     private List<PersonalPlateInfo> mPlateData;
     private RcvPlateInfoAdapter     mPlateAdapter;
-    private int selectItem = -1;//记录选择的车牌item
+    public static int selectItem = -1;//记录选择的车牌item
     private UserInfo userinfo;
+    private static int addRequestCode = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,8 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
         fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PlateActivity.this, AddPlatenoActivity.class));
+                Intent intent = new Intent(PlateActivity.this, AddPlatenoActivity.class);
+                startActivityForResult(intent,addRequestCode);
             }
         });
         fab_default.setOnClickListener(new View.OnClickListener() {
@@ -88,16 +89,50 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
             public void onClick(View view) {
                 //                getFragmentManager().beginTransaction().add(R.id.container, new CardLayoutFragment()).commit();
                 //设置默认车牌 刷新
-                //访问网络获取已有车牌信息
-                getPlateInfo();
+                setDefaultPlate();
             }
         });
+    }
+
+    private void setDefaultPlate() {
+        if (selectItem < 0) {
+            ToastUtils.showToast(PlateActivity.this, "请选择要设置默认的车牌");
+        } else {
+            //设置默认车牌
+            PersonalPlateInfo personalPlateInfo = mPlateData.get(selectItem);
+            String fisdefault = personalPlateInfo.getFisdefault();
+            if ("Y".equals(fisdefault)){
+                ToastUtils.showToast(PlateActivity.this, "该车牌已是默认车牌");
+                return;
+            }
+            String setDefPlate = NetConfig.CHANGEPLATE;
+            RequestParamsFM params = new RequestParamsFM();
+            params.put("id",personalPlateInfo.getId());
+            params.put("userid",userinfo.getUserid());
+            HttpOkhUtils.getInstance().doPost(setDefPlate, params, new HttpOkhUtils.HttpCallBack() {
+                @Override
+                public void onError(Request request, IOException e) {
+                    ToastUtils.showToast(PlateActivity.this, "网络错误");
+                }
+
+                @Override
+                public void onSuccess(int code, String resbody) {
+                    if (code==200){
+                        ToastUtils.showToast(PlateActivity.this, "设置成功");
+                        //访问网络获取已有车牌信息
+                        getPlateInfo();
+                    }else {
+                        ToastUtils.showToast(PlateActivity.this, "设置失败");
+                    }
+                }
+            });
+        }
     }
 
     private void deletPlate() {
         if (null != userinfo) {
             if (selectItem < 0) {
-                ToastUtils.showToast(PlateActivity.this, "请长按选择要删除的车牌");
+                ToastUtils.showToast(PlateActivity.this, "请选择要删除的车牌");
             } else {
                 //删除选择的车牌
                 PersonalPlateInfo personalPlateInfo = mPlateData.get(selectItem);
@@ -109,7 +144,7 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
                 String delPlateUrl = NetConfig.DELPLATE;
                 RequestParamsFM params = new RequestParamsFM();
                 params.put("id", personalPlateInfo.getId());
-                params.put("telephone", userinfo.getPhone());
+                params.put("userid", userinfo.getUserid());
                 HttpOkhUtils.getInstance().doPost(delPlateUrl, params, new HttpOkhUtils.HttpCallBack() {
                     @Override
                     public void onError(Request request, IOException e) {
@@ -119,15 +154,18 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
                     @Override
                     public void onSuccess(int code, String resbody) {
                         if (code == 200) {
-                            Gson gson = new Gson();
-                            LoginInfo loginInfo = gson.fromJson(resbody, LoginInfo.class);
-                            String result = loginInfo.getResult();
-                            String message = loginInfo.getMessage();
-                            ToastUtils.showToast(PlateActivity.this, message);
-                            if ("1".equals(result)){
-                                mPlateData.remove(selectItem);
-                                mPlateAdapter.notifyDataSetChanged();
-                            }
+//                            Gson gson = new Gson();
+//                            LoginInfo loginInfo = gson.fromJson(resbody, LoginInfo.class);
+//                            String result = loginInfo.getResult();
+//                            String message = loginInfo.getMessage();
+//                            ToastUtils.showToast(PlateActivity.this, message);
+//                            if ("1".equals(result)){
+//                                mPlateData.remove(selectItem);
+//                                mPlateAdapter.notifyDataSetChanged();
+//                            }
+                            ToastUtils.showToast(PlateActivity.this, "删除成功");
+                            //访问网络获取已有车牌信息
+                            getPlateInfo();
                         }else {
                             ToastUtils.showToast(PlateActivity.this, "网络请求失败");
                         }
@@ -141,10 +179,10 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
 
     private void getPlateInfo() {
         if (null != userinfo) {
-            String phone = userinfo.getPhone();
+            String userid = userinfo.getUserid();
             String getPlateUrl = NetConfig.GETPLATE;
             RequestParamsFM params = new RequestParamsFM();
-            params.put("telephone", phone);
+            params.put("userid", userid);
             HttpOkhUtils.getInstance().doGetWithParams(getPlateUrl, params, new HttpOkhUtils.HttpCallBack() {
                 @Override
                 public void onError(Request request, IOException e) {
@@ -189,6 +227,15 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
             case R.id.img_back:
                 finish();
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (addRequestCode==requestCode){
+            //访问网络获取已有车牌信息
+            getPlateInfo();
         }
     }
 }

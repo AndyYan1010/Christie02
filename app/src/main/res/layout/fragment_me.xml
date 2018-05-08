@@ -63,7 +63,7 @@
     <!--android:orientation="vertical">-->
 
     <!--<Button-->
-    <!--android:id="@+id/btn_xiaoxi"-->
+    <!--andruseridd:iduserid@+id/btn_xiaoxi"-->
     <!--android:layout_width="40dp"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_gravity="center"-->
@@ -104,7 +104,7 @@
     <!--android:orientation="vertical">-->
 
     <!--<Button-->
-    <!--android:id="@+id/btn_huiyi"-->
+    <!--andruseridd:iduserid@+id/btn_huiyi"-->
     <!--android:layout_width="40dp"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_gravity="center"-->

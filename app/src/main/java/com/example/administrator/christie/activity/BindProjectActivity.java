@@ -237,10 +237,10 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                     ToastUtils.showToast(BindProjectActivity.this, "请选择公司详细信息");
                     return;
                 }
-                if (null == mImg_onSer || "".equals(mImg_onSer)) {
-                    ToastUtils.showToast(BindProjectActivity.this, "图片上传失败，请重新选择图片");
-                    return;
-                }
+//                if (null == mImg_onSer || "".equals(mImg_onSer)) {
+//                    ToastUtils.showToast(BindProjectActivity.this, "图片上传失败，请重新选择图片");
+//                    return;
+//                }
                 //提交网络
                 sendToIntnet();
                 break;
@@ -263,17 +263,16 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
     private void sendToIntnet() {
         ProgressDialogUtils.getInstance().show(BindProjectActivity.this, "正在提交，请稍等");
         UserInfo userinfo = SPref.getObject(BindProjectActivity.this, UserInfo.class, "userinfo");
-        String phone = userinfo.getPhone();
-        String psw = userinfo.getPsw();
+        String id = userinfo.getUserid();
         String url = NetConfig.AUTHENTICATION;
         RequestParamsFM requestParams = new RequestParamsFM();
-        requestParams.put("mobile", phone);
-        requestParams.put("password", psw);
+        requestParams.put("userid", id);
         requestParams.put("project_id", mProjectID);
-        requestParams.put("projectdetail_id", mDetailID);
+        requestParams.put("project_detail_id", mDetailID);
         requestParams.put("relation", mRelation);
         requestParams.put("faddress", mPlace);
-        requestParams.put("img", mImg_onSer);
+        requestParams.put("id_pic", "sadad");
+//        requestParams.put("id_pic", mImg_onSer);
         requestParams.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPost(url, requestParams, new HttpOkhUtils.HttpCallBack() {
             @Override
@@ -284,7 +283,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onSuccess(int code, String resbody) {
-                ProgressDialogUtils.getInstance();
+                ProgressDialogUtils.getInstance().dismiss();
                 if (code != 200) {
                     ToastUtils.showToast(BindProjectActivity.this, "网络错误");
                     return;

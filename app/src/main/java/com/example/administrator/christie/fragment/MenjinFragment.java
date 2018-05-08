@@ -25,6 +25,7 @@ import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.MD5Util;
 import com.example.administrator.christie.util.ProgressDialogUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.SpUtils;
@@ -354,6 +355,7 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
     private void refreshFstatus() {
         UserInfo userinfo = SPref.getObject(mContext, UserInfo.class, "userinfo");
         if (null != userinfo) {
@@ -372,12 +374,14 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
             getActivity().finish();
         }
     }
+
     private void loginToSeverce(String phone, final String password) {
         ProgressDialogUtils.getInstance().show(getActivity(), "正在刷新请稍后");
+        String MD5 = MD5Util.MD5Encode(password, "utf-8", false);
         String url = NetConfig.LOGINURL;
         RequestParamsFM params = new RequestParamsFM();
         params.put("telephone", phone);
-        params.put("password", password);
+        params.put("password", MD5);
         HttpOkhUtils.getInstance().doPost(url, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -401,6 +405,8 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
                     UserInfo userInfo = new UserInfo();
                     userInfo.setPhone(mLoginInfo.getTelephone());
                     userInfo.setPsw(password);
+                    userInfo.setUsername(mLoginInfo.getUsername());
+                    userInfo.setUserid(mLoginInfo.getUserid());
                     String fstatus = mLoginInfo.getFstatus();
                     if (null == fstatus || "".equals(fstatus) || "0".equals(fstatus)) {
                         userInfo.setFstatus(false);
@@ -408,7 +414,7 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
                         userInfo.setFstatus(true);
                     }
                     SPref.setObject(mContext, UserInfo.class, "userinfo", userInfo);
-                }else {
+                } else {
                     ToastUtils.showToast(mContext, "刷新失败");
                 }
             }

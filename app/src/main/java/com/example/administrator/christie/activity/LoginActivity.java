@@ -13,6 +13,7 @@ import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.MD5Util;
 import com.example.administrator.christie.util.ProgressDialogUtils;
 import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.SPref;
@@ -57,7 +58,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         TApplication.flag = 0;
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        int autoNext = intent.getIntExtra("autoNext",1);
+        int autoNext = intent.getIntExtra("autoNext", 1);
         //创建界面前先判断手机之前是否登录过，登录过跳过登录阶段，直接显示主页面
         startMainAct(autoNext);
         setContentView(R.layout.activity_login);
@@ -140,10 +141,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private void loginToSeverce(String phone, String password) {
         ProgressDialogUtils.getInstance().show(LoginActivity.this, "正在登录请稍后");
+        String MD5 = MD5Util.MD5Encode(password, "utf-8", false);
         String url = NetConfig.LOGINURL;
         RequestParamsFM params = new RequestParamsFM();
         params.put("telephone", phone);
-        params.put("password", password);
+        params.put("password", MD5);
         HttpOkhUtils.getInstance().doPost(url, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -166,6 +168,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     UserInfo userInfo = new UserInfo();
                     userInfo.setPhone(mLoginInfo.getTelephone());
                     userInfo.setPsw(mPassword);
+                    userInfo.setUserid(mLoginInfo.getUserid());
+                    userInfo.setUsername(mLoginInfo.getUsername());
                     String fstatus = mLoginInfo.getFstatus();
                     if (null == fstatus || "".equals(fstatus) || "0".equals(fstatus)) {
                         userInfo.setFstatus(false);

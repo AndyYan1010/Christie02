@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.activity.PlateActivity;
 import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.PersonalPlateInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
@@ -74,9 +75,13 @@ public class RcvPlateInfoAdapter extends RecyclerView.Adapter<RcvPlateInfoAdapte
         holder.tv_model.setText(fmodel);
         holder.tv_color.setText(fcolor);
         if ("Y".equals(fisdefault)) {
+            holder.cb_default.setVisibility(View.VISIBLE);
             holder.cb_default.setChecked(true);
+            holder.cb_default.setEnabled(false);
         } else {
             holder.cb_default.setChecked(false);
+            holder.cb_default.setEnabled(true);
+            holder.cb_default.setVisibility(View.GONE);
         }
         if (position == mSelectItem) {
             holder.linear.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
@@ -89,25 +94,27 @@ public class RcvPlateInfoAdapter extends RecyclerView.Adapter<RcvPlateInfoAdapte
             public void onClick(View view) {
                 if (mSelectItem == position) {
                     mSelectItem = -1;
+                    PlateActivity.selectItem = -1;
                 } else {
                     mSelectItem = position;
+                    PlateActivity.selectItem = position;
                 }
                 notifyDataSetChanged();
             }
         });
-        holder.cb_default.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean checked = holder.cb_default.isChecked();
-                if (checked) {
-                    ToastUtils.showToast(mContext, "请先设置其他车牌为默认车牌");
-                    holder.cb_default.setChecked(true);
-                } else {
-                    //修改默认车牌
-                    changeDefault(fplateno);
-                }
-            }
-        });
+        //        holder.cb_default.setOnClickListener(new View.OnClickListener() {
+        //            @Override
+        //            public void onClick(View view) {
+        //                boolean checked = holder.cb_default.isChecked();
+        //                if (checked) {
+        //                    ToastUtils.showToast(mContext, "请先设置其他车牌为默认车牌");
+        //                    holder.cb_default.setChecked(true);
+        //                } else {
+        //                    //修改默认车牌
+        //                    changeDefault(fplateno);
+        //                }
+        //            }
+        //        });
     }
 
     private void changeDefault(String fplateno) {

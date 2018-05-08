@@ -14,14 +14,14 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/et_code"
+            andruseridd:iduserid@+id/et_code"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:hint="二维码"/>
 
         <Button
-            android:id="@+id/btn_sc"
+            andruseridd:iduserid@+id/btn_sc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

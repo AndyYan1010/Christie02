@@ -35,7 +35,7 @@
     <!--android:src="@drawable/lunbo"/>-->
 
     <!--<GridView-->
-    <!--android:id="@+id/gv_menjin"-->
+    <!--andruseridd:iduserid@+id/gv_menjin"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content"-->
     <!--android:background="#fff"-->
