@@ -8,25 +8,36 @@
               tools:context="com.example.administrator.christie.activity.QrcodeActivity">
 
     <include layout="@layout/title_view"/>
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <EditText
-            andruseridd:iduserid@+id/et_code"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:hint="二维码"/>
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:orientation="horizontal">-->
 
-        <Button
-            andruseridd:iduserid@+id/btn_sc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="生成"/>
-    </LinearLayout>-->
+        <!--&lt;!&ndash;<Spinner&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/spinner_village"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:spinnerMode="dialog">&ndash;&gt;-->
+        <!--&lt;!&ndash;</Spinner>&ndash;&gt;-->
+
+        <!--<Spinner-->
+            <!--android:id="@+id/spinner_unit"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:spinnerMode="dialog">-->
+        <!--</Spinner>-->
+
+        <!--<Spinner-->
+            <!--android:id="@+id/spinner_men"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:spinnerMode="dialog">-->
+        <!--</Spinner>-->
+    <!--</LinearLayout>-->
 
     <ImageView
         android:id="@+id/iv_code"
@@ -35,8 +46,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="30dp"
+        android:scaleType="fitCenter"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -45,6 +56,20 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/shuaxin"
         android:textSize="18sp"/>
+
+    <Button
+        android:id="@+id/bt_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_round_blue_30"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="获取二维码"
+        android:textColor="@color/white"
+        android:textSize="20sp"/>
 </LinearLayout>

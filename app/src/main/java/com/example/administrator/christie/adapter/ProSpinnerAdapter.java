@@ -61,7 +61,7 @@ public class ProSpinnerAdapter extends BaseAdapter {
         return view;
     }
 
-    class ViewHolder {
+    private class ViewHolder {
         TextView tv_name;
     }
 }

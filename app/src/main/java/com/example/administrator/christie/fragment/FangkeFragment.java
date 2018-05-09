@@ -2,6 +2,7 @@ package com.example.administrator.christie.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,9 @@ import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ public class FangkeFragment extends Fragment {
     private ListView mLv_messege;
     private List<MeetingDataInfo.JsonObjectBean> mData;
     private LvMsgAdapter mLvMsgAdapter;
+    private SmartRefreshLayout mSmt_refresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,16 +66,23 @@ public class FangkeFragment extends Fragment {
         HttpOkhUtils.getInstance().doPost(meetingUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
+                mSmt_refresh.finishRefresh();
                 ToastUtils.showToast(getActivity(), "网络错误");
             }
 
             @Override
             public void onSuccess(int code, String resbody) {
+                mSmt_refresh.finishRefresh();
                 if (code == 200) {
                     Gson gson = new Gson();
                     MeetingDataInfo meetingInfo = gson.fromJson(resbody, MeetingDataInfo.class);
                     String message = meetingInfo.getMessage();
                     if ("查找成功".equals(message)){
+                        if (null==mData){
+                            mData=new ArrayList<>();
+                        }else {
+                            mData.clear();
+                        }
                         List<MeetingDataInfo.JsonObjectBean> jsonObject = meetingInfo.getJsonObject();
                         for (int i=0;i<jsonObject.size();i++){
                             MeetingDataInfo.JsonObjectBean jsonBean = jsonObject.get(i);
@@ -88,10 +100,24 @@ public class FangkeFragment extends Fragment {
     }
 
     protected void setViews() {
-        mLv_messege = (ListView) view.findViewById(R.id.lv_messege);
+        mSmt_refresh = (SmartRefreshLayout) this.view.findViewById(R.id.smt_refresh);
+        mLv_messege = (ListView) this.view.findViewById(R.id.lv_messege);
     }
 
     protected void setListeners() {
-
+        mSmt_refresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                //获取公告会议内容
+                getNoticeAndMeeting();
+            }
+        });
+//        mSmt_refresh.setOnLoadMoreListener(new OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+//                //上拉加载更多
+//
+//            }
+//        });
     }
 }

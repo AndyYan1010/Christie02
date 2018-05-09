@@ -174,7 +174,7 @@ public class PayForParkingActivity extends BaseActivity implements View.OnClickL
          */
 //        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AppConstants.ALI_PLAY_APPID, mOrder.getFname(), price);
 //        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
-//
+////
 //        String sign = OrderInfoUtil2_0.getSign(params, AppConstants.ALI_PLAY_RSA2_PRIVATE, true);
 //        final String orderInfo = orderParam + "&" + sign;
 

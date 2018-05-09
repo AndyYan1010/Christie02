@@ -155,6 +155,21 @@ public class PersonalDataInfo {
             private String fname;
             private String project_id;
             private String project_name;
+            /**
+             * faddress : sdadas
+             * user_id : 3
+             * projectdetail_id : 4d2881e962d72b4d0162d72d6eca0001
+             * id : 6
+             * id_pic : asdas
+             * relation : asdasd
+             */
+
+            private String faddress;
+            private int    user_id;
+            private String projectdetail_id;
+            private int    id;
+            private String id_pic;
+            private String relation;
 
             public String getFname() {
                 return fname;
@@ -178,6 +193,54 @@ public class PersonalDataInfo {
 
             public void setProject_name(String project_name) {
                 this.project_name = project_name;
+            }
+
+            public String getFaddress() {
+                return faddress;
+            }
+
+            public void setFaddress(String faddress) {
+                this.faddress = faddress;
+            }
+
+            public int getUser_id() {
+                return user_id;
+            }
+
+            public void setUser_id(int user_id) {
+                this.user_id = user_id;
+            }
+
+            public String getProjectdetail_id() {
+                return projectdetail_id;
+            }
+
+            public void setProjectdetail_id(String projectdetail_id) {
+                this.projectdetail_id = projectdetail_id;
+            }
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public String getId_pic() {
+                return id_pic;
+            }
+
+            public void setId_pic(String id_pic) {
+                this.id_pic = id_pic;
+            }
+
+            public String getRelation() {
+                return relation;
+            }
+
+            public void setRelation(String relation) {
+                this.relation = relation;
             }
         }
     }

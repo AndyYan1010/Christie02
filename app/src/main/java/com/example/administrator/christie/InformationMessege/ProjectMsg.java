@@ -17,6 +17,7 @@ public class ProjectMsg {
 
     private String id;
     private String project_name;
+    private String detail_name;
 
     public String getId() {
         return id;
@@ -32,5 +33,13 @@ public class ProjectMsg {
 
     public void setProject_name(String project_name) {
         this.project_name = project_name;
+    }
+
+    public String getDetail_name() {
+        return detail_name;
+    }
+
+    public void setDetail_name(String detail_name) {
+        this.detail_name = detail_name;
     }
 }
