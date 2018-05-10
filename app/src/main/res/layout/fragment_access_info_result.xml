@@ -18,10 +18,56 @@
         android:textColor="@color/bottom_button_text_black"
         android:textSize="18sp"/>
 
+    <RelativeLayout
+        android:id="@+id/relative_item"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/blue_06"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="打卡日期"
+            android:textColor="@color/bottom_button_text_black"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_door_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="门名称"
+            android:textColor="@color/bottom_button_text_black"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:text="打卡区域"
+            android:textColor="@color/bottom_button_text_black"
+            android:textSize="18sp"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_nodata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="没有查询到结果，请重新选择日期"
+        android:textColor="@color/bottom_button_text_black"
+        android:textSize="18sp"/>
+
     <ListView
         android:id="@+id/lv_result"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_height="wrap_content">
     </ListView>
 </LinearLayout>

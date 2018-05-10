@@ -1,5 +1,7 @@
 package com.example.administrator.christie.fragment;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,14 +9,34 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.adapter.BDInfoSpinnerAdapter;
+import com.example.administrator.christie.modelInfo.PersonalDataInfo;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.RegexUtils;
+import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import okhttp3.Request;
 
 /**
  * @创建者 AndyYan
@@ -29,9 +51,15 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     private Context   mContext;
     private View      view;
     private ImageView mImg_back;
-    private TextView  mTv_title;
-    private Button    mBt_create;
-    private EditText  mEdit_name, mEdit_phone, mEdit_date, mEdit_longtime, mEdit_reason;
+    private TextView  mTv_title, mTv_date;
+    private Button   mBt_create;
+    private EditText mEdit_name, mEdit_phone, mEdit_longtime, mEdit_reason;
+    private Spinner              mSpinner_area;
+    private List<ProjectMsg>     dataProList;
+    private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
+    private String               chooseProID;//小区id
+    private String               markData;
+    private String               mUserid;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,16 +77,89 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         mTv_title = (TextView) view.findViewById(R.id.tv_title);
         mEdit_name = (EditText) view.findViewById(R.id.edit_name);
         mEdit_phone = (EditText) view.findViewById(R.id.edit_phone);
-        mEdit_date = (EditText) view.findViewById(R.id.edit_date);
+        mTv_date = view.findViewById(R.id.tv_date);
         mEdit_longtime = (EditText) view.findViewById(R.id.edit_longtime);
         mEdit_reason = (EditText) view.findViewById(R.id.edit_reason);
+        mSpinner_area = view.findViewById(R.id.spinner_area);
         mBt_create = (Button) view.findViewById(R.id.bt_create);
     }
 
     private void setData() {
         mImg_back.setOnClickListener(this);
         mTv_title.setText("访客邀请");
+        //设置小区选择器
+        dataProList = new ArrayList<>();
+        ProjectMsg detailInfo = new ProjectMsg();
+        detailInfo.setProject_name("请选择小区");
+        dataProList.add(detailInfo);
+        mDetailAdapter = new BDInfoSpinnerAdapter(getContext(), dataProList);
+        mSpinner_area.setAdapter(mDetailAdapter);
+        mSpinner_area.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ProjectMsg msg = dataProList.get(i);
+                String project_name = msg.getProject_name();
+                if (!"请选择小区".equals(project_name)) {
+                    String detail_id = msg.getId();
+                    chooseProID = detail_id;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
+        mUserid = userinfo.getUserid();
+        //从网络获取个人绑定的小区
+        getBDProjectID(mUserid);
+        mTv_date.setOnClickListener(this);
         mBt_create.setOnClickListener(this);
+    }
+
+    private void getBDProjectID(String userid) {
+        String personalDetailUrl = NetConfig.PERSONALDATA;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("userid", userid);
+        HttpOkhUtils.getInstance().doGetWithParams(personalDetailUrl, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(getContext(), "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code != 200) {
+                    ToastUtils.showToast(getContext(), "网络错误，错误码" + code);
+                    return;
+                }
+                Gson gson = new Gson();
+                PersonalDataInfo personalDataInfo = gson.fromJson(resbody, PersonalDataInfo.class);
+                PersonalDataInfo.ArrBean arr = personalDataInfo.getArr();
+                if (null == dataProList) {
+                    dataProList = new ArrayList<>();
+                } else {
+                    dataProList.clear();
+                }
+                ProjectMsg detailInfo = new ProjectMsg();
+                detailInfo.setProject_name("请选择小区");
+                dataProList.add(detailInfo);
+                List<PersonalDataInfo.ArrBean.ListProjectBean> listProject = arr.getListProject();
+                for (int i = 0; i < listProject.size(); i++) {
+                    PersonalDataInfo.ArrBean.ListProjectBean listProjectBean = listProject.get(i);
+                    String project_name = listProjectBean.getProject_name();
+                    String fname = listProjectBean.getFname();
+                    String detail_id = listProjectBean.getProjectdetail_id();
+                    ProjectMsg bdInfo = new ProjectMsg();
+                    bdInfo.setProject_name(project_name);
+                    bdInfo.setDetail_name(fname);
+                    bdInfo.setId(detail_id);
+                    dataProList.add(bdInfo);
+                }
+                mDetailAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -67,10 +168,16 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
             case R.id.img_back:
                 getActivity().finish();
                 break;
+            case R.id.tv_date:
+                //调用时间选择器
+                //打开时间选择器
+                Calendar calendar = Calendar.getInstance();
+                showDatePickerDialog(calendar, 2);
+                break;
             case R.id.bt_create:
                 String name = String.valueOf(mEdit_name.getText()).trim();
                 String phone = String.valueOf(mEdit_phone.getText()).trim();
-                String date = String.valueOf(mEdit_date.getText()).trim();
+                String date = String.valueOf(mTv_date.getText()).trim();
                 String longtime = String.valueOf(mEdit_longtime.getText()).trim();
                 String reason = String.valueOf(mEdit_reason.getText()).trim();
                 if (name.equals("") || name.equals("请输入来访人姓名")) {
@@ -80,11 +187,11 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 if (phone.equals("") || phone.equals("请输入来访人电话")) {
                     ToastUtils.showToast(mContext, "来访人电话不能为空");
                     return;
-                }else if (!RegexUtils.checkMobile(phone)){
+                } else if (!RegexUtils.checkMobile(phone)) {
                     ToastUtils.showToast(mContext, "电话格式不正确");
                     return;
                 }
-                if (date.equals("") || date.equals("请输入来访日期")) {
+                if (date.equals("") || date.equals("请选择来访日期")) {
                     ToastUtils.showToast(mContext, "来访日期不能为空");
                     return;
                 }
@@ -96,15 +203,94 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     ToastUtils.showToast(mContext, "来访事由不能为空");
                     return;
                 }
-                //获取开始时间 和结束时间，跳转数据结果
-                FragmentTransaction ftt = getFragmentManager().beginTransaction();
-                InvitationQRcodeFragment invitationQRcodeFgt = new InvitationQRcodeFragment();
-                String detailJson = "name:" + name + "phone:" + phone + "date:" + date + "longtime:" + longtime + "reason:" + reason;
-                invitationQRcodeFgt.setInfoJson(detailJson);
-                ftt.add(R.id.frame_accessdata, invitationQRcodeFgt, "invitationQRcodeFgt");
-                ftt.addToBackStack(null);
-                ftt.commit();
+                if (null == chooseProID || "请选择小区".equals(chooseProID)) {
+                    ToastUtils.showToast(mContext, "请选择小区");
+                    return;
+                }
+                //获取邀请二维码数据
+                getInvitationQc(name, phone, date, longtime, reason, chooseProID);
                 break;
         }
+    }
+
+    private void getInvitationQc(String name, String phone, String date, String longtime, String reason, String detail_id) {
+        String InvitationQcUrl = NetConfig.INVITE;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("userid", mUserid);
+        params.put("fname", name);
+        params.put("fmobile", phone);
+        params.put("fdate", date);
+        params.put("flength", longtime);
+        params.put("freason", reason);
+        params.put("project_detail_id", detail_id);
+        params.setUseJsonStreamer(true);
+        HttpOkhUtils.getInstance().doPost(InvitationQcUrl, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(getContext(), "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code == 200) {
+                    //获取开始时间 和结束时间，跳转数据结果
+                    FragmentTransaction ftt = getFragmentManager().beginTransaction();
+                    InvitationQRcodeFragment invitationQRcodeFgt = new InvitationQRcodeFragment();
+                    String detailJson = "name:";
+                    //                    String detailJson = "name:" + name + "phone:" + phone + "date:" + date + "longtime:" + longtime + "reason:" + reason;
+                    //                    invitationQRcodeFgt.setInfoJson(detailJson);
+                    //                    ftt.add(R.id.frame_accessdata, invitationQRcodeFgt, "invitationQRcodeFgt");
+                    //                    ftt.addToBackStack(null);
+                    //                    ftt.commit();
+                    ToastUtils.showToast(getContext(), "测试二维码");
+                } else {
+                    ToastUtils.showToast(getContext(), "数据请求失败");
+                }
+            }
+        });
+    }
+
+    private void showDatePickerDialog(Calendar calendar, int themeResId) {
+        new DatePickerDialog(getContext(), themeResId, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                String yue = "";
+                String ri = "";
+                i1 = i1 + 1;
+                if (i1 < 10) {
+                    yue = "0" + i1;
+                } else {
+                    yue = "" + i1;
+                }
+                if (i2 < 10) {
+                    ri = "0" + i2;
+                } else {
+                    ri = "" + i2;
+                }
+                markData = i + "-" + yue + "-" + ri;
+                mTv_date.setText(markData);
+                //                Calendar calendar = Calendar.getInstance();
+                //                showTimePickerDialog(calendar, 2);
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void showTimePickerDialog(Calendar calendar, int themeResId) {
+        new TimePickerDialog(getContext(), themeResId, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                String xs = "";
+                if (i < 10) {
+                    xs = "0" + i;
+                } else {
+                    xs = "" + i;
+                }
+                String fz = "" + i1;
+                if (i1 < 10) {
+                    fz = "0" + i1;
+                }
+                mTv_date.setText(markData + " " + i + ":" + fz);
+            }
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
     }
 }

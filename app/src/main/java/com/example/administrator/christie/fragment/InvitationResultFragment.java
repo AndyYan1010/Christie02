@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.InvitationRecyViewAdapter;
+import com.example.administrator.christie.modelInfo.FkRecordInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +29,10 @@ import java.util.List;
 public class InvitationResultFragment extends Fragment implements View.OnClickListener {
     private View   mRootView;
     private String mstartT, mendT;
-    private TextView mTv_title, mTv_st_end;
-    private ImageView mImg_back;
+    private TextView mTv_title, mTv_st_end, mTv_nodata;
+    private ImageView    mImg_back;
     private RecyclerView mRecview_result;
+    private List<FkRecordInfo.ListBean> mFkRecordList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,21 +45,22 @@ public class InvitationResultFragment extends Fragment implements View.OnClickLi
 
     private void initView() {
         mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
+        mTv_nodata = (TextView) mRootView.findViewById(R.id.tv_nodata);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mTv_st_end = (TextView) mRootView.findViewById(R.id.tv_st_end);
         mRecview_result = (RecyclerView) mRootView.findViewById(R.id.recview_result);
     }
 
     private void initData() {
-        mTv_title.setText("门禁数据结果");
+        mTv_title.setText("邀请记录结果");
         mImg_back.setOnClickListener(this);
         mTv_st_end.setText("下方数据为" + mstartT + "至" + mendT + "的数据");
-        List mData= new ArrayList();
-        mData.add("1");
-        mData.add("1");
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        if (mFkRecordList.size() > 0) {
+            mTv_nodata.setVisibility(View.GONE);
+        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecview_result.setLayoutManager(layoutManager);
-        InvitationRecyViewAdapter recyViewAdapter = new InvitationRecyViewAdapter(getContext(),mData);
+        InvitationRecyViewAdapter recyViewAdapter = new InvitationRecyViewAdapter(getContext(), mFkRecordList);
         mRecview_result.setAdapter(recyViewAdapter);
     }
 
@@ -74,5 +77,9 @@ public class InvitationResultFragment extends Fragment implements View.OnClickLi
                 getFragmentManager().popBackStackImmediate(null, 0);
                 break;
         }
+    }
+
+    public List getFkRecordList() {
+        return mFkRecordList;
     }
 }

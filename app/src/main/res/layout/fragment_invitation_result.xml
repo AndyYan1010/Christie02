@@ -17,6 +17,16 @@
         android:textColor="@color/bottom_button_text_black"
         android:textSize="18sp"/>
 
+    <TextView
+        android:id="@+id/tv_nodata"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="没有查询到结果，请重新选择日期"
+        android:textColor="@color/bottom_button_text_black"
+        android:textSize="18sp"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recview_result"
         android:layout_width="match_parent"

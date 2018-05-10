@@ -1,5 +1,6 @@
 package com.example.administrator.christie.activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,11 +10,15 @@ import android.widget.TextView;
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.BDInfoSpinnerAdapter;
+import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.util.ZxingUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,7 +31,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
     private boolean isAlive = true;
     private TextView         mTv_title;
     //    private Spinner          mSpinner_village;//项目
-//    private Spinner          mSpinner_unit;//小区
+    //    private Spinner          mSpinner_unit;//小区
     //    private Spinner          mSpinner_men;//大门
     private Button           mBt_submit;
     private List<ProjectMsg> dataInfoList, dataMenList;
@@ -47,7 +52,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
     protected void setViews() {
         img_back = (ImageView) findViewById(R.id.img_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
-//        mSpinner_unit = (Spinner) findViewById(R.id.spinner_unit);
+        //        mSpinner_unit = (Spinner) findViewById(R.id.spinner_unit);
         //        mSpinner_men = (Spinner) findViewById(R.id.spinner_men);
         iv_code = (ImageView) findViewById(R.id.iv_code);
         mBt_submit = (Button) findViewById(R.id.bt_submit);
@@ -56,83 +61,83 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
     private void setData() {
         img_back.setOnClickListener(this);
         mTv_title.setText("二维码开门");
-//        dataInfoList = new ArrayList<>();
-//        ProjectMsg detailInfo = new ProjectMsg();
-//        detailInfo.setProject_name("请选择小区");
-//        dataInfoList.add(detailInfo);
-//        mDetailAdapter = new BDInfoSpinnerAdapter(QrcodeActivity.this, dataInfoList);
-//        mSpinner_unit.setAdapter(mDetailAdapter);
+        //        dataInfoList = new ArrayList<>();
+        //        ProjectMsg detailInfo = new ProjectMsg();
+        //        detailInfo.setProject_name("请选择小区");
+        //        dataInfoList.add(detailInfo);
+        //        mDetailAdapter = new BDInfoSpinnerAdapter(QrcodeActivity.this, dataInfoList);
+        //        mSpinner_unit.setAdapter(mDetailAdapter);
         UserInfo userinfo = SPref.getObject(QrcodeActivity.this, UserInfo.class, "userinfo");
         mUserid = userinfo.getUserid();
         //从网络获取用户绑定的小区
-//        getBDProjectID(mUserid);
-//        mSpinner_unit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                ProjectMsg projectInfo = dataInfoList.get(i);
-//                String project_name = projectInfo.getProject_name();
-//                if (!project_name.equals("请选择小区")) {
-//                    mDetailID = projectInfo.getId();
-//                    //                    getMenInfoFromInt(mDetailID);
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
-//        ProjectMsg menInfo = new ProjectMsg();
-//        menInfo.setProject_name("请选择大门");
-//        dataMenList = new ArrayList<>();
-//        dataMenList.add(menInfo);
+        //        getBDProjectID(mUserid);
+        //        mSpinner_unit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //            @Override
+        //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        //                ProjectMsg projectInfo = dataInfoList.get(i);
+        //                String project_name = projectInfo.getProject_name();
+        //                if (!project_name.equals("请选择小区")) {
+        //                    mDetailID = projectInfo.getId();
+        //                    //                    getMenInfoFromInt(mDetailID);
+        //                }
+        //            }
+        //
+        //            @Override
+        //            public void onNothingSelected(AdapterView<?> adapterView) {
+        //
+        //            }
+        //        });
+        //        ProjectMsg menInfo = new ProjectMsg();
+        //        menInfo.setProject_name("请选择大门");
+        //        dataMenList = new ArrayList<>();
+        //        dataMenList.add(menInfo);
         //        mSpinner_men.setAdapter();
         mBt_submit.setOnClickListener(this);
     }
 
-//    private void getBDProjectID(String userID) {
-//        String personalDetailUrl = NetConfig.PERSONALDATA;
-//        RequestParamsFM params = new RequestParamsFM();
-//        params.put("userid", userID);
-//        HttpOkhUtils.getInstance().doGetWithParams(personalDetailUrl, params, new HttpOkhUtils.HttpCallBack() {
-//            @Override
-//            public void onError(Request request, IOException e) {
-//                ToastUtils.showToast(QrcodeActivity.this, "网络错误");
-//            }
-//
-//            @Override
-//            public void onSuccess(int code, String resbody) {
-//                if (code != 200) {
-//                    ToastUtils.showToast(QrcodeActivity.this, "网络错误，错误码" + code);
-//                    return;
-//                }
-//                Gson gson = new Gson();
-//                PersonalDataInfo personalDataInfo = gson.fromJson(resbody, PersonalDataInfo.class);
-//                PersonalDataInfo.ArrBean arr = personalDataInfo.getArr();
-//                if (null == dataInfoList) {
-//                    dataInfoList = new ArrayList<>();
-//                } else {
-//                    dataInfoList.clear();
-//                }
-//                ProjectMsg detailInfo = new ProjectMsg();
-//                detailInfo.setProject_name("请选择小区");
-//                dataInfoList.add(detailInfo);
-//                List<PersonalDataInfo.ArrBean.ListProjectBean> listProject = arr.getListProject();
-//                for (int i = 0; i < listProject.size(); i++) {
-//                    PersonalDataInfo.ArrBean.ListProjectBean listProjectBean = listProject.get(i);
-//                    String project_name = listProjectBean.getProject_name();
-//                    String fname = listProjectBean.getFname();
-//                    String detail_id = listProjectBean.getProjectdetail_id();
-//                    ProjectMsg bdInfo = new ProjectMsg();
-//                    bdInfo.setProject_name(project_name);
-//                    bdInfo.setDetail_name(fname);
-//                    bdInfo.setId(detail_id);
-//                    dataInfoList.add(bdInfo);
-//                }
-//                mDetailAdapter.notifyDataSetChanged();
-//            }
-//        });
-//    }
+    //    private void getBDProjectID(String userID) {
+    //        String personalDetailUrl = NetConfig.PERSONALDATA;
+    //        RequestParamsFM params = new RequestParamsFM();
+    //        params.put("userid", userID);
+    //        HttpOkhUtils.getInstance().doGetWithParams(personalDetailUrl, params, new HttpOkhUtils.HttpCallBack() {
+    //            @Override
+    //            public void onError(Request request, IOException e) {
+    //                ToastUtils.showToast(QrcodeActivity.this, "网络错误");
+    //            }
+    //
+    //            @Override
+    //            public void onSuccess(int code, String resbody) {
+    //                if (code != 200) {
+    //                    ToastUtils.showToast(QrcodeActivity.this, "网络错误，错误码" + code);
+    //                    return;
+    //                }
+    //                Gson gson = new Gson();
+    //                PersonalDataInfo personalDataInfo = gson.fromJson(resbody, PersonalDataInfo.class);
+    //                PersonalDataInfo.ArrBean arr = personalDataInfo.getArr();
+    //                if (null == dataInfoList) {
+    //                    dataInfoList = new ArrayList<>();
+    //                } else {
+    //                    dataInfoList.clear();
+    //                }
+    //                ProjectMsg detailInfo = new ProjectMsg();
+    //                detailInfo.setProject_name("请选择小区");
+    //                dataInfoList.add(detailInfo);
+    //                List<PersonalDataInfo.ArrBean.ListProjectBean> listProject = arr.getListProject();
+    //                for (int i = 0; i < listProject.size(); i++) {
+    //                    PersonalDataInfo.ArrBean.ListProjectBean listProjectBean = listProject.get(i);
+    //                    String project_name = listProjectBean.getProject_name();
+    //                    String fname = listProjectBean.getFname();
+    //                    String detail_id = listProjectBean.getProjectdetail_id();
+    //                    ProjectMsg bdInfo = new ProjectMsg();
+    //                    bdInfo.setProject_name(project_name);
+    //                    bdInfo.setDetail_name(fname);
+    //                    bdInfo.setId(detail_id);
+    //                    dataInfoList.add(bdInfo);
+    //                }
+    //                mDetailAdapter.notifyDataSetChanged();
+    //            }
+    //        });
+    //    }
 
     private void getMenInfoFromInt(String detailID) {
 
@@ -152,10 +157,10 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void getQrcode() {
-        String getQcUrl = "";
+        String getQcUrl = NetConfig.QRCODE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("id", mUserid);
-        params.put("type", "??????");
+        params.put("type", "0");
         HttpOkhUtils.getInstance().doGetWithParams(getQcUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -165,12 +170,24 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onSuccess(int code, String resbody) {
                 if (code == 200) {
-
+                    Gson gson = new Gson();
+                    LoginInfo loginInfo = gson.fromJson(resbody, LoginInfo.class);
+                    String qrcode = loginInfo.getQrcode();
+                    //生成二维码
+                    generateQr(qrcode);
                 } else {
                     ToastUtils.showToast(QrcodeActivity.this, "获取数据失败");
                 }
             }
         });
+    }
+
+    private void generateQr(String qrcode) {
+        Bitmap bitmap = ZxingUtils.createQRImage(qrcode, 200, 200);
+        System.out.println(bitmap);
+        if (null != bitmap) {
+            iv_code.setImageBitmap(bitmap);
+        }
     }
     //    Bitmap encodeAsBitmap(String str) {
     //        Bitmap bitmap = null;

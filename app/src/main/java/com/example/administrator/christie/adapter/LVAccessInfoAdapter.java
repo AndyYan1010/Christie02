@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.MenjinInfo;
 
 import java.util.List;
 
@@ -21,12 +22,14 @@ import java.util.List;
  */
 
 public class LVAccessInfoAdapter extends BaseAdapter {
-    private List    mList;
-    private Context mContext;
+    private List<MenjinInfo> mList;
+    private Context          mContext;
+    private int              mKind;//0门禁记录,1缴费记录
 
-    public LVAccessInfoAdapter(Context context, List data) {
+    public LVAccessInfoAdapter(Context context, List data, int kind) {
         this.mList = data;
         this.mContext = context;
+        this.mKind = kind;
     }
 
     @Override
@@ -59,19 +62,43 @@ public class LVAccessInfoAdapter extends BaseAdapter {
             viewHolder = (MyViewHolder) view.getTag();
         }
         if (i % 2 == 0) {
-            viewHolder.relative_item.setBackgroundResource(R.color.blue_06);
-        } else {
             viewHolder.relative_item.setBackgroundResource(R.color.white);
+        } else {
+            viewHolder.relative_item.setBackgroundResource(R.color.blue_06);
         }
-        if (i==0){
-            viewHolder.tv_date.setText("打卡日期");
-            viewHolder.tv_door_name.setText("门名称");
-            viewHolder.tv_area.setText("打卡区域");
-        }else {
-            viewHolder.tv_date.setText("2017-02-01");
-            viewHolder.tv_door_name.setText("大厅刷卡出门");
-            viewHolder.tv_area.setText("W1-A");
+        //        if (i == 0) {
+        //            if (mKind == 0) {
+        //                viewHolder.tv_date.setText("打卡日期");
+        //                viewHolder.tv_door_name.setText("门名称");
+        //                viewHolder.tv_area.setText("打卡区域");
+        //            } else if (mKind == 1) {
+        //                viewHolder.tv_date.setText("缴费日期");
+        //                viewHolder.tv_door_name.setText("支付方式");
+        //                viewHolder.tv_area.setText("金额");
+        //            }
+        //        } else {
+        if (mKind == 0) {
+            MenjinInfo menjinInfo = mList.get(i);
+            String time = menjinInfo.getTime();
+            String subtime = time.substring(0, 10);
+            viewHolder.tv_date.setText(subtime);
+            viewHolder.tv_door_name.setText(menjinInfo.getDevice_name());
+            viewHolder.tv_area.setText(menjinInfo.getDevice_address());
+        } else if (mKind == 1) {
+            MenjinInfo payInfo = mList.get(i);
+            String time = payInfo.getTime();
+            int paycode = payInfo.getPaycode();
+            double amount = payInfo.getAmount();
+            String subtime = time.substring(0, 10);
+            viewHolder.tv_date.setText(subtime);
+            if (paycode == 1) {
+                viewHolder.tv_door_name.setText("支付宝");
+            } else if (paycode == 2) {
+                viewHolder.tv_door_name.setText("微信支付");
+            }
+            viewHolder.tv_area.setText("" + amount);
         }
+        //        }
         return view;
     }
 

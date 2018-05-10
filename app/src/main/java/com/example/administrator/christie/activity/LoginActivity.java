@@ -2,10 +2,12 @@ package com.example.administrator.christie.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
@@ -184,6 +186,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         });
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private long exitTime = 0;
+
+    public void exit() {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            Toast.makeText(getApplicationContext(), "再按一次退出应用",
+                    Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+            TApplication.exit();
+        }
+    }
     //
     //    public void setViews() {
     //        et_user = (EditText) findViewById(R.id.login_edtId);

@@ -13,8 +13,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.MenjinInfo;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.SPref;
+import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
+import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import okhttp3.Request;
 
 /**
  * @创建者 AndyYan
@@ -31,6 +48,8 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
     private ImageView mImg_back, mImg_select_st, mImg_select_end;
     private Button mBt_search;
     private String mkind;
+    private String mStartTime;//记录开始时间
+    private String mEndTime;//记录结束时间
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +75,11 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
     }
 
     private void initData() {
-
+        //获取当前日期
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String data = simpleDateFormat.format(new Date());
+        mTv_start_time.setText(data);
+        mTv_end_time.setText(data);
     }
 
     @Override
@@ -76,17 +99,56 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
                 showDatePickerDialog(calendar2, 2, 2);
                 break;
             case R.id.bt_search:
-                //获取开始时间 和结束时间，跳转数据结果
-                FragmentTransaction ftt = getFragmentManager().beginTransaction();
-                AccessInfoResultFragment infoResultFragment = new AccessInfoResultFragment();
                 String startT = String.valueOf(mTv_start_time.getText());
                 String endT = String.valueOf(mTv_end_time.getText());
-                infoResultFragment.setData(startT, endT);
-                ftt.add(R.id.frame_accessdata, infoResultFragment, "infoResultFragment");
-                ftt.addToBackStack(null);
-                ftt.commit();
+                //获取数据
+                getMenjinInfo(startT, endT);
                 break;
         }
+    }
+
+    private void getMenjinInfo(final String startT, final String endT) {
+        UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
+        String userid = userinfo.getUserid();
+        String mjInfoUrl = NetConfig.EGDETAIL;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("id", userid);
+        params.put("starttime", startT);
+        params.put("endtime", endT);
+        HttpOkhUtils.getInstance().doGetWithParams(mjInfoUrl, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(getContext(), "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code == 200) {
+                    ToastUtils.showToast(getContext(), "网络请求成功");
+                    //解析返回数据
+                    Gson gson = new Gson();
+                    try {
+                        //获取开始时间 和结束时间，跳转数据结果
+                        FragmentTransaction ftt = getFragmentManager().beginTransaction();
+                        AccessInfoResultFragment infoResultFragment = new AccessInfoResultFragment();
+                        List menjinInfoList = infoResultFragment.getMenjinInfoList();
+                        JSONArray jsonArray = new JSONArray(resbody);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            MenjinInfo menjinInfo = gson.fromJson(jsonArray.get(i).toString(), MenjinInfo.class);
+                            menjinInfoList.add(menjinInfo);
+                        }
+                        infoResultFragment.setData(startT, endT);
+                        ftt.add(R.id.frame_accessdata, infoResultFragment, "infoResultFragment");
+                        ftt.addToBackStack(null);
+                        ftt.commit();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    ToastUtils.showToast(getContext(), "网络错误,错误码:" + code);
+                }
+            }
+        });
     }
 
     private void showDatePickerDialog(Calendar calendar, int themeResId, final int kind) {
@@ -94,10 +156,23 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
 
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                if (kind == 1)
-                    mTv_start_time.setText("" + i + "-" + (i1 + 1) + "-" + i2);
-                if (kind == 2)
-                    mTv_end_time.setText("" + i + "-" + (i1 + 1) + "-" + i2);
+                int iy = i1 + 1;
+                String yue = "" + iy;
+                String ri = "" + i2;
+                if (iy < 10) {
+                    yue = "0" + iy;
+                }
+                if (i2 < 10) {
+                    ri = "0" + i2;
+                }
+                if (kind == 1) {
+                    mTv_start_time.setText("" + i + "-" + yue + "-" + ri);
+                    //                    mStartTime = "" + i + "/" + yue + "/" + ri;
+                }
+                if (kind == 2) {
+                    mTv_end_time.setText("" + i + "-" + yue + "-" + ri);
+                    //                    mEndTime = "" + i + "/" + yue + "/" + ri;
+                }
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }

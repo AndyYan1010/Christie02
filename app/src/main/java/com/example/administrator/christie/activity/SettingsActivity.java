@@ -2,6 +2,7 @@ package com.example.administrator.christie.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -10,8 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.TApplication;
-import com.example.administrator.christie.entity.UserEntity;
+import com.example.administrator.christie.modelInfo.UserInfo;
 
 public class SettingsActivity extends BaseActivity implements View.OnClickListener {
     private Button btn_signout;
@@ -45,7 +45,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 new AlertDialog.Builder(SettingsActivity.this).setTitle("确认退出?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        TApplication.user = new UserEntity();
+                        SharedPreferences sharedPreferences = getSharedPreferences(UserInfo.class.getName(), MODE_PRIVATE);
+                        SharedPreferences.Editor edit = sharedPreferences.edit();
+                        edit.remove("userinfo");
+                        edit.commit();
                         startActivity(new Intent(SettingsActivity.this,LoginActivity.class));
                         finish();
                     }

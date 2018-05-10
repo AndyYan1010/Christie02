@@ -43,7 +43,7 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
 
     private void initView() {
         if (null == mDetailJson || "".equals(mDetailJson)) {
-            ToastUtils.showToast(getContext(), "为携带具体邀请信息");
+            ToastUtils.showToast(getContext(), "未携带具体邀请信息");
             //弹出回退栈最上面的fragment
             getFragmentManager().popBackStackImmediate(null, 0);
             return;
@@ -60,6 +60,7 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
         mImg_back.setOnClickListener(this);
         mTv_title.setText("二维码分享");
         mBt_share.setOnClickListener(this);
+        //生成二维码
         generateQr(mDetailJson);
     }
 

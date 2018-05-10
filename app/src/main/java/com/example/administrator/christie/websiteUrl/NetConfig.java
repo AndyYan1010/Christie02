@@ -45,4 +45,14 @@ public class NetConfig {
     public static String PROJECTBYTEL   = ROOT + "projectByTel";
     //提交车位预约信息
     public static String PARKRESERVE    = ROOT + "parkReserve";
+    //门禁数据
+    public static String EGDETAIL       = ROOT + "EgDetail";
+    //访客记录
+    public static String FKRECORD       = ROOT + "FkRecord";
+    //缴费记录
+    public static String PAYRECORD      = ROOT + "payRecord";
+    //邀请二维码
+    public static String INVITE         = ROOT + "invite";
+    //二维码扫描
+    public static String QRCODE         = ROOT + "qrcode";
 }

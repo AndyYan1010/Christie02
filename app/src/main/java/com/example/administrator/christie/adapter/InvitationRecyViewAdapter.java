@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.FkRecordInfo;
 
 import java.util.List;
 
@@ -20,8 +22,8 @@ import java.util.List;
  */
 
 public class InvitationRecyViewAdapter extends RecyclerView.Adapter<InvitationRecyViewAdapter.ViewHolder> {
-    private List    mList;
-    private Context mContext;
+    private List<FkRecordInfo.ListBean> mList;
+    private Context                     mContext;
 
     public InvitationRecyViewAdapter(Context context, List mData) {
         this.mList = mData;
@@ -46,14 +48,29 @@ public class InvitationRecyViewAdapter extends RecyclerView.Adapter<InvitationRe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        FkRecordInfo.ListBean bean = mList.get(position);
+        String fdate = bean.getFdate();
+        String subdata = fdate.substring(0, 10);
+        String fname = bean.getFname();
+        String fmobile = bean.getFmobile();
+        String freason = bean.getFreason();
+        holder.tv_data.setText(subdata);
+        holder.tv_visitor_name.setText(fname);
+        holder.tv_visit_time.setText(fdate);
+        holder.tv_phone.setText(fmobile);
+        holder.tv_reason.setText(freason);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tv_data, tv_visitor_name, tv_phone, tv_visit_time, tv_reason;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
+            tv_data = itemView.findViewById(R.id.tv_data);
+            tv_visitor_name = itemView.findViewById(R.id.tv_visitor_name);
+            tv_phone = itemView.findViewById(R.id.tv_phone);
+            tv_visit_time = itemView.findViewById(R.id.tv_visit_time);
+            tv_reason = itemView.findViewById(R.id.tv_reason);
         }
     }
 }

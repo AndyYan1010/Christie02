@@ -13,8 +13,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.modelInfo.MenjinInfo;
+import com.example.administrator.christie.modelInfo.PayRecordInfo;
+import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.SPref;
+import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import okhttp3.Request;
 
 /**
  * @创建者 AndyYan
@@ -56,7 +71,11 @@ public class PaymentRecordFragment extends Fragment implements View.OnClickListe
     }
 
     private void initData() {
-
+        //获取当前日期
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String data = simpleDateFormat.format(new Date());
+        mTv_start_time.setText(data);
+        mTv_end_time.setText(data);
     }
 
     @Override
@@ -76,27 +95,81 @@ public class PaymentRecordFragment extends Fragment implements View.OnClickListe
                 showDatePickerDialog(calendar2, 2, 2);
                 break;
             case R.id.bt_search:
-                //获取开始时间 和结束时间，跳转数据结果
-                FragmentTransaction ftt = getFragmentManager().beginTransaction();
-                PaymentResultFragment paymentResultFgt = new PaymentResultFragment();
                 String startT = String.valueOf(mTv_start_time.getText());
                 String endT = String.valueOf(mTv_end_time.getText());
-                paymentResultFgt.setData(startT, endT);
-                ftt.add(R.id.frame_accessdata, paymentResultFgt, "invitationResultFragment");
-                ftt.addToBackStack(null);
-                ftt.commit();
+                //获取数据
+                getMenjinInfo(startT, endT);
                 break;
         }
     }
+
+    private void getMenjinInfo(final String startT, final String endT) {
+        UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
+        String userid = userinfo.getUserid();
+        String jfInfoUrl = NetConfig.PAYRECORD;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("userid", userid);
+        params.put("starttime", startT);
+        params.put("endtime", endT);
+        HttpOkhUtils.getInstance().doGetWithParams(jfInfoUrl, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(getContext(), "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code == 200) {
+                    ToastUtils.showToast(getContext(), "网络请求成功");
+                    //解析返回数据
+                    Gson gson = new Gson();
+                    PayRecordInfo payRecordInfo = gson.fromJson(resbody, PayRecordInfo.class);
+                    List<PayRecordInfo.ListBean> list = payRecordInfo.getList();
+                    //获取开始时间 和结束时间，跳转数据结果
+                    FragmentTransaction ftt = getFragmentManager().beginTransaction();
+                    PaymentResultFragment paymentResultFgt = new PaymentResultFragment();
+                    paymentResultFgt.setData(startT, endT);
+                    List payInfoList = paymentResultFgt.getPayInfoList();
+                    for (PayRecordInfo.ListBean bean : list) {
+                        double amount = bean.getAmount();
+                        int paycode = bean.getPaycode();
+                        String time = bean.getTime();
+                        MenjinInfo menjinInfo = new MenjinInfo();
+                        menjinInfo.setAmount(amount);
+                        menjinInfo.setTime(time);
+                        menjinInfo.setPaycode(paycode);
+                        payInfoList.add(menjinInfo);
+                    }
+                    ftt.add(R.id.frame_accessdata, paymentResultFgt, "invitationResultFragment");
+                    ftt.addToBackStack(null);
+                    ftt.commit();
+                }
+            }
+        });
+    }
+
     private void showDatePickerDialog(Calendar calendar, int themeResId, final int kind) {
         new DatePickerDialog(getContext(), themeResId, new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                if (kind == 1)
-                    mTv_start_time.setText("" + i + "-" + (i1 + 1) + "-" + i2);
-                if (kind == 2)
-                    mTv_end_time.setText("" + i + "-" + (i1 + 1) + "-" + i2);
+                int iy = i1 + 1;
+                String yue = "" + iy;
+                String ri = "" + i2;
+                if (iy < 10) {
+                    yue = "0" + iy;
+                }
+                if (i2 < 10) {
+                    ri = "0" + i2;
+                }
+                if (kind == 1) {
+                    mTv_start_time.setText("" + i + "-" + yue + "-" + ri);
+                    //                    mStartTime = "" + i + "/" + yue + "/" + ri;
+                }
+                if (kind == 2) {
+                    mTv_end_time.setText("" + i + "-" + yue + "-" + ri);
+                    //                    mEndTime = "" + i + "/" + yue + "/" + ri;
+                }
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }

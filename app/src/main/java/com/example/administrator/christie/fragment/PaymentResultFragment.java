@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.LVAccessInfoAdapter;
+import com.example.administrator.christie.modelInfo.PayRecordInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +29,10 @@ public class PaymentResultFragment extends Fragment implements View.OnClickListe
 
     private View   mRootView;
     private String mstartT, mendT;
-    private TextView mTv_title, mTv_st_end;
+    private TextView mTv_title, mTv_st_end, mTv_date, mTv_door_name, mTv_area, mTv_nodata;
     private ImageView mImg_back;
     private ListView  mLv_result;
+    private List<PayRecordInfo.ListBean> mPayInfoList = new ArrayList();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +45,10 @@ public class PaymentResultFragment extends Fragment implements View.OnClickListe
     private void initView() {
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mTv_st_end = (TextView) mRootView.findViewById(R.id.tv_st_end);
+        mTv_nodata = (TextView) mRootView.findViewById(R.id.tv_nodata);
+        mTv_date = (TextView) mRootView.findViewById(R.id.tv_date);
+        mTv_door_name = (TextView) mRootView.findViewById(R.id.tv_door_name);
+        mTv_area = (TextView) mRootView.findViewById(R.id.tv_area);
         mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
         mLv_result = (ListView) mRootView.findViewById(R.id.lv_result);
     }
@@ -51,16 +57,14 @@ public class PaymentResultFragment extends Fragment implements View.OnClickListe
         mTv_title.setText("缴费记录结果");
         mImg_back.setOnClickListener(this);
         mTv_st_end.setText("下方数据为" + mstartT + "至" + mendT + "的数据");
-        List mData = new ArrayList();
-        mData.add("1");
-        mData.add("1");
-        mData.add("1");
-        mData.add("1");
-        mData.add("1");
-        LVAccessInfoAdapter accessInfoAdapter = new LVAccessInfoAdapter(getContext(), mData);
+        mTv_date.setText("缴费日期");
+        mTv_door_name.setText("支付方式");
+        mTv_area.setText("金额");
+        if (mPayInfoList.size() > 0) {
+            mTv_nodata.setVisibility(View.GONE);
+        }
+        LVAccessInfoAdapter accessInfoAdapter = new LVAccessInfoAdapter(getContext(), mPayInfoList, 1);
         mLv_result.setAdapter(accessInfoAdapter);
-
-
     }
 
     @Override
@@ -76,5 +80,9 @@ public class PaymentResultFragment extends Fragment implements View.OnClickListe
     public void setData(String startTime, String endTime) {
         this.mstartT = startTime;
         this.mendT = endTime;
+    }
+
+    public List getPayInfoList() {
+        return mPayInfoList;
     }
 }

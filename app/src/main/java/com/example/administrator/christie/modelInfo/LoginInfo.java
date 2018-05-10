@@ -27,6 +27,11 @@ public class LoginInfo {
     private String fstatus;
     private String telephone;
     private String username;
+    /**
+     * qrcode : 12312312312
+     */
+
+    private String qrcode;
 
     public String getResult() {
         return result;
@@ -74,5 +79,13 @@ public class LoginInfo {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
     }
 }
