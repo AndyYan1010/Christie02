@@ -103,12 +103,20 @@ public class PayForParkingActivity extends BaseActivity implements View.OnClickL
                 }
                 if (payKind == 1) {
                     ToastUtils.showToast(this, "您选择了微信支付");
-
+                    //客户端（APP）提交订单信息给服务端，服务端提交微信，根据微信接口：统一下单接口，
+                    //生成预支付Id(prepay_id)返回给客户端，客户端（APP）根据预支付Id（prepay_id）调起微信支付
+                    //接收微信返回的支付信息：成功，错误，取消
+                    //支付成功，再在服务器上下单，确认订单已支付.该订单支付完成
+                    return;
                 }
                 if (payKind == 2) {
                     ToastUtils.showToast(this, "你选择了支付宝支付");
-                    RequestParamsFM params=new RequestParamsFM();
-                    params.put("","");
+                    //先提交下单信息到服务器(状态时已下单，未支付)，获取订单号
+                    //获取订单信息后，调用支付宝支付,
+                    //接收支付宝返回的支付信息：取消支付，成功支付，支付失败。
+                    //支付成功，再在服务器上下单，确认订单已支付.该订单支付完成
+                    RequestParamsFM params = new RequestParamsFM();
+                    params.put("", "");
                     HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
                         @Override
                         public void onError(Request request, IOException e) {
@@ -122,16 +130,16 @@ public class PayForParkingActivity extends BaseActivity implements View.OnClickL
                                 return;
                             }
                             DecimalFormat df = new DecimalFormat("######0.00");
-//                            double resultPrice = Double.parseDouble(df.format(price));
-//                            if (resultPrice < 0.01) {
-//                                orderOverOK(orderStr, "", "zhifubao");
-//                            } else {
-//                                if (checkAliPayInstalled(mContext)) {
-//                                    testSend(resultPrice);
-//                                } else {
-//                                    ToastUtils.showToast(mContext, "您未安装支付宝");
-//                                }
-//                            }
+                            //                            double resultPrice = Double.parseDouble(df.format(price));
+                            //                            if (resultPrice < 0.01) {
+                            //                                orderOverOK(orderStr, "", "zhifubao");
+                            //                            } else {
+                            //                                if (checkAliPayInstalled(mContext)) {
+                            //                                    testSend(resultPrice);
+                            //                                } else {
+                            //                                    ToastUtils.showToast(mContext, "您未安装支付宝");
+                            //                                }
+                            //                            }
                         }
                     });
                 }
@@ -140,9 +148,8 @@ public class PayForParkingActivity extends BaseActivity implements View.OnClickL
     }
 
     private void orderOverOK(String order_num, String pay_no, String pay_type) {
-
-        RequestParamsFM params=new RequestParamsFM();
-        params.put("","");
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("", "");
         HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -172,28 +179,28 @@ public class PayForParkingActivity extends BaseActivity implements View.OnClickL
          *
          * orderInfo的获取必须来自服务端；
          */
-//        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AppConstants.ALI_PLAY_APPID, mOrder.getFname(), price);
-//        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
-////
-//        String sign = OrderInfoUtil2_0.getSign(params, AppConstants.ALI_PLAY_RSA2_PRIVATE, true);
-//        final String orderInfo = orderParam + "&" + sign;
+        //        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AppConstants.ALI_PLAY_APPID, mOrder.getFname(), price);
+        //        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
+        ////
+        //        String sign = OrderInfoUtil2_0.getSign(params, AppConstants.ALI_PLAY_RSA2_PRIVATE, true);
+        //        final String orderInfo = orderParam + "&" + sign;
 
-//        Runnable payRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                PayTask alipay = new PayTask(PayForParkingActivity.this);
-//                Map<String, String> result = alipay.payV2(orderInfo, true);
-//                Log.i("msp", result.toString());
-//
-//                Message msg = new Message();
-//                msg.what = SDK_PAY_FLAG;
-//                msg.obj = result;
-//
-//                mHandler.sendMessage(msg);
-//            }
-//        };
-//        Thread payThread = new Thread(payRunnable);
-//        payThread.start();
+        //        Runnable payRunnable = new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                PayTask alipay = new PayTask(PayForParkingActivity.this);
+        //                Map<String, String> result = alipay.payV2(orderInfo, true);
+        //                Log.i("msp", result.toString());
+        //
+        //                Message msg = new Message();
+        //                msg.what = SDK_PAY_FLAG;
+        //                msg.obj = result;
+        //
+        //                mHandler.sendMessage(msg);
+        //            }
+        //        };
+        //        Thread payThread = new Thread(payRunnable);
+        //        payThread.start();
     }
 
     @SuppressLint("HandlerLeak")
@@ -214,7 +221,7 @@ public class PayForParkingActivity extends BaseActivity implements View.OnClickL
                         Toast.makeText(mContext, "支付成功", Toast.LENGTH_SHORT).show();
                         String tradeNo = resultInfo.split("trade_no\":\"")[1];
                         tradeNo = tradeNo.substring(0, tradeNo.indexOf("\""));
-//                        orderOverOK(orderStr, tradeNo, "zhifubao");
+                        //                        orderOverOK(orderStr, tradeNo, "zhifubao");
                     } else {
                         Toast.makeText(mContext, "支付失败", Toast.LENGTH_SHORT).show();
                         //                        sendDataToIntnet();
