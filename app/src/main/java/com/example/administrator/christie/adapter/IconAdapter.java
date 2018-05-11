@@ -20,6 +20,7 @@ import com.example.administrator.christie.activity.AccessdataActivity;
 import com.example.administrator.christie.activity.BluetoothActivity;
 import com.example.administrator.christie.activity.InvitationRecordActivity;
 import com.example.administrator.christie.activity.MenuIntroduceActivity;
+import com.example.administrator.christie.activity.ParkinglockActivity;
 import com.example.administrator.christie.activity.PayForParkingActivity;
 import com.example.administrator.christie.activity.PaymentRecordActivity;
 import com.example.administrator.christie.activity.QrcodeActivity;
@@ -200,7 +201,8 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             mContext.startActivity(intent);
         }
         if ("车位锁定".equals(title)){
-            ToastUtils.showToast(mContext,"正在开发");
+            Intent intent = new Intent(mContext, ParkinglockActivity.class);
+            mContext.startActivity(intent);
         }
         if ("菜单".equals(title)){
             Intent intent = new Intent(mContext, MenuIntroduceActivity.class);

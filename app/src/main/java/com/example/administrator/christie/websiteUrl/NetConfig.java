@@ -55,4 +55,8 @@ public class NetConfig {
     public static String INVITE         = ROOT + "invite";
     //二维码扫描
     public static String QRCODE         = ROOT + "qrcode";
+    //获取已入场的车位 锁定状态
+    public static String GETLOCKSTATE   = ROOT + "getStatus";
+    //车位锁定
+    public static String LOCKPLATE      = ROOT + "lock";
 }
