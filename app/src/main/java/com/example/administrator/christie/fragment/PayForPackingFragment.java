@@ -23,14 +23,16 @@ import android.widget.Toast;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.global.AppConstants;
 import com.example.administrator.christie.global.PayResult;
+import com.example.administrator.christie.modelInfo.ParkPayInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
+import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.Map;
 
 import okhttp3.Request;
@@ -47,11 +49,12 @@ import okhttp3.Request;
 public class PayForPackingFragment extends Fragment implements View.OnClickListener {
     private View      mRootView;
     private ImageView mImg_back;
-    private TextView  mTv_title;
-    private Button    mBt_pay;
-    private CheckBox  mCb_weixin, mCb_zfb;
+    private TextView  mTv_title, mTv_plate, mTv_username, mTv_price;
+    private Button   mBt_pay;
+    private CheckBox mCb_weixin, mCb_zfb;
     private int payKind = 0;
-    private Context mContext;
+    private Context     mContext;
+    private ParkPayInfo payInfo;//车牌付费信息
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +68,9 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     private void initView() {
         mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
+        mTv_plate = (TextView) mRootView.findViewById(R.id.tv_plate);
+        mTv_username = (TextView) mRootView.findViewById(R.id.tv_username);
+        mTv_price = (TextView) mRootView.findViewById(R.id.tv_price);
         mCb_weixin = (CheckBox) mRootView.findViewById(R.id.cb_weixin);
         mCb_zfb = (CheckBox) mRootView.findViewById(R.id.cb_zfb);
         mBt_pay = (Button) mRootView.findViewById(R.id.bt_pay);
@@ -73,6 +79,14 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     private void initData() {
         mImg_back.setOnClickListener(this);
         mTv_title.setText("停车缴费");
+        UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
+        ParkPayInfo.ParklistBean parklist = payInfo.getParklist();
+        String plateNo = parklist.getPlateNo();
+        String username = userinfo.getUsername();
+        double amount = parklist.getAmount();
+        mTv_plate.setText(plateNo);
+        mTv_username.setText(username);
+        mTv_price.setText("¥" + amount);
         mCb_weixin.setOnClickListener(this);
         mCb_zfb.setOnClickListener(this);
         mBt_pay.setOnClickListener(this);
@@ -117,7 +131,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //提交订单信息，服务器获取订单信息后调用微信统一下单接口，请求完成，将prepay_id返回app
                     // （具体返回参数：appid，商户号：partnerid，预支付id：prepay_id，扩展字段package（固定值Sign=WXPay）,随机字符串noncestr，时间戳timestamp，签名sign），
                     //获取返回参数后，调用微信app支付
-                    toWXPay();
+                    //                    toWXPay();
                     return;
                 }
                 if (payKind == 2) {
@@ -126,8 +140,8 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //获取订单信息后，调用支付宝支付,
                     //接收支付宝返回的支付信息：取消支付，成功支付，支付失败。
                     //支付成功，再在服务器上下单，确认订单已支付.该订单支付完成
-                    RequestParamsFM params = new RequestParamsFM();
-                    params.put("", "");
+                    //                    RequestParamsFM params = new RequestParamsFM();
+                    //                    params.put("", "");
                     //                    params.put("member_id", UserID);
                     //                    params.put("ticket_count", ticket_count);
                     //                    if (mOrder.getPrice() * mBuyNumber<=0.01){
@@ -141,36 +155,37 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //                    params.put("phone", mEdit_phone_num.getText());
                     //                    params.put("begin_time", mOrder.getFdate());
                     //                    params.put("fname", fname);
-                    HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
-                        @Override
-                        public void onError(Request request, IOException e) {
-                            ToastUtils.showToast(mContext, "下单失败");
-                        }
-
-                        @Override
-                        public void onSuccess(int code, String resbody) {
-                            if (code != 200) {
-                                ToastUtils.showToast(mContext, "下单失败");
-                                return;
-                            }
-                            //                            orderStr = response.optString("id");
-                            DecimalFormat df = new DecimalFormat("######0.00");
-                            //                            double resultPrice = Double.parseDouble(df.format(price));
-                            //                            if (resultPrice < 0.01) {
-                            //                                orderOverOK(orderStr, "", "zhifubao");
-                            //                            } else {
-                            //                                if (checkAliPayInstalled(mContext)) {
-                            //                                    testSend(resultPrice);
-                            //                                } else {
-                            //                                    ToastUtils.showToast(mContext, "您未安装支付宝");
-                            //                                }
-                            //                            }
-                        }
-                    });
+                    //                    HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
+                    //                        @Override
+                    //                        public void onError(Request request, IOException e) {
+                    //                            ToastUtils.showToast(mContext, "下单失败");
+                    //                        }
+                    //
+                    //                        @Override
+                    //                        public void onSuccess(int code, String resbody) {
+                    //                            if (code != 200) {
+                    //                                ToastUtils.showToast(mContext, "下单失败");
+                    //                                return;
+                    //                            }
+                    //                            //                            orderStr = response.optString("id");
+                    //                            DecimalFormat df = new DecimalFormat("######0.00");
+                    //                            //                            double resultPrice = Double.parseDouble(df.format(price));
+                    //                            //                            if (resultPrice < 0.01) {
+                    //                            //                                orderOverOK(orderStr, "", "zhifubao");
+                    //                            //                            } else {
+                    //                            //                                if (checkAliPayInstalled(mContext)) {
+                    //                            //                                    testSend(resultPrice);
+                    //                            //                                } else {
+                    //                            //                                    ToastUtils.showToast(mContext, "您未安装支付宝");
+                    //                            //                                }
+                    //                            //                            }
+                    //                        }
+                    //                    });
                 }
                 break;
         }
     }
+
     private IWXAPI iwxapi; //微信支付api
 
     private void toWXPay() {
@@ -294,5 +309,9 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         ComponentName componentName = intent.resolveActivity(context.getPackageManager());
         return componentName != null;
+    }
+
+    public void setParkPayInfo(ParkPayInfo payInfo) {
+        this.payInfo = payInfo;
     }
 }

@@ -1,6 +1,7 @@
-package com.example.administrator.christie.activity;
+package com.example.administrator.christie.activity.menushowpackage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.activity.BaseActivity;
 import com.example.administrator.christie.adapter.LvMenuIntrAdapter;
 import com.example.administrator.christie.adapter.ProSpinnerAdapter;
 import com.example.administrator.christie.modelInfo.GoodsListInfo;
@@ -67,14 +69,6 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initData() {
-        //        UserInfo userinfo = SPref.getObject(mContext, UserInfo.class, "userinfo");
-        //        if (null != userinfo) {
-        //           if (userinfo.getFstatus()){
-        //               if (userinfo.get){
-        //
-        //               }
-        //           }
-        //        }
         mImg_back.setOnClickListener(this);
         mTv_title.setText("菜单");
         if (null == mData) {
@@ -115,6 +109,16 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
 //        getMenuFromIntnet(menuId);
         //获取个人绑定项目id
         getProjectId();
+        mLv_menu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                GoodsListInfo.ArrBean arrBean = mData.get(i);
+                String id = arrBean.getId();
+                Intent intent = new Intent(MenuIntroduceActivity.this,MenuDetailShowActivity.class);
+                intent.putExtra("menuId",id);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getProjectId() {

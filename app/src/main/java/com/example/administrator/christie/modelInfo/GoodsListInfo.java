@@ -31,16 +31,21 @@ public class GoodsListInfo {
          * good_introduce : 1
          */
 
-        private int good_price;
+        private double good_price;
         private String good_name;
         private String good_pic;
         private String good_introduce;
+        /**
+         * id : 4d2881e863239e9f016323a03eb80007
+         */
 
-        public int getGood_price() {
+        private String id;
+
+        public double getGood_price() {
             return good_price;
         }
 
-        public void setGood_price(int good_price) {
+        public void setGood_price(double good_price) {
             this.good_price = good_price;
         }
 
@@ -66,6 +71,14 @@ public class GoodsListInfo {
 
         public void setGood_introduce(String good_introduce) {
             this.good_introduce = good_introduce;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
     }
 }

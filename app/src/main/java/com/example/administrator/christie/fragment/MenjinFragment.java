@@ -48,9 +48,9 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
     private Context mContext = null;
     private View view;
     //    private GridView gv_menjin, more_icon;
-    private int[]    resArr       = new int[]{R.drawable.code, R.drawable.bluetooth, R.drawable.menjin, R.drawable.menjin};
+    private int[]    resArr       = new int[]{R.drawable.code, R.drawable.bluetooth, R.drawable.menjin, R.drawable.addmore};
     private String[] textArr      = new String[]{"二维码开门", "蓝牙开门", "门禁数据", "添加"};
-    private int[]    resArrTotal  = new int[]{R.drawable.code, R.drawable.bluetooth, R.drawable.menjin, R.drawable.menjin, R.drawable.code, R.drawable.bluetooth, R.drawable.menjin, R.drawable.menjin, R.drawable.bluetooth, R.drawable.bluetooth, R.drawable.bluetooth};
+    private int[]    resArrTotal  = new int[]{R.drawable.code, R.drawable.bluetooth, R.drawable.menjin, R.drawable.addmore, R.drawable.fangkeyaoqing, R.drawable.fangkejilu, R.drawable.cheweiyuyue, R.drawable.tingchejiaofei, R.drawable.jiaofeijilu, R.drawable.cheweisuoding, R.drawable.caidan};
     private String[] textArrTotal = new String[]{"二维码开门", "蓝牙开门", "门禁数据", "添加", "访客邀请", "邀请记录", "车位预约", "停车缴费", "缴费记录", "车位锁定", "菜单"};
     private List<MainMenuEntity> list, listMore;
     private GridViewAdapter adapter, more_iconAdapter;

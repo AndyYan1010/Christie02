@@ -30,8 +30,8 @@ public class ParkinglockActivity extends BaseActivity {
     }
 
     private void initData() {
-        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
         PackingLockFragment packingLockFragment = new PackingLockFragment();
+        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
         ftt.add(R.id.frame_lock, packingLockFragment, "packingLockFragment");
         ftt.commit();
     }

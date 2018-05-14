@@ -64,7 +64,7 @@ public class LvMenuIntrAdapter extends BaseAdapter {
         String good_pic = arrBean.getGood_pic();
         String good_name = arrBean.getGood_name();
         String good_introduce = arrBean.getGood_introduce();
-        int good_price = arrBean.getGood_price();
+        double good_price = arrBean.getGood_price();
         GlideLoaderUtil.showImageView(mContext,good_pic,viewHolder.img_food);
         viewHolder.tv_name.setText(good_name);
         viewHolder.tv_intro.setText(good_introduce);

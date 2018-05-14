@@ -19,7 +19,7 @@ public class MeetingDataInfo {
      * code : 0
      */
 
-    private String message;
+    private String               message;
     private int                  code;
     private List<JsonObjectBean> jsonObject;
 
@@ -64,7 +64,7 @@ public class MeetingDataInfo {
          * create_name : 55
          */
 
-        private String meeting_status;
+        private String         meeting_status;
         private String         sys_org_code;
         private int            fread;
         private String         create_by;
@@ -196,7 +196,7 @@ public class MeetingDataInfo {
              * year : 118
              */
 
-            private int date;
+            private int  date;
             private int  day;
             private int  hours;
             private int  minutes;

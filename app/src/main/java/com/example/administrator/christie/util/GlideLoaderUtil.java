@@ -28,7 +28,7 @@ public class GlideLoaderUtil {
         Glide.with(context)
                 .load(url)// 加载图片
                 .placeholder(R.drawable.ic_launcher)//图片加载出来前，显示的图片
-                .error(R.drawable.ic_launcher)// 设置错误图片
+                .error(R.drawable.cai)// 设置错误图片
                 .crossFade()// 设置淡入淡出效果，默认300ms，可以传参
                 .into(imgeview);
     }

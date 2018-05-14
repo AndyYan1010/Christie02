@@ -19,7 +19,7 @@ import com.example.administrator.christie.R;
 import com.example.administrator.christie.activity.AccessdataActivity;
 import com.example.administrator.christie.activity.BluetoothActivity;
 import com.example.administrator.christie.activity.InvitationRecordActivity;
-import com.example.administrator.christie.activity.MenuIntroduceActivity;
+import com.example.administrator.christie.activity.menushowpackage.MenuIntroduceActivity;
 import com.example.administrator.christie.activity.ParkinglockActivity;
 import com.example.administrator.christie.activity.PayForParkingActivity;
 import com.example.administrator.christie.activity.PaymentRecordActivity;

@@ -63,7 +63,8 @@
         <activity android:name=".activity.VisitorInvitationActivity"/>
         <activity android:name=".activity.PaymentRecordActivity"/>
         <activity android:name=".activity.BindProjectActivity"/>
-        <activity android:name=".activity.MenuIntroduceActivity"/>
+        <activity android:name=".activity.menushowpackage.MenuIntroduceActivity"/>
+        <activity android:name=".activity.menushowpackage.MenuDetailShowActivity"/>
         <activity android:name=".activity.ParkinglockActivity"/>
         <activity
             android:name=".activity.PlateActivity"
