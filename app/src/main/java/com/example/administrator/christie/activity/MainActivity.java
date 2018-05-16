@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.christie.R;
@@ -57,34 +56,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         TApplication.listActivity.add(this);
         setViews();
         setListeners();
-        //查看用户是否认证过
-//        checkIsAuthentication();
-    }
-
-    private void checkIsAuthentication() {
-        UserInfo userinfo = SPref.getObject(MainActivity.this, UserInfo.class, "userinfo");
-        if (null == userinfo) {
-            //为空让用户重新登录，获取登录信息
-            ToastUtils.showToast(MainActivity.this, "请重新登录，获取账号信息");
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            boolean fstatus = userinfo.getFstatus();
-            if (!fstatus) {
-                //弹一个dailog提示
-                View view = View.inflate(MainActivity.this, R.layout.dialog_remind_bd, null);
-                TextView tv_cancel = view.findViewById(R.id.tv_cancel);
-                TextView tv_refresh = view.findViewById(R.id.tv_refresh);
-                TextView tv_ok = view.findViewById(R.id.tv_ok);
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                mAlertDialog = builder.setView(view).create();
-                mAlertDialog.show();
-                tv_cancel.setOnClickListener(this);
-                tv_refresh.setOnClickListener(this);
-                tv_ok.setOnClickListener(this);
-            }
-        }
     }
 
     protected void setViews() {

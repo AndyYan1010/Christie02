@@ -52,6 +52,7 @@
         <activity android:name=".activity.RegisterActivity"/>
         <activity android:name=".activity.SettingsActivity"/>
         <activity android:name=".activity.MeettingActivity"/>
+        <activity android:name=".activity.MsgDetailActivity"/>
         <activity android:name=".activity.PwdModifyActivity"/>
         <activity android:name=".activity.ShenqingActivity"/>
         <activity android:name=".activity.AddPlatenoActivity"/>

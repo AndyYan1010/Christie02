@@ -1,6 +1,7 @@
 package com.example.administrator.christie.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
+import com.example.administrator.christie.activity.MsgDetailActivity;
 import com.example.administrator.christie.adapter.LvMsgAdapter;
 import com.example.administrator.christie.modelInfo.MeetingDataInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
@@ -35,23 +37,32 @@ public class FangkeFragment extends Fragment {
     private Context mContext = null;
     private View view;
     private List<String> functionlist = TApplication.user.getFunctionlist();
-    private ListView mLv_messege;
+    private ListView                             mLv_messege;
     private List<MeetingDataInfo.JsonObjectBean> mData;
-    private LvMsgAdapter mLvMsgAdapter;
-    private SmartRefreshLayout mSmt_refresh;
+    private LvMsgAdapter                         mLvMsgAdapter;
+    private SmartRefreshLayout                   mSmt_refresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         view = inflater.inflate(R.layout.fragment_fangke, container, false);
-        setViews();
-        setData();
-        setListeners();
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setViews();
+        setData();
+        setListeners();
+    }
+
     private void setData() {
-        mData = new ArrayList();
+        if (null == mData) {
+            mData = new ArrayList<>();
+        } else {
+            mData.clear();
+        }
         mLvMsgAdapter = new LvMsgAdapter(mContext, mData);
         mLv_messege.setAdapter(mLvMsgAdapter);
         //获取公告会议内容
@@ -59,17 +70,23 @@ public class FangkeFragment extends Fragment {
         mLv_messege.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                MeetingDataInfo.JsonObjectBean jsonObjectBean = mData.get(i);
+                String msgId = jsonObjectBean.getId();
+                String ftype = jsonObjectBean.getFtype();
+                Intent intent = new Intent(getContext(), MsgDetailActivity.class);
+                intent.putExtra("msgid", msgId);
+                intent.putExtra("kind",ftype);
+                startActivity(intent);
             }
         });
     }
 
     private void getNoticeAndMeeting() {
         UserInfo userinfo = SPref.getObject(getActivity(), UserInfo.class, "userinfo");
-        String phone = userinfo.getPhone();
+        String userid = userinfo.getUserid();
         String meetingUrl = NetConfig.MEETINGSEARCH;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("fmobile", phone);
+        params.put("userid", userid);
         HttpOkhUtils.getInstance().doPost(meetingUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -84,19 +101,19 @@ public class FangkeFragment extends Fragment {
                     Gson gson = new Gson();
                     MeetingDataInfo meetingInfo = gson.fromJson(resbody, MeetingDataInfo.class);
                     String message = meetingInfo.getMessage();
-                    if ("查找成功".equals(message)){
-                        if (null==mData){
-                            mData=new ArrayList<>();
-                        }else {
+                    if ("查找成功".equals(message)) {
+                        if (null == mData) {
+                            mData = new ArrayList<>();
+                        } else {
                             mData.clear();
                         }
                         List<MeetingDataInfo.JsonObjectBean> jsonObject = meetingInfo.getJsonObject();
-                        for (int i=0;i<jsonObject.size();i++){
+                        for (int i = 0; i < jsonObject.size(); i++) {
                             MeetingDataInfo.JsonObjectBean jsonBean = jsonObject.get(i);
                             mData.add(jsonBean);
                         }
                         mLvMsgAdapter.notifyDataSetChanged();
-                    }else {
+                    } else {
                         ToastUtils.showToast(getActivity(), "数据未查找到");
                     }
                 } else {
@@ -119,12 +136,12 @@ public class FangkeFragment extends Fragment {
                 getNoticeAndMeeting();
             }
         });
-//        mSmt_refresh.setOnLoadMoreListener(new OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-//                //上拉加载更多
-//
-//            }
-//        });
+        //        mSmt_refresh.setOnLoadMoreListener(new OnLoadMoreListener() {
+        //            @Override
+        //            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+        //                //上拉加载更多
+        //
+        //            }
+        //        });
     }
 }

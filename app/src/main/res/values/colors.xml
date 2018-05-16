@@ -25,4 +25,6 @@
 
     <color name="title_bar_bg">#d4d4d4</color>
     <color name="orange">#FF4500</color>
+    <color name="blue_kind">#28ACE4</color>
+    <color name="yellow_kind">#E4A43E</color>
 </resources>

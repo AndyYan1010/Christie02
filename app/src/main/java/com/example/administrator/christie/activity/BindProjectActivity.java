@@ -237,10 +237,10 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                     ToastUtils.showToast(BindProjectActivity.this, "请选择公司详细信息");
                     return;
                 }
-//                if (null == mImg_onSer || "".equals(mImg_onSer)) {
-//                    ToastUtils.showToast(BindProjectActivity.this, "图片上传失败，请重新选择图片");
-//                    return;
-//                }
+                if (null == mImg_onSer || "".equals(mImg_onSer)) {
+                    ToastUtils.showToast(BindProjectActivity.this, "图片上传失败，请重新选择图片");
+                    return;
+                }
                 //提交网络
                 sendToIntnet();
                 break;
@@ -272,7 +272,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         requestParams.put("relation", mRelation);
         requestParams.put("faddress", mPlace);
         requestParams.put("id_pic", "sadad");
-//        requestParams.put("id_pic", mImg_onSer);
+        requestParams.put("id_pic", mImg_onSer);
         requestParams.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPost(url, requestParams, new HttpOkhUtils.HttpCallBack() {
             @Override

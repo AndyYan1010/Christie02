@@ -11,9 +11,9 @@ package com.example.administrator.christie.websiteUrl;
 
 public class NetConfig {
     //服务器总地址
-    //    public static String ROOT           = "http://118.89.109.106:8080/YKTJK/";
-//    public static String ROOT                = "http://205.168.1.113:8082/";
-    public static String ROOT                = "http://205.168.1.119:8082/";
+    public static String ROOT                = "http://118.89.109.106:8080/YKTJK/";
+    //    public static String ROOT                = "http://205.168.1.113:8082/";
+    //    public static String ROOT                = "http://205.168.1.119:8082/";
     //用户登录
     public static String LOGINURL            = ROOT + "login";
     //用户注册
@@ -44,6 +44,8 @@ public class NetConfig {
     public static String CHANGEPLATE         = ROOT + "changeplate";
     //获取消息
     public static String MEETINGSEARCH       = ROOT + "meetingSearch";
+    //消息详情
+    public static String MEETINGDETAIL       = ROOT + "MeetingDetail";
     //获取个人绑定的项目id
     public static String PROJECTBYTEL        = ROOT + "projectByTel";
     //提交车位预约信息

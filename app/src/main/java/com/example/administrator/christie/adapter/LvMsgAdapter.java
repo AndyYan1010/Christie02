@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.modelInfo.MeetingDataInfo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -62,26 +64,31 @@ public class LvMsgAdapter extends BaseAdapter {
         } else {
             viewHolder = (MyViewHolder) view.getTag();
         }
-        if (i % 2 == 0) {
-            viewHolder.liner_msg.setBackgroundResource(R.color.white);
-        } else {
-            viewHolder.liner_msg.setBackgroundResource(R.color.blue_06);
-        }
+        //        if (i % 2 == 0) {
+        //            viewHolder.liner_msg.setBackgroundResource(R.color.white);
+        //        } else {
+        //            viewHolder.liner_msg.setBackgroundResource(R.color.blue_06);
+        //        }
         MeetingDataInfo.JsonObjectBean jsonBean = mList.get(i);
         String ftype = jsonBean.getFtype();
-        String meeting_status = jsonBean.getMeeting_status();
+        String create_date = jsonBean.getCreate_date();
         String meeting_content = jsonBean.getMeeting_content();
-        MeetingDataInfo.JsonObjectBean.CreateDateBean create_date = jsonBean.getCreate_date();
-        int day = create_date.getDay();
-        if ("1".equals(ftype)){
+        String fread = jsonBean.getFread();
+        String between = judgeTimeByNow(create_date);
+        viewHolder.tv_time.setText(between);
+        if ("1".equals(ftype)) {
             viewHolder.tv_kind.setText("公告");
-        }else if ("2".equals(ftype)){
+            viewHolder.tv_kind.setTextColor(mContext.getResources().getColor(R.color.yellow_kind));
+            viewHolder.img_head.setImageResource(R.drawable.notices);
+        } else if ("2".equals(ftype)) {
             viewHolder.tv_kind.setText("会议");
+            viewHolder.tv_kind.setTextColor(mContext.getResources().getColor(R.color.blue_kind));
+            viewHolder.img_head.setImageResource(R.drawable.meeting_icon);
         }
         viewHolder.tv_msg.setText(meeting_content);
-        if ("0".equals(meeting_status)){
+        if ("0".equals(fread)) {
             viewHolder.tv_state.setText("未读");
-        }else {
+        } else {
             viewHolder.tv_state.setText("已读");
         }
 
@@ -92,5 +99,48 @@ public class LvMsgAdapter extends BaseAdapter {
         LinearLayout liner_msg;
         ImageView    img_head;
         TextView     tv_kind, tv_msg, tv_time, tv_state;
+    }
+
+    private String judgeTimeByNow(String date) {
+        long millionSeconds = 0;
+        String substring = date.substring(0, 19);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        try {
+            //用户发表的时间/毫秒
+            millionSeconds = sdf.parse(substring).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long nowTime = System.currentTimeMillis();
+        long intervalTime = nowTime - millionSeconds;
+        String spaceTime = getSpaceTime(intervalTime);
+        return spaceTime;
+    }
+
+    public static String getSpaceTime(long time) {
+        //间隔秒
+        Long spaceSecond = time / 1000;
+        //一分钟之内
+        if (spaceSecond >= 0 && spaceSecond < 60) {
+            return "刚刚";
+        }
+        //一小时之内
+        else if (spaceSecond / 60 > 0 && spaceSecond / 60 < 60) {
+            return spaceSecond / 60 + "分钟之前";
+        }
+        //一天之内
+        else if (spaceSecond / (60 * 60) > 0 && spaceSecond / (60 * 60) < 24) {
+            return spaceSecond / (60 * 60) + "小时之前";
+        }
+        //3天之内
+        else if (spaceSecond / (60 * 60 * 24) > 0 && spaceSecond / (60 * 60 * 24) < 3) {
+            return spaceSecond / (60 * 60 * 24) + "天之前";
+        } else {
+            //            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //            Date date = new Date(time);
+            //            String dateStr = simpleDateFormat.format(date);
+            //            return dateStr;
+            return "3天之前";
+        }
     }
 }

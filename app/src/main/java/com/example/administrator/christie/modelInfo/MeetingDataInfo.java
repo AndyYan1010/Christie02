@@ -64,19 +64,19 @@ public class MeetingDataInfo {
          * create_name : 55
          */
 
-        private String         meeting_status;
-        private String         sys_org_code;
-        private int            fread;
-        private String         create_by;
-        private String         sys_company_code;
-        private String         ftype;
-        private String         project_id;
-        private String         bpm_status;
-        private String         id;
-        private String         meeting_name;
-        private CreateDateBean create_date;
-        private String         meeting_content;
-        private String         create_name;
+        private String meeting_status;
+        private String ftype;
+        private String id;
+        private String meeting_name;
+        private String create_date;
+        private String meeting_content;
+        private String fread;
+        private String sys_org_code;
+        private String create_by;
+        private String sys_company_code;
+        private String project_id;
+        private String bpm_status;
+        private String create_name;
 
         public String getMeeting_status() {
             return meeting_status;
@@ -94,11 +94,11 @@ public class MeetingDataInfo {
             this.sys_org_code = sys_org_code;
         }
 
-        public int getFread() {
+        public String getFread() {
             return fread;
         }
 
-        public void setFread(int fread) {
+        public void setFread(String fread) {
             this.fread = fread;
         }
 
@@ -158,11 +158,11 @@ public class MeetingDataInfo {
             this.meeting_name = meeting_name;
         }
 
-        public CreateDateBean getCreate_date() {
+        public String getCreate_date() {
             return create_date;
         }
 
-        public void setCreate_date(CreateDateBean create_date) {
+        public void setCreate_date(String create_date) {
             this.create_date = create_date;
         }
 
