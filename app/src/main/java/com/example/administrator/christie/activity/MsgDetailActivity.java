@@ -58,7 +58,7 @@ public class MsgDetailActivity extends BaseActivity implements View.OnClickListe
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mTv_kind = (TextView) findViewById(R.id.tv_kind);
         mTv_time = (TextView) findViewById(R.id.tv_time);
-        mTv_msg = (TextView) findViewById(R.id.tv_msg);
+        mTv_msg = findViewById(R.id.tv_msg);
     }
 
     private void initData() {
