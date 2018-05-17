@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/messege_head"/>
+            android:src="@drawable/usercenter_pic"/>
 
         <ImageView
             android:id="@+id/iv_settings"
@@ -23,13 +23,14 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:src="@drawable/pyq_group_gl"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
@@ -47,8 +48,35 @@
                 android:text="已登录"
                 android:textColor="@color/white"
                 android:textSize="20sp"/>
-        </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/bg_round_no_frame"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="2dp">
+
+                <ImageView
+                    android:id="@+id/img_att"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/no_authentication"/>
+
+                <TextView
+                    android:id="@+id/tv_att"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:text="未认证"
+                    android:textColor="@color/blue_56"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <!--<LinearLayout-->

@@ -2,6 +2,7 @@ package com.example.administrator.christie.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,9 @@ import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +44,7 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
     public static int selectItem = -1;//记录选择的车牌item
     private UserInfo userinfo;
     private static int addRequestCode = 1001;
+    private SmartRefreshLayout mSmt_refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,7 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
 
     private void setview() {
         mImg_back = (ImageView) findViewById(R.id.img_back);
+        mSmt_refresh = (SmartRefreshLayout) findViewById(R.id.smt_refresh);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mRcv_plate = (RecyclerView) findViewById(R.id.rcv_plate);
         fab_back = (FloatingActionButton) findViewById(R.id.fab_back);
@@ -69,7 +75,13 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
         mRcv_plate.setAdapter(mPlateAdapter);
         //访问网络获取已有车牌信息
         getPlateInfo();
-
+        mSmt_refresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                //访问网络获取已有车牌信息
+                getPlateInfo();
+            }
+        });
         fab_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,11 +200,13 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
             HttpOkhUtils.getInstance().doGetWithParams(getPlateUrl, params, new HttpOkhUtils.HttpCallBack() {
                 @Override
                 public void onError(Request request, IOException e) {
+                    mSmt_refresh.finishRefresh();
                     ToastUtils.showToast(PlateActivity.this, "网络错误");
                 }
 
                 @Override
                 public void onSuccess(int code, String resbody) {
+                    mSmt_refresh.setEnableRefresh(false);
                     if (code != 200) {
                         ToastUtils.showToast(PlateActivity.this, "网络请求失败，错误码" + code);
                         return;

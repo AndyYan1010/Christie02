@@ -27,4 +27,8 @@
     <color name="orange">#FF4500</color>
     <color name="blue_kind">#28ACE4</color>
     <color name="yellow_kind">#E4A43E</color>
+    <color name="gray_0">#EFEFEF</color>
+    <color name="green">#84D574</color>
+    <color name="blue_56">#00B3FF</color>
+
 </resources>

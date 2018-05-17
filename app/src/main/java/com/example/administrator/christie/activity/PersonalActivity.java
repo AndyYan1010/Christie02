@@ -3,6 +3,7 @@ package com.example.administrator.christie.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,11 +16,15 @@ import com.example.administrator.christie.modelInfo.PersonalDataInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.ProgressDialogUtil;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.view.CustomProgress;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,8 +41,9 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
     private List<PersonalDataInfo.ArrBean.ListProjectBean> mBangList;
     private ListView                                       mLv_bang;
     private BindInfoAdapter                                mInfoAdapter;
-    private ImageView mImg_back;
-    private TextView mTv_title;
+    private ImageView                                      mImg_back;
+    private TextView                                       mTv_title;
+    private SmartRefreshLayout                             mSmt_refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,7 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
     protected void setViews() {
         mImg_back = (ImageView) findViewById(R.id.img_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
+        mSmt_refresh = (SmartRefreshLayout) findViewById(R.id.smt_refresh);
         ll_yhm = (LinearLayout) findViewById(R.id.ll_yhm);
         ll_sjh = (LinearLayout) findViewById(R.id.ll_sjh);
         //        ll_xb = (LinearLayout) findViewById(R.id.ll_xb);
@@ -73,9 +80,17 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
         getPersonalData();
         mInfoAdapter = new BindInfoAdapter(mContext, mBangList);
         mLv_bang.setAdapter(mInfoAdapter);
+        mSmt_refresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                //访问网络获取个人资料
+                getPersonalData();
+            }
+        });
     }
 
     private void getPersonalData() {
+        ProgressDialogUtil.startShow(PersonalActivity.this, "正在加载，请稍后...");
         UserInfo userinfo = SPref.getObject(mContext, UserInfo.class, "userinfo");
         final String phone = userinfo.getPhone();
         String userid = userinfo.getUserid();
@@ -85,11 +100,15 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
         HttpOkhUtils.getInstance().doGetWithParams(personalDetailUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
+                mSmt_refresh.finishRefresh();
+                ProgressDialogUtil.hideDialog();
                 ToastUtils.showToast(mContext, "网络错误");
             }
 
             @Override
             public void onSuccess(int code, String resbody) {
+                mSmt_refresh.finishRefresh();
+                ProgressDialogUtil.hideDialog();
                 if (code != 200) {
                     ToastUtils.showToast(mContext, "网络错误，错误码" + code);
                     return;
@@ -97,7 +116,7 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
                 Gson gson = new Gson();
                 PersonalDataInfo personalDataInfo = gson.fromJson(resbody, PersonalDataInfo.class);
                 PersonalDataInfo.ArrBean arr = personalDataInfo.getArr();
-//                String telephone = arr.getTelephone();
+                //                String telephone = arr.getTelephone();
                 String faddress = arr.getFaddress();
                 String user_name = arr.getUser_name();
                 tv_username.setText(user_name);
@@ -121,22 +140,22 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
         ll_yhm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                final EditText et = new EditText(PersonalActivity.this);
-//                new AlertDialog.Builder(PersonalActivity.this).setTitle("用户名").setView(
-//                        et).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        //                        Modify thread = new Modify(TApplication.user.getId(), et.getText().toString(), "0");
-//                        //                        thread.start();
-//                        //提交修改的用户名
-//                    }
-//                }).setNegativeButton("取消", null).show();
+                //                final EditText et = new EditText(PersonalActivity.this);
+                //                new AlertDialog.Builder(PersonalActivity.this).setTitle("用户名").setView(
+                //                        et).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                //                    @Override
+                //                    public void onClick(DialogInterface dialog, int which) {
+                //                        //                        Modify thread = new Modify(TApplication.user.getId(), et.getText().toString(), "0");
+                //                        //                        thread.start();
+                //                        //提交修改的用户名
+                //                    }
+                //                }).setNegativeButton("取消", null).show();
             }
         });
         ll_sjh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(new Intent(PersonalActivity.this, ConfirmActivity.class));
+                //                startActivity(new Intent(PersonalActivity.this, ConfirmActivity.class));
             }
         });
         //        ll_xb.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +198,7 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.img_back:
                 finish();
                 break;
