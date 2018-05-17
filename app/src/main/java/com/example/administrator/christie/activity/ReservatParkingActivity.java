@@ -17,7 +17,7 @@ import android.widget.TimePicker;
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.BDInfoSpinnerAdapter;
-import com.example.administrator.christie.adapter.ProSpinnerAdapter;
+import com.example.administrator.christie.adapter.PlateSpinnerAdapter;
 import com.example.administrator.christie.adapter.TimePiontAdapter;
 import com.example.administrator.christie.modelInfo.PersonalDataInfo;
 import com.example.administrator.christie.modelInfo.PersonalPlateInfo;
@@ -60,7 +60,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
     private UserInfo mUserinfo;
     private List     mBangList;
     private Spinner  mSpinner_plate, mSpinner_pro;
-    private ProSpinnerAdapter    mProjAdapter;//选择车牌适配器
+    private PlateSpinnerAdapter    mProjAdapter;//选择车牌适配器
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
     private List<ProjectMsg>     dataPlateList, dataProList;//车牌数据
 
@@ -117,7 +117,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         ProjectMsg projectInfo = new ProjectMsg();
         projectInfo.setProject_name("请选择车牌");
         dataPlateList.add(projectInfo);
-        mProjAdapter = new ProSpinnerAdapter(ReservatParkingActivity.this, dataPlateList);
+        mProjAdapter = new PlateSpinnerAdapter(ReservatParkingActivity.this, dataPlateList);
         mSpinner_plate.setAdapter(mProjAdapter);
         mSpinner_plate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
