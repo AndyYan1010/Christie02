@@ -27,8 +27,9 @@
             android:id="@+id/tv_start_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="2018-02-01"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/tv_start"
+            android:text="2018-02-01 00:00"
             android:textSize="20sp"/>
 
         <ImageView
@@ -66,8 +67,9 @@
             android:id="@+id/tv_end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="2018-02-01"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/tv_end"
+            android:text="2018-02-01 00:00"
             android:textSize="20sp"/>
 
         <ImageView
@@ -93,6 +95,6 @@
         android:layout_marginTop="80dp"
         android:background="@drawable/bt_search_bac"
         android:text="查 询"
-        android:textSize="22sp"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:textSize="22sp"/>
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.example.administrator.christie.fragment;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -8,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,12 +18,12 @@ import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.view.CustomDatePicker;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +70,7 @@ public class PaymentRecordFragment extends Fragment implements View.OnClickListe
 
     private void initData() {
         //获取当前日期
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String data = simpleDateFormat.format(new Date());
         mTv_start_time.setText(data);
         mTv_end_time.setText(data);
@@ -86,13 +84,27 @@ public class PaymentRecordFragment extends Fragment implements View.OnClickListe
                 break;
             case R.id.img_select_st:
                 //打开时间选择器
-                Calendar calendar = Calendar.getInstance();
-                showDatePickerDialog(calendar, 2, 1);
+                CustomDatePicker dpk1 = new CustomDatePicker(getContext(), new CustomDatePicker.ResultHandler() {
+                    @Override
+                    public void handle(String time) { // 回调接口，获得选中的时间
+                        mTv_start_time.setText(time);
+                    }
+                }, "2010-01-01 00:00", "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+                dpk1.showSpecificTime(true); // 显示时和分
+                dpk1.setIsLoop(true); // 允许循环滚动
+                dpk1.show(mTv_start_time.getText().toString());
                 break;
             case R.id.img_select_end:
                 //打开时间选择器
-                Calendar calendar2 = Calendar.getInstance();
-                showDatePickerDialog(calendar2, 2, 2);
+                CustomDatePicker dpk = new CustomDatePicker(getContext(), new CustomDatePicker.ResultHandler() {
+                    @Override
+                    public void handle(String time) { // 回调接口，获得选中的时间
+                        mTv_end_time.setText(time);
+                    }
+                }, "2010-01-01 00:00", "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+                dpk.showSpecificTime(true); // 显示时和分
+                dpk.setIsLoop(true); // 允许循环滚动
+                dpk.show(mTv_end_time.getText().toString());
                 break;
             case R.id.bt_search:
                 String startT = String.valueOf(mTv_start_time.getText());
@@ -146,31 +158,5 @@ public class PaymentRecordFragment extends Fragment implements View.OnClickListe
                 }
             }
         });
-    }
-
-    private void showDatePickerDialog(Calendar calendar, int themeResId, final int kind) {
-        new DatePickerDialog(getContext(), themeResId, new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                int iy = i1 + 1;
-                String yue = "" + iy;
-                String ri = "" + i2;
-                if (iy < 10) {
-                    yue = "0" + iy;
-                }
-                if (i2 < 10) {
-                    ri = "0" + i2;
-                }
-                if (kind == 1) {
-                    mTv_start_time.setText("" + i + "-" + yue + "-" + ri);
-                    //                    mStartTime = "" + i + "/" + yue + "/" + ri;
-                }
-                if (kind == 2) {
-                    mTv_end_time.setText("" + i + "-" + yue + "-" + ri);
-                    //                    mEndTime = "" + i + "/" + yue + "/" + ri;
-                }
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 }

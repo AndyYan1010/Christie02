@@ -19,6 +19,7 @@ import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.view.CustomDatePicker;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
@@ -76,7 +77,7 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
 
     private void initData() {
         //获取当前日期
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String data = simpleDateFormat.format(new Date());
         mTv_start_time.setText(data);
         mTv_end_time.setText(data);
@@ -90,13 +91,27 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
                 break;
             case R.id.img_select_st:
                 //打开时间选择器
-                Calendar calendar = Calendar.getInstance();
-                showDatePickerDialog(calendar, 2, 1);
+                CustomDatePicker dpk1 = new CustomDatePicker(getContext(), new CustomDatePicker.ResultHandler() {
+                    @Override
+                    public void handle(String time) { // 回调接口，获得选中的时间
+                        mTv_start_time.setText(time);
+                    }
+                }, "2010-01-01 00:00", "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+                dpk1.showSpecificTime(true); // 显示时和分
+                dpk1.setIsLoop(true); // 允许循环滚动
+                dpk1.show(mTv_start_time.getText().toString());
                 break;
             case R.id.img_select_end:
                 //打开时间选择器
-                Calendar calendar2 = Calendar.getInstance();
-                showDatePickerDialog(calendar2, 2, 2);
+                CustomDatePicker dpk = new CustomDatePicker(getContext(), new CustomDatePicker.ResultHandler() {
+                    @Override
+                    public void handle(String time) { // 回调接口，获得选中的时间
+                        mTv_end_time.setText(time);
+                    }
+                }, "2010-01-01 00:00", "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+                dpk.showSpecificTime(true); // 显示时和分
+                dpk.setIsLoop(true); // 允许循环滚动
+                dpk.show(mTv_end_time.getText().toString());
                 break;
             case R.id.bt_search:
                 String startT = String.valueOf(mTv_start_time.getText());

@@ -17,46 +17,45 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/plateno"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车牌："
-                        android:textColor="@color/bottom_button_text_gray"
-                        android:textSize="18sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="车牌："
+                    android:textColor="@color/vm_black_87"
+                    android:textSize="18sp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/frame_black_line"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tv_plate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:background="@color/blue_56"
+                        android:gravity="center"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="10dp"
                         android:text="苏F18888"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/cb_default"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:text="已设为默认车牌"
+                        android:textColor="@color/white"
                         android:textSize="18sp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -64,53 +63,71 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/car_model"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="5dp"
+                    android:text="车型："
+                    android:textColor="@color/vm_black_87"
+                    android:textSize="18sp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="车型："
-                        android:textColor="@color/bottom_button_text_gray"
-                        android:textSize="18sp"/>
-
-                    <TextView
-                        android:id="@+id/tv_model"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="林肯加长款"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tv_model"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="颜色："
-                        android:textColor="@color/bottom_button_text_gray"
-                        android:textSize="18sp"/>
-
-                    <TextView
-                        android:id="@+id/tv_color"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="黑色"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"/>
-                </LinearLayout>
+                    android:text="林肯加长款"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="3dp"
+                    android:src="@drawable/car_color"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="颜色："
+                    android:textColor="@color/vm_black_87"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:id="@+id/tv_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="黑色"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/cb_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="10dp"
+                android:text="已设为默认车牌"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

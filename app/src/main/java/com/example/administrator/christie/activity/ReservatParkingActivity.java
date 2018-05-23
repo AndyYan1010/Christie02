@@ -1,18 +1,14 @@
 package com.example.administrator.christie.activity;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
@@ -26,6 +22,7 @@ import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.view.CustomDatePicker;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
@@ -33,8 +30,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Request;
@@ -60,7 +58,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
     private UserInfo mUserinfo;
     private List     mBangList;
     private Spinner  mSpinner_plate, mSpinner_pro;
-    private PlateSpinnerAdapter    mProjAdapter;//选择车牌适配器
+    private PlateSpinnerAdapter  mProjAdapter;//选择车牌适配器
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
     private List<ProjectMsg>     dataPlateList, dataProList;//车牌数据
 
@@ -134,6 +132,10 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
 
             }
         });
+        //获取当前日期
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        String data = simpleDateFormat.format(new Date());
+        mTv_park_time.setText(data);
         //选择停车时间
         mTv_park_time.setOnClickListener(this);
         //设置选择停车时长数据
@@ -209,8 +211,15 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 break;
             case R.id.tv_park_time:
                 //打开时间选择器
-                Calendar calendar = Calendar.getInstance();
-                showDatePickerDialog(calendar, 2);
+                CustomDatePicker dpk = new CustomDatePicker(ReservatParkingActivity.this, new CustomDatePicker.ResultHandler() {
+                    @Override
+                    public void handle(String time) { // 回调接口，获得选中的时间
+                        mTv_park_time.setText(time);
+                    }
+                }, "2010-01-01 00:00", "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+                dpk.showSpecificTime(true); // 显示时和分
+                dpk.setIsLoop(true); // 允许循环滚动
+                dpk.show(mTv_park_time.getText().toString());
                 break;
             case R.id.bt_order:
                 if (null == chooseProID || "".equals(chooseProID)) {
@@ -302,48 +311,5 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
 
     public void setSelected(int num) {
         this.mSelected = num;
-    }
-
-    private void showDatePickerDialog(Calendar calendar, int themeResId) {
-        new DatePickerDialog(this, themeResId, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                String yue = "";
-                String ri = "";
-                i1 = i1 + 1;
-                if (i1 < 10) {
-                    yue = "0" + i1;
-                } else {
-                    yue = "" + i1;
-                }
-                if (i2 < 10) {
-                    ri = "0" + i2;
-                } else {
-                    ri = "" + i2;
-                }
-                markData = i + "-" + yue + "-" + ri;
-                Calendar calendar = Calendar.getInstance();
-                showTimePickerDialog(calendar, 2);
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-    }
-
-    private void showTimePickerDialog(Calendar calendar, int themeResId) {
-        new TimePickerDialog(this, themeResId, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                String xs = "";
-                if (i < 10) {
-                    xs = "0" + i;
-                } else {
-                    xs = "" + i;
-                }
-                String fz = "" + i1;
-                if (i1 < 10) {
-                    fz = "0" + i1;
-                }
-                mTv_park_time.setText(markData + " " + i + ":" + fz);
-            }
-        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
     }
 }

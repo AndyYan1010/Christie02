@@ -1,7 +1,5 @@
 package com.example.administrator.christie.fragment;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,12 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
@@ -28,12 +24,14 @@ import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.view.CustomDatePicker;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import okhttp3.Request;
@@ -169,10 +167,19 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 getActivity().finish();
                 break;
             case R.id.tv_date:
-                //调用时间选择器
                 //打开时间选择器
-                Calendar calendar = Calendar.getInstance();
-                showDatePickerDialog(calendar, 2);
+                CustomDatePicker dpk = new CustomDatePicker(getContext(), new CustomDatePicker.ResultHandler() {
+                    @Override
+                    public void handle(String time) { // 回调接口，获得选中的时间
+                        mTv_date.setText(time);
+                    }
+                }, "2010-01-01 00:00", "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+                dpk.showSpecificTime(true); // 显示时和分
+                dpk.setIsLoop(true); // 允许循环滚动
+                //获取当前日期
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                String data = simpleDateFormat.format(new Date());
+                dpk.show(data);
                 break;
             case R.id.bt_create:
                 String name = String.valueOf(mEdit_name.getText()).trim();
@@ -249,49 +256,5 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 }
             }
         });
-    }
-
-    private void showDatePickerDialog(Calendar calendar, int themeResId) {
-        new DatePickerDialog(getContext(), themeResId, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                String yue = "";
-                String ri = "";
-                i1 = i1 + 1;
-                if (i1 < 10) {
-                    yue = "0" + i1;
-                } else {
-                    yue = "" + i1;
-                }
-                if (i2 < 10) {
-                    ri = "0" + i2;
-                } else {
-                    ri = "" + i2;
-                }
-                markData = i + "-" + yue + "-" + ri;
-                mTv_date.setText(markData);
-                //                Calendar calendar = Calendar.getInstance();
-                //                showTimePickerDialog(calendar, 2);
-            }
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-    }
-
-    private void showTimePickerDialog(Calendar calendar, int themeResId) {
-        new TimePickerDialog(getContext(), themeResId, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                String xs = "";
-                if (i < 10) {
-                    xs = "0" + i;
-                } else {
-                    xs = "" + i;
-                }
-                String fz = "" + i1;
-                if (i1 < 10) {
-                    fz = "0" + i1;
-                }
-                mTv_date.setText(markData + " " + i + ":" + fz);
-            }
-        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
     }
 }

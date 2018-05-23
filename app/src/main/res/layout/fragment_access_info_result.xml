@@ -15,7 +15,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:text="下方数据为2018-02-01至2018-03-01的数据"
-        android:textColor="@color/bottom_button_text_black"
+        android:textColor="@color/vm_black_87"
         android:textSize="18sp"/>
 
     <RelativeLayout
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:text="打卡日期"
-            android:textColor="@color/bottom_button_text_black"
+            android:textColor="@color/white"
             android:textSize="18sp"/>
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="门名称"
-            android:textColor="@color/bottom_button_text_black"
+            android:textColor="@color/white"
             android:textSize="18sp"/>
 
         <TextView
@@ -51,7 +51,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="8dp"
             android:text="打卡区域"
-            android:textColor="@color/bottom_button_text_black"
+            android:textColor="@color/white"
             android:textSize="18sp"/>
     </RelativeLayout>
 

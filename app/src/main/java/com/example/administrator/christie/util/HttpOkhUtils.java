@@ -97,7 +97,7 @@ public class HttpOkhUtils {
         client.newCall(request).enqueue(new StringCallBack(request, httpCallBack));
     }
 
-    public static class StringCallBack implements Callback {
+    private static class StringCallBack implements Callback {
         private HttpCallBack httpCallBack;
         private Request      request;
 

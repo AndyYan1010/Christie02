@@ -52,7 +52,7 @@ public class AccessInfoResultFragment extends Fragment implements View.OnClickLi
     private void initData() {
         mTv_title.setText("门禁数据结果");
         mImg_back.setOnClickListener(this);
-        mTv_st_end.setText("下方数据为" + mstartT + "至" + mendT + "的数据");
+        mTv_st_end.setText("下方数据为" + mstartT.substring(0,9) + "至" + mendT + "的数据");
         if (menjinInfoList.size() > 0) {
             mTv_nodata.setVisibility(View.GONE);
         }
