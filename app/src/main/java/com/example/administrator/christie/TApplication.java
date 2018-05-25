@@ -13,23 +13,23 @@ import java.util.ArrayList;
  * Created by Administrator on 2018/1/4 0004.
  */
 
-public class TApplication extends Application{
+public class TApplication extends Application {
     /**
      * release=true 软件发布 false:开发中
      */
-    public static boolean isRelease = false;
-    public static int                     flag              = -1;//判断是否被回收
+    public static boolean             isRelease    = false;
+    public static int                 flag         = -1;//判断是否被回收
     public static ArrayList<Activity> listActivity = new ArrayList<Activity>();
-    public static UserEntity user = new UserEntity();
+    public static UserEntity          user         = new UserEntity();
 
-    public static void exit(){
+    public static void exit() {
         try {
             for (Activity activity : listActivity) {
                 activity.finish();
                 LogUtil.i("退出", activity.toString() + " finish了");
             }
             // 结束进程
-//            System.exit(0);
+            //            System.exit(0);
         } catch (Exception e) {
             ExceptionUtil.handleException(e);
         }

@@ -1,6 +1,7 @@
 package com.example.administrator.christie.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alipay.sdk.app.PayTask;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.global.AppConstants;
 import com.example.administrator.christie.global.PayResult;
@@ -27,6 +29,7 @@ import com.example.administrator.christie.modelInfo.ParkPayInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.OrderInfoUtil2_0;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -136,7 +139,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                 }
                 if (payKind == 2) {
                     ToastUtils.showToast(getContext(), "你选择了支付宝支付");
-                    //先提交下单信息到服务器(状态时已下单，未支付)，获取订单号
+                    //先提交下单信息到服务器(状态时已下单，但未支付)，获取订单号
                     //获取订单信息后，调用支付宝支付,
                     //接收支付宝返回的支付信息：取消支付，成功支付，支付失败。
                     //支付成功，再在服务器上下单，确认订单已支付.该订单支付完成
@@ -167,18 +170,18 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //                                ToastUtils.showToast(mContext, "下单失败");
                     //                                return;
                     //                            }
-                    //                            //                            orderStr = response.optString("id");
-                    //                            DecimalFormat df = new DecimalFormat("######0.00");
-                    //                            //                            double resultPrice = Double.parseDouble(df.format(price));
-                    //                            //                            if (resultPrice < 0.01) {
-                    //                            //                                orderOverOK(orderStr, "", "zhifubao");
-                    //                            //                            } else {
-                    //                            //                                if (checkAliPayInstalled(mContext)) {
-                    //                            //                                    testSend(resultPrice);
-                    //                            //                                } else {
-                    //                            //                                    ToastUtils.showToast(mContext, "您未安装支付宝");
-                    //                            //                                }
-                    //                            //                            }
+                    //                    orderStr = response.optString("id");
+                    //                    DecimalFormat df = new DecimalFormat("######0.00");
+                    //                    double resultPrice = Double.parseDouble(df.format(price));
+                    //                    if (resultPrice < 0.01) {
+                    //                        orderOverOK(orderStr, "", "zhifubao");
+                    //                    } else {
+                    //                        if (checkAliPayInstalled(mContext)) {
+                    //                            testSend(resultPrice);
+                    //                        } else {
+                    //                            ToastUtils.showToast(mContext, "您未安装支付宝");
+                    //                        }
+                    //                    }
                     //                        }
                     //                    });
                 }
@@ -244,28 +247,27 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
          *
          * orderInfo的获取必须来自服务端；
          */
-        //        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AppConstants.ALI_PLAY_APPID, mOrder.getFname(), price);
-        //        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
-        ////
-        //        String sign = OrderInfoUtil2_0.getSign(params, AppConstants.ALI_PLAY_RSA2_PRIVATE, true);
-        //        final String orderInfo = orderParam + "&" + sign;
+        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AppConstants.ALI_PLAY_APPID, "mOrder.getFname()", price);
+        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
+        //
+        String sign = OrderInfoUtil2_0.getSign(params, AppConstants.ALI_PLAY_RSA2_PRIVATE, true);
+        final String orderInfo = orderParam + "&" + sign;
 
-        //        Runnable payRunnable = new Runnable() {
-        //            @Override
-        //            public void run() {
-        //                PayTask alipay = new PayTask(PayForParkingActivity.this);
-        //                Map<String, String> result = alipay.payV2(orderInfo, true);
-        //                Log.i("msp", result.toString());
-        //
-        //                Message msg = new Message();
-        //                msg.what = SDK_PAY_FLAG;
-        //                msg.obj = result;
-        //
-        //                mHandler.sendMessage(msg);
-        //            }
-        //        };
-        //        Thread payThread = new Thread(payRunnable);
-        //        payThread.start();
+        Runnable payRunnable = new Runnable() {
+            @Override
+            public void run() {
+                PayTask alipay = new PayTask((Activity) getContext());
+                Map<String, String> result = alipay.payV2(orderInfo, true);
+                Log.i("msp", result.toString());
+
+                Message msg = new Message();
+                msg.what = SDK_ALPAY_FLAG;
+                msg.obj = result;
+                mHandler.sendMessage(msg);
+            }
+        };
+        Thread payThread = new Thread(payRunnable);
+        payThread.start();
     }
 
     @SuppressLint("HandlerLeak")
@@ -275,7 +277,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
             super.handleMessage(msg);
             switch (msg.what) {
                 case SDK_ALPAY_FLAG:
-                    //                    Map<String,String> map = (Map<String, String>)msg.obj;
+                    Map<String, String> map = (Map<String, String>) msg.obj;
                     PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     //同步获取结果
                     String resultInfo = payResult.getResult();

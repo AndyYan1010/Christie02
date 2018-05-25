@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/messege_head"/>
+        android:src="@drawable/usercenter_head"/>
 
     <View
         android:layout_width="match_parent"
