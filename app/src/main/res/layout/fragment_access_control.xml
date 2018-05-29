@@ -13,12 +13,22 @@
         android:layout_marginTop="50dp"
         android:gravity="center_vertical">
 
+        <ImageView
+            android:id="@+id/img_st"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/start_time"/>
+
         <TextView
             android:id="@+id/tv_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/img_st"
             android:text="开始时间"
             android:textColor="@color/bottom_button_text_black"
             android:textSize="22sp"/>
@@ -27,18 +37,20 @@
             android:id="@+id/tv_start_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/tv_start"
             android:text="2018-02-01 00:00"
             android:textSize="20sp"/>
 
         <ImageView
             android:id="@+id/img_select_st"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
-            android:src="@drawable/my_mine_next"/>
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/icon_down"/>
     </RelativeLayout>
 
     <View
@@ -53,12 +65,22 @@
         android:layout_marginTop="20dp"
         android:gravity="center_vertical">
 
+        <ImageView
+            android:id="@+id/img_end"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/end_time"/>
+
         <TextView
             android:id="@+id/tv_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/img_end"
             android:text="结束时间"
             android:textColor="@color/bottom_button_text_black"
             android:textSize="22sp"/>
@@ -67,18 +89,20 @@
             android:id="@+id/tv_end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/tv_end"
             android:text="2018-02-01 00:00"
             android:textSize="20sp"/>
 
         <ImageView
             android:id="@+id/img_select_end"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="30dp"
-            android:src="@drawable/my_mine_next"/>
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/icon_down"/>
     </RelativeLayout>
 
     <View

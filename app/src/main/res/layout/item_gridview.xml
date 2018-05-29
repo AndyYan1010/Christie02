@@ -3,8 +3,8 @@
               android:id="@+id/mydada_item_ll"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="#fff"
               android:layout_centerInParent="true"
+              android:background="@color/white"
               android:gravity="center"
               android:orientation="vertical">
 

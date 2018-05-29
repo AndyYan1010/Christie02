@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
@@ -50,6 +51,7 @@ public class PlateSpinnerAdapter extends BaseAdapter {
         if (null == view) {
             viewHolder = new PlateSpinnerAdapter.ViewHolder();
             view = View.inflate(mContext, R.layout.spinner_item_plate, null);
+            viewHolder.linear = view.findViewById(R.id.linear);
             viewHolder.tv_name = view.findViewById(R.id.tv_name);
             view.setTag(viewHolder);
         } else {
@@ -58,10 +60,20 @@ public class PlateSpinnerAdapter extends BaseAdapter {
         ProjectMsg projectInfo = mList.get(i);
         String project_name = projectInfo.getProject_name();
         viewHolder.tv_name.setText(project_name);
+        if (i == 0) {
+            viewHolder.linear.setBackground(null);
+            viewHolder.tv_name.setBackground(null);
+            viewHolder.tv_name.setTextColor(mContext.getResources().getColor(R.color.vm_black_100));
+        } else {
+            viewHolder.linear.setBackgroundResource(R.drawable.frame_black_line);
+            viewHolder.tv_name.setBackgroundResource(R.color.blue_56);
+            viewHolder.tv_name.setTextColor(mContext.getResources().getColor(R.color.white));
+        }
         return view;
     }
 
     private class ViewHolder {
-        TextView tv_name;
+        LinearLayout linear;
+        TextView     tv_name;
     }
 }

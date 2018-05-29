@@ -1,6 +1,7 @@
 package com.example.administrator.christie.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,9 @@ import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +48,8 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
     private List<LockPlateInfo.ListBean> mList;
     private String                       mUserid;
     private LockingInfoAdapter           mAdapter;
+    private TextView                     mTv_noinfo;//提示未有停车信息
+    private SmartRefreshLayout           mSmt_refresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +62,8 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
     private void initView() {
         mImg_back = mRootView.findViewById(R.id.img_back);
         mTv_title = mRootView.findViewById(R.id.tv_title);
+        mTv_noinfo = mRootView.findViewById(R.id.tv_noinfo);
+        mSmt_refresh = mRootView.findViewById(R.id.smt_refresh);
         mLv_lockinfo = mRootView.findViewById(R.id.lv_lockinfo);
     }
 
@@ -84,6 +92,13 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
         mUserid = userinfo.getUserid();
         //获取车位锁定状态
         getPlateLockingInfo();
+        mSmt_refresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                //获取车位锁定状态
+                getPlateLockingInfo();
+            }
+        });
     }
 
     private void changeLockPlate(String state, String plate) {
@@ -116,11 +131,13 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
         HttpOkhUtils.getInstance().doGetWithParams(getLockUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
+                mSmt_refresh.finishRefresh();
                 ToastUtils.showToast(getContext(), "网络错误");
             }
 
             @Override
             public void onSuccess(int code, String resbody) {
+                mSmt_refresh.finishRefresh();
                 if (code == 200) {
                     if (null == mList) {
                         mList = new ArrayList<>();
@@ -132,6 +149,11 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
                     List<LockPlateInfo.ListBean> list = outPlateInfo.getList();
                     for (LockPlateInfo.ListBean bean : list) {
                         mList.add(bean);
+                    }
+                    if (mList.size() > 0) {
+                        mTv_noinfo.setVisibility(View.GONE);
+                    } else {
+                        mTv_noinfo.setVisibility(View.VISIBLE);
                     }
                     mAdapter.notifyDataSetChanged();
                 }

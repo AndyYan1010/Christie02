@@ -35,4 +35,20 @@
     <color name="text2">#333333</color>
     <color name="background">#FFFFFF</color>
 
+    <!-- 灰色 -->
+    <color name="bg_Gray">#CCCCCC</color>
+    <!--灰色-->
+    <color name="gray_ef">#EFEFEF</color>
+    <color name="gray_f4">#F4F4F4</color>
+    <color name="gray_5">#555555</color>
+    <color name="gray_6">#666666</color>
+    <color name="gray_8">#888888</color>
+    <color name="gray_65">#656565</color>
+    <color name="gray_9">#999999</color>
+    <color name="gray_10">#aaaaaa</color>
+    <color name="gray_11">#bbbbbb</color>
+    <color name="gray_12">#cccccc</color>
+    <color name="gray_ec">#ECECEC</color>
+    <color name="gray_e">#EEEEEE</color>
+    <color name="gray_f8">#F8F8F8</color>
 </resources>

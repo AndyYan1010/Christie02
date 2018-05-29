@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/fangke_dark" android:state_selected="true"/>
-    <item android:drawable="@drawable/fangke_light"/>
+    <item android:drawable="@drawable/fangke_dark2" android:state_selected="true"/>
+    <item android:drawable="@drawable/fangke_light2"/>
 
 </selector>

@@ -2,6 +2,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/gray_0"
               android:orientation="vertical"
               tools:context="com.example.administrator.christie.fragment.MeFragment">
 
@@ -154,6 +155,7 @@
         android:id="@+id/ll_geren"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <ImageView
@@ -189,6 +191,7 @@
         android:id="@+id/ll_kapian"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <ImageView
@@ -224,6 +227,7 @@
         android:id="@+id/ll_chepai"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <ImageView
