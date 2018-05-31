@@ -25,13 +25,15 @@ import com.alipay.sdk.app.PayTask;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.global.AppConstants;
 import com.example.administrator.christie.global.PayResult;
+import com.example.administrator.christie.modelInfo.DownOrderResultInfo;
 import com.example.administrator.christie.modelInfo.ParkPayInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
-import com.example.administrator.christie.util.OrderInfoUtil2_0;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.websiteUrl.NetConfig;
+import com.google.gson.Gson;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -58,6 +60,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     private int payKind = 0;
     private Context     mContext;
     private ParkPayInfo payInfo;//车牌付费信息
+    private double      orderPrice;//订单价格
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,13 +86,14 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
         mImg_back.setOnClickListener(this);
         mTv_title.setText("停车缴费");
         UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
-        ParkPayInfo.ParklistBean parklist = payInfo.getParklist();
-        String plateNo = parklist.getPlateNo();
-        String username = userinfo.getUsername();
-        double amount = parklist.getAmount();
-        mTv_plate.setText(plateNo);
-        mTv_username.setText(username);
-        mTv_price.setText("¥" + amount);
+        //TODO:
+        //        ParkPayInfo.ParklistBean parklist = payInfo.getParklist();
+        //        String plateNo = parklist.getPlateNo();
+        //        String username = userinfo.getUsername();
+        //        orderPrice = parklist.getAmount();
+        //        mTv_plate.setText(plateNo);
+        //        mTv_username.setText(username);
+        //        mTv_price.setText("¥" + orderPrice);
         mCb_weixin.setOnClickListener(this);
         mCb_zfb.setOnClickListener(this);
         mBt_pay.setOnClickListener(this);
@@ -143,47 +147,51 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //获取订单信息后，调用支付宝支付,
                     //接收支付宝返回的支付信息：取消支付，成功支付，支付失败。
                     //支付成功，再在服务器上下单，确认订单已支付.该订单支付完成
-                    //                    RequestParamsFM params = new RequestParamsFM();
-                    //                    params.put("", "");
-                    //                    params.put("member_id", UserID);
-                    //                    params.put("ticket_count", ticket_count);
-                    //                    if (mOrder.getPrice() * mBuyNumber<=0.01){
-                    //                        params.put("fstatus","1");
-                    //                    }else {
-                    //                        params.put("fstatus","0");
-                    //                    }
-                    //                    params.put("amount", amount);
-                    //                    params.put("table_name", table_name);
-                    //                    params.put("name", mEdit_order_name.getText());
-                    //                    params.put("phone", mEdit_phone_num.getText());
-                    //                    params.put("begin_time", mOrder.getFdate());
-                    //                    params.put("fname", fname);
-                    //                    HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
-                    //                        @Override
-                    //                        public void onError(Request request, IOException e) {
-                    //                            ToastUtils.showToast(mContext, "下单失败");
-                    //                        }
-                    //
-                    //                        @Override
-                    //                        public void onSuccess(int code, String resbody) {
-                    //                            if (code != 200) {
-                    //                                ToastUtils.showToast(mContext, "下单失败");
-                    //                                return;
-                    //                            }
-                    //                    orderStr = response.optString("id");
-                    //                    DecimalFormat df = new DecimalFormat("######0.00");
-                    //                    double resultPrice = Double.parseDouble(df.format(price));
-                    //                    if (resultPrice < 0.01) {
-                    //                        orderOverOK(orderStr, "", "zhifubao");
-                    //                    } else {
-                    //                        if (checkAliPayInstalled(mContext)) {
-                    //                            testSend(resultPrice);
-                    //                        } else {
-                    //                            ToastUtils.showToast(mContext, "您未安装支付宝");
-                    //                        }
-                    //                    }
-                    //                        }
-                    //                    });
+                    RequestParamsFM params = new RequestParamsFM();
+                    params.put("userid", "3");
+                    params.put("time", "");
+                    params.put("device_id", "");
+                    params.put("paycode", "1");
+                    params.put("ip", "205.168.1.102");
+                    params.put("fee", "0.01");
+                    params.setUseJsonStreamer(true);
+                    HttpOkhUtils.getInstance().doPost(NetConfig.UNIFIEDORDER, params, new HttpOkhUtils.HttpCallBack() {
+                        @Override
+                        public void onError(Request request, IOException e) {
+                            ToastUtils.showToast(mContext, "下单失败");
+                            System.out.println("babababab");
+                        }
+
+                        @Override
+                        public void onSuccess(int code, String resbody) {
+                            if (code != 200) {
+                                ToastUtils.showToast(mContext, "下单失败");
+                                return;
+                            }
+                            Gson gson = new Gson();
+                            DownOrderResultInfo downOrderResultInfo = gson.fromJson(resbody, DownOrderResultInfo.class);
+                            int result = downOrderResultInfo.getResult();
+                            String message = downOrderResultInfo.getMessage();
+                            if (result == 2) {
+                                orderStr = String.valueOf(downOrderResultInfo.getId());
+                                //                                DecimalFormat df = new DecimalFormat("######0.00");
+                                //                                double resultPrice = Double.parseDouble(df.format(orderPrice));
+                                orderPrice=0.01;
+                                if (orderPrice < 0.01) {
+//                                    orderOverOK(orderStr, "", "zhifubao");
+                                    ToastUtils.showToast(getContext(),"免费");
+                                } else {
+                                    if (checkAliPayInstalled(mContext)) {
+                                        String orderinfo = downOrderResultInfo.getOrderinfo();
+                                        testSend(orderPrice, orderinfo);
+                                    } else {
+                                        ToastUtils.showToast(mContext, "您未安装支付宝");
+                                    }
+                                }
+                            }
+                            ToastUtils.showToast(getContext(), message);
+                        }
+                    });
                 }
                 break;
         }
@@ -237,9 +245,9 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
 
     private static final int    SDK_ALPAY_FLAG = 1001;
     private static final int    SDK_WXPAY_FLAG = 1000;
-    private              String orderStr       = "";
+    private              String orderStr       = "";//记录订单id
 
-    private void testSend(double price) {
+    private void testSend(double price, final String orderInfo) {
         /**
          * 这里只是为了方便直接向商户展示支付宝的整个支付流程；所以Demo中加签过程直接放在客户端完成；
          * 真实App里，privateKey等数据严禁放在客户端，加签过程务必要放在服务端完成；
@@ -247,11 +255,11 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
          *
          * orderInfo的获取必须来自服务端；
          */
-        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AppConstants.ALI_PLAY_APPID, "mOrder.getFname()", price);
-        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
-        //
-        String sign = OrderInfoUtil2_0.getSign(params, AppConstants.ALI_PLAY_RSA2_PRIVATE, true);
-        final String orderInfo = orderParam + "&" + sign;
+        //        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AppConstants.ALI_PLAY_APPID, "mOrder.getFname()", price);
+        //        String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
+        //        //
+        //        String sign = OrderInfoUtil2_0.getSign(params, AppConstants.ALI_PLAY_RSA2_PRIVATE, true);
+        //        final String orderInfo = orderParam + "&" + sign;
 
         Runnable payRunnable = new Runnable() {
             @Override
@@ -277,7 +285,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
             super.handleMessage(msg);
             switch (msg.what) {
                 case SDK_ALPAY_FLAG:
-                    Map<String, String> map = (Map<String, String>) msg.obj;
+                    //                    Map<String, String> map = (Map<String, String>) msg.obj;
                     PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     //同步获取结果
                     String resultInfo = payResult.getResult();

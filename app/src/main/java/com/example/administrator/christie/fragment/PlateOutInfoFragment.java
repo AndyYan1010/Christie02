@@ -89,6 +89,9 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         mImg_back.setOnClickListener(this);
         mTv_title.setText("停车缴费");
 
+        //测试 缴费。
+        testPay();
+
         //设置车牌选择器
         dataPlateList = new ArrayList();
         ProjectMsg projectInfo = new ProjectMsg();
@@ -156,6 +159,17 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         //                ftt.commit();
         //            }
         //        });
+    }
+
+    private void testPay() {
+        //跳转付费界面
+        FragmentTransaction ftt = getFragmentManager().beginTransaction();
+        PayForPackingFragment payPackFragment = new PayForPackingFragment();
+        payPackFragment.setParkPayInfo(mParkPayInfo);
+        ftt.add(R.id.frame_pay, payPackFragment, "payPackFragment");
+        ftt.addToBackStack(null);
+        ftt.commit();
+        return;
     }
 
     private void choosePlate(String userid) {

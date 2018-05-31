@@ -11,9 +11,11 @@ package com.example.administrator.christie.websiteUrl;
 
 public class NetConfig {
     //服务器总地址
-    public static String ROOT                = "http://118.89.109.106:8080/YKTJK/";
+    //    public static String ROOT                = "http://118.89.109.106:8080/YKTJK/";
     //    public static String ROOT                = "http://205.168.1.113:8082/";
+    public static String ROOT = "http://205.168.1.102:8082/";
     //    public static String ROOT                = "http://205.168.1.119:8082/";
+
     //用户登录
     public static String LOGINURL            = ROOT + "login";
     //用户注册
@@ -66,5 +68,9 @@ public class NetConfig {
     public static String LOCKPLATE           = ROOT + "lock";
     //停车收费
     public static String PARKINGRECORDSEARCH = ROOT + "parkingRecordSearch";
+    //支付下单接口
+    public static String UNIFIEDORDER        = ROOT + "unifiedOrder";
+    //支付宝异步回调支付完成接口
+    public static String Alipayurl           = "118.89.109.106:8080/YKTJK/AliPay";
 
 }
