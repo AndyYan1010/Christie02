@@ -149,7 +149,6 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //支付成功，再在服务器上下单，确认订单已支付.该订单支付完成
                     RequestParamsFM params = new RequestParamsFM();
                     params.put("userid", "3");
-                    params.put("time", "");
                     params.put("device_id", "");
                     params.put("paycode", "1");
                     params.put("ip", "205.168.1.102");
