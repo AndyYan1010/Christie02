@@ -20,6 +20,7 @@ import com.example.administrator.christie.activity.CardActivity;
 import com.example.administrator.christie.activity.PersonalActivity;
 import com.example.administrator.christie.activity.PlateActivity;
 import com.example.administrator.christie.activity.SettingsActivity;
+import com.example.administrator.christie.activity.usercenter.AboutUsActivity;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.Consts;
 import com.example.administrator.christie.util.HttpUtils;
@@ -40,6 +41,7 @@ public class MeFragment extends Fragment {
     private LinearLayout ll_geren;
     private LinearLayout ll_kapian;
     private LinearLayout ll_chepai;
+    private LinearLayout ll_about;//关于
     //    private Button btn_xiaoxi,btn_huiyi;
     private TextView     tv_username, tv_att;
     private CustomProgress dialog;
@@ -65,6 +67,7 @@ public class MeFragment extends Fragment {
         ll_geren = (LinearLayout) view.findViewById(R.id.ll_geren);
         ll_kapian = (LinearLayout) view.findViewById(R.id.ll_kapian);
         ll_chepai = (LinearLayout) view.findViewById(R.id.ll_chepai);
+        ll_about = view.findViewById(R.id.ll_about);
         //        if(!TApplication.user.getFname().equals("")){
         //            tv_username.setText(TApplication.user.getFname());
         //        }else {
@@ -138,6 +141,12 @@ public class MeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(mContext, PlateActivity.class));
+            }
+        });
+        ll_about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(mContext, AboutUsActivity.class));
             }
         });
     }

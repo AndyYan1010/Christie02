@@ -67,6 +67,7 @@
         <activity android:name=".activity.menushowpackage.MenuIntroduceActivity"/>
         <activity android:name=".activity.menushowpackage.MenuDetailShowActivity"/>
         <activity android:name=".activity.ParkinglockActivity"/>
+        <activity android:name=".activity.usercenter.AboutUsActivity"/>
         <activity
             android:name=".activity.PlateActivity"
             android:label="@string/title_activity_plate"

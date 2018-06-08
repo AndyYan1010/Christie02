@@ -154,7 +154,7 @@
     <LinearLayout
         android:id="@+id/ll_geren"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:background="@color/white"
         android:orientation="horizontal">
 
@@ -172,7 +172,8 @@
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:text="@string/person"
-            android:textColor="@color/bottom_button_text_black"/>
+            android:textColor="@color/bottom_button_text_black"
+            android:textSize="16sp"/>
 
         <ImageView
             android:layout_width="30dp"
@@ -190,7 +191,7 @@
     <LinearLayout
         android:id="@+id/ll_kapian"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:background="@color/white"
         android:orientation="horizontal">
 
@@ -226,7 +227,7 @@
     <LinearLayout
         android:id="@+id/ll_chepai"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:background="@color/white"
         android:orientation="horizontal">
 
@@ -244,7 +245,45 @@
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:text="@string/license"
-            android:textColor="@color/bottom_button_text_black"/>
+            android:textColor="@color/bottom_button_text_black"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/my_mine_next"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/bottom_button_text_gray"/>
+
+    <LinearLayout
+        android:id="@+id/ll_about"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="25dp"
+            android:src="@drawable/about"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:text="关于"
+            android:textColor="@color/bottom_button_text_black"
+            android:textSize="16sp"/>
 
         <ImageView
             android:layout_width="30dp"
