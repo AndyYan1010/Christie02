@@ -26,8 +26,6 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //        setContentView(R.layout.pay_result);
-
         api = WXAPIFactory.createWXAPI(this, AppConstants.WX_Pay_APP_ID);
         api.handleIntent(getIntent(), this);
     }
@@ -55,10 +53,13 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         msg.what = SDK_WXPAY_FLAG;
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
             if (resp.errCode == 0) {
-                Toast.makeText(this, "支付成功", Toast.LENGTH_LONG).show();
+                //                Toast.makeText(this, "支付成功", Toast.LENGTH_LONG).show();
                 msg.obj = "支付成功";
-            } else {
+            } else if (resp.errCode == -1) {
                 Toast.makeText(this, "支付失败", Toast.LENGTH_LONG).show();
+                msg.obj = "支付失败";
+            }else {
+                Toast.makeText(this, "用户取消支付", Toast.LENGTH_LONG).show();
                 msg.obj = "支付失败";
             }
             mHandler.sendMessage(msg);

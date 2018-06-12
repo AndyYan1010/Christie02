@@ -43,7 +43,7 @@ public class AppConstants {
 //    public static final String ALI_PLAY_APPID = "2016091200495436";
 
     //微信支付
-    public static String WX_Pay_APP_ID="wx9c1d6a69814e3842";
+    public static String WX_Pay_APP_ID="wx797b4ac4b3e272a7";
 
 
 }

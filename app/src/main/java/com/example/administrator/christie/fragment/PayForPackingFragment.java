@@ -23,17 +23,18 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.global.AppConstants;
 import com.example.administrator.christie.global.PayResult;
 import com.example.administrator.christie.modelInfo.DownOrderResultInfo;
 import com.example.administrator.christie.modelInfo.ParkPayInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.modelInfo.WXOrderResultInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
+import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
@@ -138,7 +139,41 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //提交订单信息，服务器获取订单信息后调用微信统一下单接口，请求完成，将prepay_id返回app
                     // （具体返回参数：appid，商户号：partnerid，预支付id：prepay_id，扩展字段package（固定值Sign=WXPay）,随机字符串noncestr，时间戳timestamp，签名sign），
                     //获取返回参数后，调用微信app支付
-                    //                    toWXPay();
+                    RequestParamsFM params = new RequestParamsFM();
+                    params.put("userid", "3");
+                    params.put("device_id", "");
+                    params.put("paycode", "2");
+                    params.put("ip", "205.168.1.102");
+                    params.put("fee", "0.01");
+                    params.setUseJsonStreamer(true);
+                    HttpOkhUtils.getInstance().doPost(NetConfig.UNIFIEDORDER, params, new HttpOkhUtils.HttpCallBack() {
+                        @Override
+                        public void onError(Request request, IOException e) {
+                            ToastUtils.showToast(mContext, "下单失败");
+                        }
+
+                        @Override
+                        public void onSuccess(int code, String resbody) {
+                            if (code != 200) {
+                                ToastUtils.showToast(mContext, "下单失败");
+                                return;
+                            }
+                            Gson gson = new Gson();
+                            WXOrderResultInfo orderResInfo = gson.fromJson(resbody, WXOrderResultInfo.class);
+                            String return_code = orderResInfo.getReturn_code();
+                            String return_msg = orderResInfo.getReturn_msg();
+                            if (return_code.equals("SUCCESS")) {
+                                String appId = orderResInfo.getAppId();
+                                String partnerId = orderResInfo.getPartnerId();
+                                String prepayId = orderResInfo.getPrepayId();
+                                String nonceStr = orderResInfo.getNonceStr();
+                                int timeStamp = orderResInfo.getTimeStamp();
+                                String sign = orderResInfo.getSign();
+                                toWXPay(appId,partnerId,prepayId,nonceStr,timeStamp,sign);
+                            }
+                            ToastUtils.showToast(getContext(), return_msg);
+                        }
+                    });
                     return;
                 }
                 if (payKind == 2) {
@@ -175,10 +210,10 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                                 orderStr = String.valueOf(downOrderResultInfo.getId());
                                 //                                DecimalFormat df = new DecimalFormat("######0.00");
                                 //                                double resultPrice = Double.parseDouble(df.format(orderPrice));
-                                orderPrice=0.01;
+                                orderPrice = 0.01;
                                 if (orderPrice < 0.01) {
-//                                    orderOverOK(orderStr, "", "zhifubao");
-                                    ToastUtils.showToast(getContext(),"免费");
+                                    //                                    orderOverOK(orderStr, "", "zhifubao");
+                                    ToastUtils.showToast(getContext(), "免费");
                                 } else {
                                     if (checkAliPayInstalled(mContext)) {
                                         String orderinfo = downOrderResultInfo.getOrderinfo();
@@ -198,49 +233,49 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
 
     private IWXAPI iwxapi; //微信支付api
 
-    private void toWXPay() {
-        iwxapi = WXAPIFactory.createWXAPI(getContext(), AppConstants.WX_Pay_APP_ID); //初始化微信api
-        //        iwxapi.registerApp(AppConstants.WX_Pay_APP_ID); //注册appid  appid可以在开发平台获取
-        //        Runnable payRunnable = new Runnable() {  //这里注意要放在子线程
-        //            @Override
-        //            public void run() {
-        //                PayReq request = new PayReq(); //调起微信APP的对象
-        //                //下面是设置必要的参数，也就是前面说的参数,这几个参数从何而来请看上面说明
-        //                request.appId = AppConstants.WX_Pay_APP_ID;
-        //                request.partnerId = partnerId;
-        //                request.prepayId = prepayId;
-        //                request.packageValue = "Sign=WXPay";
-        //                request.nonceStr = nonceStr;
-        //                request.timeStamp = timeStamp;
-        //                request.sign = sign;
-        //                iwxapi.sendReq(request);//发送调起微信的请求
-        //            }
-        //        };
-        //        Thread payThread = new Thread(payRunnable);
-        //        payThread.start();
+    private void toWXPay(final String appId, final String partnerId, final String prepayId, final String nonceStr, final int timeStamp, final String sign) {
+        iwxapi = WXAPIFactory.createWXAPI(getContext(), appId); //初始化微信api
+        iwxapi.registerApp(appId); //注册appid  appid可以在开发平台获取
+        Runnable payRunnable = new Runnable() {  //这里注意要放在子线程
+            @Override
+            public void run() {
+                PayReq request = new PayReq(); //调起微信APP的对象
+                //下面是设置必要的参数，也就是前面说的参数,这几个参数从何而来请看上面说明
+                request.appId = appId;
+                request.partnerId = partnerId;//微信支付分配的商户号
+                request.prepayId = prepayId;//微信返回的支付 交易会话ID
+                request.packageValue = "Sign=WXPay";
+                request.nonceStr = nonceStr;//随机字符串，不长于32位。
+                request.timeStamp = String.valueOf(timeStamp);//时间戳
+                request.sign = sign;//签名
+                iwxapi.sendReq(request);//发送调起微信的请求
+            }
+        };
+        Thread payThread = new Thread(payRunnable);
+        payThread.start();
     }
 
-    private void orderOverOK(String order_num, String pay_no, String pay_type) {
-        RequestParamsFM params = new RequestParamsFM();
-        params.put("", "");
-        HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
-            @Override
-            public void onError(Request request, IOException e) {
-
-            }
-
-            @Override
-            public void onSuccess(int code, String resbody) {
-                if (code != 200) {
-
-                }
-                if (code == 200) {
-                    ToastUtils.showToast(mContext, "下单成功");
-                    getActivity().finish();
-                }
-            }
-        });
-    }
+//    private void orderOverOK(String order_num, String pay_no, String pay_type) {
+//        RequestParamsFM params = new RequestParamsFM();
+//        params.put("", "");
+//        HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
+//            @Override
+//            public void onError(Request request, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onSuccess(int code, String resbody) {
+//                if (code != 200) {
+//
+//                }
+//                if (code == 200) {
+//                    ToastUtils.showToast(mContext, "下单成功");
+//                    getActivity().finish();
+//                }
+//            }
+//        });
+//    }
 
     private static final int    SDK_ALPAY_FLAG = 1001;
     private static final int    SDK_WXPAY_FLAG = 1000;
