@@ -19,31 +19,96 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="3dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btn_menjin"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linear0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
-            android:drawableTop="@drawable/btn_menjin_selector"
-            android:text="@string/menjin"
-            android:textColor="@color/btn_color"
-            />
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_fangke"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/iv_menu_0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/btn_menjin_selector"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="一卡通"
+                android:textColor="#1f1724"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
-            android:drawableTop="@drawable/btn_park_selector"
-            android:text="@string/fangke"
-            android:textColor="@color/btn_color"
-            />
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_menu_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/btn_park_selector"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="消息"
+                android:textColor="#1f1724"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_menu_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/btn_fangke_selector"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="个人中心"
+                android:textColor="#1f1724"
+                android:textSize="12sp"/>
+        </LinearLayout>
+        <!--<Button-->
+        <!--android:id="@+id/btn_menjin"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@null"-->
+        <!--android:drawableTop="@drawable/btn_menjin_selector"-->
+        <!--android:text="@string/menjin"-->
+        <!--android:textColor="@color/btn_color"/>-->
+
+        <!--<Button-->
+        <!--android:id="@+id/btn_fangke"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@null"-->
+        <!--android:drawableTop="@drawable/btn_park_selector"-->
+        <!--android:text="@string/fangke"-->
+        <!--android:textColor="@color/btn_color"-->
+        <!--/>-->
 
         <!--<Button-->
         <!--andruseridd:iduserid@+id/btn_park"-->
@@ -56,16 +121,16 @@
         <!--android:textColor="@color/btn_color"-->
         <!--/>-->
 
-        <Button
-            android:id="@+id/btn_me"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawableTop="@drawable/btn_fangke_selector"
-            android:text="@string/me"
-            android:textColor="@color/btn_color"
-            />
+        <!--<Button-->
+        <!--android:id="@+id/btn_me"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@null"-->
+        <!--android:drawableTop="@drawable/btn_fangke_selector"-->
+        <!--android:text="@string/me"-->
+        <!--android:textColor="@color/btn_color"-->
+        <!--/>-->
     </LinearLayout>
 </LinearLayout>
 
