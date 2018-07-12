@@ -21,10 +21,10 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void protectApp() {
 //        Intent intent = new Intent(this, MainActivity.class);
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//清空栈里MainActivity之上的所有activty
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//清空栈里LoginActivity之上的所有activty
         startActivity(intent);
-        finish();
         TApplication.flag = 0;
+        finish();
     }
 }

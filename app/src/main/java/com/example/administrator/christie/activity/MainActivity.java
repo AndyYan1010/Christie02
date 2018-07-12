@@ -62,9 +62,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //        setSystemBarTransparent();
         setContentView(R.layout.activity_main);
         TApplication.listActivity.add(this);
+        //        setListeners();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setViews();
         setData();
-        //        setListeners();
     }
 
     protected void setViews() {
@@ -244,27 +249,36 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
                     addFragment(menjin);
                     showFragment(menjin);
+                    ToastUtils.showToast(MainActivity.this, "为空，a添加");
                 } else {
                     if (menjin.isHidden()) {
                         showFragment(menjin);
+                        ToastUtils.showToast(MainActivity.this, "不为空，a已隐藏");
+                    } else {
+                        ToastUtils.showToast(MainActivity.this, "不为空, a未隐藏");
                     }
                 }
                 break;
             case R.id.linear1:
-                // 主界面
+                // 消息界面
                 if (fangke == null) {
                     fangke = new FangkeFragment();
                     // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
                     addFragment(fangke);
                     showFragment(fangke);
+                    ToastUtils.showToast(MainActivity.this, "为空，b添加");
                 } else {
+
                     if (fangke.isHidden()) {
                         showFragment(fangke);
+                        ToastUtils.showToast(MainActivity.this, "不为空，b已隐藏");
+                    } else {
+                        ToastUtils.showToast(MainActivity.this, "不为空, b未隐藏");
                     }
                 }
                 break;
             case R.id.linear2:
-                // 主界面
+                // 个人中心界面
                 if (me == null) {
                     me = new MeFragment();
                     // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏

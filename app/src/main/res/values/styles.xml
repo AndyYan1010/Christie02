@@ -54,4 +54,10 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@color/background</item>
     </style>
+    <style name="ActivityTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@color/title_bar_bg</item>
+        <item name="android:clipToPadding">true</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
 </resources>
