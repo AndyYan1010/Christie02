@@ -57,7 +57,9 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
             viewHolder = (LvBlueTInfoAdapter.MyViewHolder) view.getTag();
         }
         BluetoothDevice btDevice = (BluetoothDevice) mList.get(i);
-        viewHolder.tv_btinfo.setText(String.valueOf(btDevice));
+//        viewHolder.tv_btinfo.setText(String.valueOf(btDevice));
+        String name = btDevice.getName();
+        viewHolder.tv_btinfo.setText(name);
         int bondState = btDevice.getBondState();
         if (bondState == BluetoothDevice.BOND_BONDED) {
             viewHolder.tv_state.setText("已配对过");

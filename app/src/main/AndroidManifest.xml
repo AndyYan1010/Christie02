@@ -111,6 +111,11 @@
             android:screenOrientation="behind"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
+        <activity android:name=".activity.Ble_Activity"/>
+        <!--蓝牙开门使用服务-->
+        <service
+            android:name=".service.BluetoothLeService"
+            android:enabled="true"/>
     </application>
 
 </manifest>

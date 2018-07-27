@@ -69,12 +69,19 @@ public class BluetoothActivity extends BaseActivity implements View.OnClickListe
         mLv_old_bt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                BluetoothDevice device = mData.get(i);
-                new ConnectTask().execute(device.getAddress());
+                //                BluetoothDevice device = mData.get(i);
+                //                new ConnectTask().execute(device.getAddress());
+                //获取对应条目的蓝牙设备信息
+                final BluetoothDevice btDevice = mData.get(i);
+                Intent intent = new Intent(BluetoothActivity.this, Ble_Activity.class);
+                intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getName());
+                intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getAddress());
+                // 启动Ble_Activity
+                startActivity(intent);
             }
         });
-        mShakeHelper = new ShakeHelper(this);
-        mShakeHelper.Start();
+//        mShakeHelper = new ShakeHelper(this);
+//        mShakeHelper.Start();
     }
 
     @Override

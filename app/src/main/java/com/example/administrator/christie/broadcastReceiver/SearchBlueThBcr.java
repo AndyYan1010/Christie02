@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
@@ -25,6 +26,8 @@ public class SearchBlueThBcr extends BroadcastReceiver {
     private List<BluetoothDevice> mList;
     private LvBlueTInfoAdapter    mAdapter;
     private boolean isHad = false;
+    private TextView tv_title;
+    private boolean  isSearchBT;
 
     public SearchBlueThBcr(List mData, LvBlueTInfoAdapter adapter) {
         this.mList = mData;
@@ -57,7 +60,14 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                 ToastUtils.showToast(context, "搜索结束");
+                isSearchBT = false;
+                tv_title.setText("开始搜索");
                 break;
         }
+    }
+
+    public void setUI(TextView tv, boolean isSearchBT) {
+        this.tv_title = tv;
+        this.isSearchBT = isSearchBT;
     }
 }

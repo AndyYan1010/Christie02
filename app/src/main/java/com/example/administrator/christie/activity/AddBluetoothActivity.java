@@ -25,7 +25,6 @@ import com.example.administrator.christie.broadcastReceiver.SearchBlueThBcr;
 import com.example.administrator.christie.util.BluetoothManagerUtils;
 import com.example.administrator.christie.util.ToastUtils;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,22 +81,17 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void connectBT(int position) {
-        BluetoothDevice btDevice = mBtData.get(position);
-        int bondState = btDevice.getBondState();
-        if (bondState == BluetoothDevice.BOND_BONDED) {
-            ToastUtils.showToast(this, "已配对过");
-        } else {
-            try {
-                boolean bond = createBond(btDevice.getClass(), btDevice);
-                if (bond) {
-                    ToastUtils.showToast(this, "配对成功");
-                } else {
-                    ToastUtils.showToast(this, "配对失败");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        //连接前先关闭蓝牙搜索功能
+        isSearchBT = false;
+        mTv_search.setText("开始搜索");
+        stopSearchBT();
+        //获取对应条目的蓝牙设备信息
+        final BluetoothDevice btDevice = mBtData.get(position);
+        Intent intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
+        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getName());
+        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getAddress());
+        // 启动Ble_Activity
+        startActivity(intent);
     }
 
     @Override
@@ -123,8 +117,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                             startActivityForResult(enabler, REQUEST_ENABLE);
                         } else {
                             needLoactionRight();
-                            //                            //开始搜索
-                            //                            startSearchBluetooth();
+                            //开始搜索
+                            //startSearchBluetooth();
                         }
                     } else {
                         ToastUtils.showToast(this, "当前设备不支持蓝牙功能");
@@ -132,7 +126,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 } else {
                     isSearchBT = false;
                     mTv_search.setText("开始搜索");
-                    ToastUtils.showToast(this, "停止搜索");
+                    ToastUtils.showToast(this, "已停止搜索");
                     stopSearchBT();
                 }
                 break;
@@ -178,7 +172,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 startSearchBluetooth();
                 break;
             default:
-
                 break;
         }
     }
@@ -190,7 +183,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mBlueTInfoAdapter.notifyDataSetChanged();
         //注册广播接收器
         registerRec();
-        ToastUtils.showToast(this, "正在搜索。。哈哈");
+        ToastUtils.showToast(this, "正在搜索。。");
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         //获取BluetoothAdapter
         if (bluetoothManager != null) {
@@ -203,6 +196,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private void registerRec() {
         //3.注册蓝牙广播
         SearchBlueThBcr mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter);
+        mReceiver.setUI(mTv_search,isSearchBT);
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);//搜索结束
@@ -224,33 +218,5 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         } else {
             startSearchBluetooth();
         }
-    }
-
-    /**
-     * 蓝牙配对
-     *
-     * @param btClass
-     * @param btDevice
-     * @return
-     * @throws Exception
-     */
-    public boolean createBond(Class btClass, BluetoothDevice btDevice) throws Exception {
-        Method createBondMethod = btClass.getMethod("createBond");//获取蓝牙的连接方法
-        Boolean returnValue = (Boolean) createBondMethod.invoke(btDevice);
-        return returnValue.booleanValue();//返回连接状态
-    }
-
-    private boolean removeBond(BluetoothDevice device) {
-        Class btDeviceCls = BluetoothDevice.class;
-        Method removeBond = null;
-        boolean cancelConnect = false;
-        try {
-            removeBond = btDeviceCls.getMethod("removeBond");
-            removeBond.setAccessible(true);
-            cancelConnect = (boolean) removeBond.invoke(device);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return cancelConnect;
     }
 }

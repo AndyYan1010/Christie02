@@ -5,6 +5,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.widget.Toast;
 
@@ -32,10 +35,12 @@ public class ShakeHelper implements SensorEventListener {
     //上一次的x、y、z坐标
     private float LastX, LastY, LastZ;
     private static final int SENSOR_SHAKE = 10;
-    private int cs;
+    private int     cs;
+    private Handler mHandler;
 
-    public ShakeHelper(Context mContext) {
+    public ShakeHelper(Context mContext, Handler handler) {
         this.mContext = mContext;
+        this.mHandler = handler;
         Start();
     }
 
@@ -65,6 +70,8 @@ public class ShakeHelper implements SensorEventListener {
         if (NowSpeed >= mSpeed && cs == 0) {
             cs++;
             Toast.makeText(mContext, "您摇晃了手机！,请2s后再次摇晃", Toast.LENGTH_SHORT).show();
+            //用handler发送消息通知蓝牙连接界面，发送数据
+            sendToHandler();
             onVibrator();
             ThreadUtils.runOnSubThread(new Runnable() {
                 @Override
@@ -80,10 +87,21 @@ public class ShakeHelper implements SensorEventListener {
         }
     }
 
+    private void sendToHandler() {
+        Message msg = new Message();
+        msg.what = 10086;
+        Bundle b = new Bundle();
+        b.putString("needSendMsg", "ToSendMsg");
+        msg.setData(b);
+        //将连接状态更新的UI的textview上
+        mHandler.sendMessage(msg);
+    }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
+
     //震动
     private void onVibrator() {
         Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
@@ -91,12 +109,13 @@ public class ShakeHelper implements SensorEventListener {
             vibrator.vibrate(100);
         }
     }
+
     public void Start() {
         mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager != null) {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        }else {
-            ToastUtils.showToast(mContext,"未在手机上发现摇晃传感器，请升级手机！");
+        } else {
+            ToastUtils.showToast(mContext, "未在手机上发现摇晃传感器，请升级手机！");
         }
         if (mSensor != null) {
             mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
