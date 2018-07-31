@@ -6,19 +6,31 @@
 
     <include layout="@layout/title_view"/>
 
+    <ImageView
+        android:id="@+id/img_shake"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/blue_open"/>
+
     <TextView
         android:id="@+id/tv_search"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center"
         android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="开始搜索"
         android:textSize="20sp"/>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="5dp"
         android:background="@color/bottom_button_text_gray"/>
+
     <ListView
         android:id="@+id/listview_bluetooth"
         android:layout_width="match_parent"

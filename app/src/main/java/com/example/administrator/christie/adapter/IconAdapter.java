@@ -17,15 +17,15 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.activity.AccessdataActivity;
-import com.example.administrator.christie.activity.BluetoothActivity;
+import com.example.administrator.christie.activity.AddBluetoothActivity;
 import com.example.administrator.christie.activity.InvitationRecordActivity;
-import com.example.administrator.christie.activity.menushowpackage.MenuIntroduceActivity;
 import com.example.administrator.christie.activity.ParkinglockActivity;
 import com.example.administrator.christie.activity.PayForParkingActivity;
 import com.example.administrator.christie.activity.PaymentRecordActivity;
 import com.example.administrator.christie.activity.QrcodeActivity;
 import com.example.administrator.christie.activity.ReservatParkingActivity;
 import com.example.administrator.christie.activity.VisitorInvitationActivity;
+import com.example.administrator.christie.activity.menushowpackage.MenuIntroduceActivity;
 import com.example.administrator.christie.entity.MainMenuEntity;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.SPref;
@@ -160,13 +160,13 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             }
         }
         UserInfo userinfo = SPref.getObject(mContext, UserInfo.class, "userinfo");
-        if (null==userinfo){
-            ToastUtils.showToast(mContext,"读取账号信息失败，请退出重新登录");
+        if (null == userinfo) {
+            ToastUtils.showToast(mContext, "读取账号信息失败，请退出重新登录");
             return;
-        }else {
+        } else {
             boolean fstatus = userinfo.getFstatus();
-            if (!fstatus){
-                ToastUtils.showToast(mContext,"您还没有绑定，部分功能无法使用。请立即去个人中心绑定");
+            if (!fstatus) {
+                ToastUtils.showToast(mContext, "您还没有绑定，部分功能无法使用。请立即去个人中心绑定");
                 return;
             }
         }
@@ -174,7 +174,8 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             mContext.startActivity(new Intent(mContext, QrcodeActivity.class));
         }
         if ("蓝牙开门".equals(title)) {
-            Intent intent = new Intent(mContext, BluetoothActivity.class);
+            //Intent intent = new Intent(mContext, BluetoothActivity.class);
+            Intent intent = new Intent(mContext, AddBluetoothActivity.class);
             mContext.startActivity(intent);
         }
         if ("门禁数据".equals(title)) {
@@ -200,38 +201,38 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             Intent intent = new Intent(mContext, PaymentRecordActivity.class);
             mContext.startActivity(intent);
         }
-        if ("车位锁定".equals(title)){
+        if ("车位锁定".equals(title)) {
             Intent intent = new Intent(mContext, ParkinglockActivity.class);
             mContext.startActivity(intent);
         }
-        if ("菜单".equals(title)){
+        if ("菜单".equals(title)) {
             Intent intent = new Intent(mContext, MenuIntroduceActivity.class);
             mContext.startActivity(intent);
         }
     }
 
-//    private void requestBluetooth() {
-//        boolean bluetoothSupported = BluetoothManagerUtils.isBluetoothSupported();
-//        if (bluetoothSupported) {
-//            boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
-//            if (!bluetoothEnabled) {
-//                //弹出对话框提示用户是后打开
-//                Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                // 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
-//                enabler.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//                // 设置 Bluetooth 设备可见时间
-//                enabler.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, BLUETOOTH_DISCOVERABLE_DURATION);
-//                Activity activity = (Activity) mContext;
-//                activity.startActivityForResult(enabler, REQUEST_ENABLE);
-//            } else {
-//                //蓝牙打开可以跳转
-//                Intent intent = new Intent(mContext, BluetoothActivity.class);
-//                mContext.startActivity(intent);
-//            }
-//        } else {
-//            ToastUtils.showToast(mContext, "当前设备不支持蓝牙功能");
-//        }
-//    }
+    //    private void requestBluetooth() {
+    //        boolean bluetoothSupported = BluetoothManagerUtils.isBluetoothSupported();
+    //        if (bluetoothSupported) {
+    //            boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+    //            if (!bluetoothEnabled) {
+    //                //弹出对话框提示用户是后打开
+    //                Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+    //                // 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
+    //                enabler.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+    //                // 设置 Bluetooth 设备可见时间
+    //                enabler.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, BLUETOOTH_DISCOVERABLE_DURATION);
+    //                Activity activity = (Activity) mContext;
+    //                activity.startActivityForResult(enabler, REQUEST_ENABLE);
+    //            } else {
+    //                //蓝牙打开可以跳转
+    //                Intent intent = new Intent(mContext, BluetoothActivity.class);
+    //                mContext.startActivity(intent);
+    //            }
+    //        } else {
+    //            ToastUtils.showToast(mContext, "当前设备不支持蓝牙功能");
+    //        }
+    //    }
 
     private GridView        more_icon;
     private GridViewAdapter more_iconAdapter;

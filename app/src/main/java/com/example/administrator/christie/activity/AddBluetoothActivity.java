@@ -62,7 +62,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mTv_search = (TextView) findViewById(R.id.tv_search);
         mLv_blt = (ListView) findViewById(R.id.listview_bluetooth);
-        mTv_title.setText("添加蓝牙设备");
+        mTv_title.setText("搜索蓝牙设备");
         mImg_back.setOnClickListener(this);
         mTv_search.setOnClickListener(this);
     }
@@ -193,14 +193,23 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
+    private SearchBlueThBcr mReceiver;
+
     private void registerRec() {
         //3.注册蓝牙广播
-        SearchBlueThBcr mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter);
+        mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter);
         mReceiver.setUI(mTv_search, isSearchBT);
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);//搜索结束
         registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //解除广播接收器
+        unregisterReceiver(mReceiver);
     }
 
     //申请定位权限

@@ -6,10 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
-import com.example.administrator.christie.util.ToastUtils;
 
 import java.util.List;
 
@@ -36,13 +34,13 @@ public class SearchBlueThBcr extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "触发广播", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "触发广播", Toast.LENGTH_SHORT).show();
         String action = intent.getAction();
         switch (action) {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String address = device.getAddress();
-                Toast.makeText(context, "找到设备" + device.getName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "找到设备" + device.getName(), Toast.LENGTH_SHORT).show();
                 if (mAdapter != null) {
                     for (int i = 0; i < mList.size(); i++) {
                         BluetoothDevice bluetoothDevice = mList.get(i);
@@ -59,7 +57,7 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                 }
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                ToastUtils.showToast(context, "搜索结束");
+//                ToastUtils.showToast(context, "搜索结束");
                 isSearchBT = false;
                 tv_title.setText("开始搜索");
                 break;
