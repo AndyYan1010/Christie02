@@ -43,7 +43,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private ImageView mImg_back;
     private TextView  mTv_title, mTv_search;
     private ListView mLv_blt;
-    private              boolean isSearchBT                      = false;
+    public static        boolean isSearchBT                      = false;
     private static       int     REQUEST_ENABLE                  = 400;
     private static final int     BLUETOOTH_DISCOVERABLE_DURATION = 120;//Bluetooth 设备可见时间，单位：秒，不设置默认120s。
     private BluetoothAdapter      mBtmAdapter;
@@ -71,6 +71,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initData() {
+        img_loading.setVisibility(View.INVISIBLE);
         Glide.with(AddBluetoothActivity.this).load(R.drawable.loadgif).into(img_loading);
         mBtData = new ArrayList();
         mBlueTInfoAdapter = new LvBlueTInfoAdapter(this, mBtData);
@@ -82,7 +83,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 connectBT(i);
             }
         });
-        img_loading.setVisibility(View.INVISIBLE);
     }
 
     private void connectBT(int position) {
@@ -206,7 +206,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private void registerRec() {
         //3.注册蓝牙广播
         mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter);
-        mReceiver.setUI(mTv_search, isSearchBT);
+        mReceiver.setUI(mTv_search, img_loading);
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);//搜索结束

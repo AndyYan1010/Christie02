@@ -5,9 +5,13 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.administrator.christie.activity.AddBluetoothActivity;
 import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
+import com.example.administrator.christie.util.ToastUtils;
 
 import java.util.List;
 
@@ -24,8 +28,8 @@ public class SearchBlueThBcr extends BroadcastReceiver {
     private List<BluetoothDevice> mList;
     private LvBlueTInfoAdapter    mAdapter;
     private boolean isHad = false;
-    private TextView tv_title;
-    private boolean  isSearchBT;
+    private TextView  tv_title;
+    private ImageView img_load;
 
     public SearchBlueThBcr(List mData, LvBlueTInfoAdapter adapter) {
         this.mList = mData;
@@ -34,13 +38,13 @@ public class SearchBlueThBcr extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-//        Toast.makeText(context, "触发广播", Toast.LENGTH_SHORT).show();
+        //        Toast.makeText(context, "触发广播", Toast.LENGTH_SHORT).show();
         String action = intent.getAction();
         switch (action) {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String address = device.getAddress();
-//                Toast.makeText(context, "找到设备" + device.getName(), Toast.LENGTH_SHORT).show();
+                //                Toast.makeText(context, "找到设备" + device.getName(), Toast.LENGTH_SHORT).show();
                 if (mAdapter != null) {
                     for (int i = 0; i < mList.size(); i++) {
                         BluetoothDevice bluetoothDevice = mList.get(i);
@@ -57,15 +61,16 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                 }
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-//                ToastUtils.showToast(context, "搜索结束");
-                isSearchBT = false;
+                ToastUtils.showToast(context, "搜索结束");
+                AddBluetoothActivity.isSearchBT = false;
                 tv_title.setText("开始搜索");
+                img_load.setVisibility(View.INVISIBLE);
                 break;
         }
     }
 
-    public void setUI(TextView tv, boolean isSearchBT) {
+    public void setUI(TextView tv, ImageView img_load) {
         this.tv_title = tv;
-        this.isSearchBT = isSearchBT;
+        this.img_load = img_load;
     }
 }
