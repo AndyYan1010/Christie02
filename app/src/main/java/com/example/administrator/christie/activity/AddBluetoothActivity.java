@@ -214,10 +214,18 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        //解除广播接收器
-        unregisterReceiver(mReceiver);
+        if (null != mReceiver) {
+            //解除广播接收器
+            unregisterReceiver(mReceiver);
+        }
     }
 
     //申请定位权限
