@@ -40,4 +40,5 @@ dependencies {
     implementation files('libs/qcloudsms-1.0.2.jar')
     implementation files('libs/alipaySdk-20170922.jar')//支付宝
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'//微信支付
+    implementation 'com.skyfishjy.ripplebackground:library:1.0.1'//脉冲
 }

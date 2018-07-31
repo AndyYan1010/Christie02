@@ -44,6 +44,9 @@ public class BluetoothActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_bluetooth);
         initView();
         initData();
+//        String key = "71C5A4430AC94865C94A9B8710ECDD29";
+//        String num = "000000004D928CFBCEAA6C01A48911B2";
+//        String s1 = TDESDoubleUtils.encryptECB3Des(key, num);
     }
 
     private void initView() {
@@ -80,8 +83,8 @@ public class BluetoothActivity extends BaseActivity implements View.OnClickListe
                 startActivity(intent);
             }
         });
-//        mShakeHelper = new ShakeHelper(this);
-//        mShakeHelper.Start();
+        //        mShakeHelper = new ShakeHelper(this);
+        //        mShakeHelper.Start();
     }
 
     @Override

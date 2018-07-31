@@ -196,7 +196,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private void registerRec() {
         //3.注册蓝牙广播
         SearchBlueThBcr mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter);
-        mReceiver.setUI(mTv_search,isSearchBT);
+        mReceiver.setUI(mTv_search, isSearchBT);
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);//搜索结束

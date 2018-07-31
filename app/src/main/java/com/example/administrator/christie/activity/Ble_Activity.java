@@ -15,8 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -24,7 +23,9 @@ import android.widget.TextView;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.service.BluetoothLeService;
 import com.example.administrator.christie.util.ShakeHelper;
+import com.example.administrator.christie.util.TDESDoubleUtils;
 import com.example.administrator.christie.util.ToastUtils;
+import com.skyfishjy.library.RippleBackground;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,52 +58,22 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
     //文本框，显示接受的内容
     private        TextView           rev_tv, connect_state;
     //发送按钮
-    private Button     send_btn;
+    //    private Button     send_btn;
     //文本编辑框
-    private EditText   send_et;
+    //    private EditText   send_et;
     private ScrollView rev_sv;
     private        ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     //蓝牙特征值
     private static BluetoothGattCharacteristic                       target_chara         = null;
     private        Handler                                           mhandler             = new Handler();
-    private        Handler                                           myHandler            = new Handler() {
-        // 2.重写消息处理函数
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                // 判断发送的消息
-                case 1:
-                    // 更新View
-                    String state = msg.getData().getString("connect_state");
-                    connect_state.setText(state);
-                    break;
-                case 10086://接收到消息要发送数据//TODO
-                    String message = msg.getData().getString("needSendMsg");
-                    String con = String.valueOf(connect_state.getText());
-                    if ("ToSendMsg".equals(message)) {
-                        if ("connected".equals(con)) {//先判断蓝牙是否还连接着
-                            //在判断是第几次发送
-                            if (times == 0) {
-                                sendMsg("<010000>");
-                            } else if (times == 1) {
-                                sendMsg("<02007F6098536D70BAC000>");
-                            } else if (times == 2) {
-                                sendMsg("<05F238DA815997A8C0B37779486399D5AFED00>");
-                            }
-                        } else {
-                            ToastUtils.showToast(Ble_Activity.this, "蓝牙连接中断，请重新连接");
-                            finish();
-                        }
-                    }
-                    break;
-            }
-            super.handleMessage(msg);
-        }
-    };
+    private        Handler                                           mSendMsgHandler      = new Handler();
     private String    mDeviceName;
     private TextView  tv_title;
     private ImageView img_back;
     private int times = 0;//记录是第几次连接
-    private ShakeHelper mShakeHelper;//振动类
+    private ShakeHelper      mShakeHelper;//振动类
+    private RippleBackground rippleBackground;//脉冲图像
+    private ImageView        centerImage;
 
     /*byte[] b=new byte[]{65,66,67,68};//字节数组
       String s=new String(b,"ascii");//第二个参数指定编码方式*/
@@ -117,6 +88,7 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
         /* 启动蓝牙service */
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         initView();
         initData();
     }
@@ -127,19 +99,130 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
         rev_sv = (ScrollView) this.findViewById(R.id.rev_sv);
         rev_tv = (TextView) this.findViewById(R.id.rev_tv);
         connect_state = (TextView) this.findViewById(R.id.connect_state);
-        send_btn = (Button) this.findViewById(R.id.send_btn);
-        send_et = (EditText) this.findViewById(R.id.send_et);
+        //        send_btn = (Button) this.findViewById(R.id.send_btn);
+        //        send_et = (EditText) this.findViewById(R.id.send_et);
+        rippleBackground = (RippleBackground) findViewById(R.id.content);
+        centerImage = (ImageView) findViewById(R.id.centerImage);
     }
 
+    private String needSend = "";//记录每次需传输数据
 
     private void initData() {
         tv_title.setText(mDeviceName);
         img_back.setOnClickListener(this);
         connect_state.setText(status);
-        send_btn.setOnClickListener(this);
-        send_et.setText("<010000>");
+        //        send_btn.setOnClickListener(this);
+        //        send_et.setText("<010000>");
         mShakeHelper = new ShakeHelper(this, myHandler);
         mShakeHelper.Start();
+        mSendMsgHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mConnected) {
+                    //在判断是第几次发送
+                    if (times == 1) {
+                        //NO.1发送消息，获取四位随机数
+                        sendMsg("<010000>");
+                    } else if (times == 2) {
+                        //NO.2发送外指令，部认证
+                        //sendMsg("<02007F6098536D70BAC000>");
+                        sendMsg(needSend);
+                    } else if (times == 3) {
+                        //Tip:发送模拟刷卡信息包时，蓝牙控制器对APP的外部认证必须已经成功，外部认证有效期持续3分钟，超出时间后需要重新执行外部认证。
+                        //NO.3发送模拟刷卡信息包
+                        String key = "71C5A4430AC94865C94A9B8710ECDD29";
+                        String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
+                        String cont3 = TDESDoubleUtils.encryptECB3Des(key, testPackInfo);
+                        String encryStr = "<05F2" + cont3 + "00>";
+                        sendMsg(encryStr);
+                        // sendMsg("<05F238DA815997A8C0B37779486399D5AFED00>");
+                    }
+                } else {
+                    ToastUtils.showToast(Ble_Activity.this, "蓝牙连接中断，请退出重新连接");
+                    //finish();
+                }
+                mSendMsgHandler.postDelayed(this, 1000);
+            }
+        }, 1000);
+        rippleBackground.startRippleAnimation();
+        centerImage.setOnClickListener(this);
+    }
+
+    private Handler myHandler = new Handler() {
+        // 2.重写消息处理函数
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                // 判断发送的消息
+                case 1:
+                    // 更新View
+                    String state = msg.getData().getString("connect_state");
+                    connect_state.setText(state);
+                    if ("connected".equals(state)) {
+                        ToastUtils.showToast(Ble_Activity.this, "蓝牙已连接");
+                    } else {
+                        ToastUtils.showToast(Ble_Activity.this, "蓝牙连接中断，请退出重新连接");
+                        //                        finish();
+                    }
+                    break;
+                case 10086://接收到消息要发送数据//TODO
+                    String message = msg.getData().getString("needSendMsg");
+                    String con = String.valueOf(connect_state.getText());
+                    if ("ToSendMsg".equals(message)) {
+                        //                        if ("connected".equals(con)) {//先判断蓝牙是否还连接着
+                        //                            //在判断是第几次发送
+                        //                            if (times == 1) {
+                        //                                sendMsg("<010000>");
+                        //                                send_et.setText("<02007F6098536D70BAC000>");
+                        //                            } else if (times == 2) {
+                        //                                sendMsg("<02007F6098536D70BAC000>");
+                        //                                send_et.setText("<05F238DA815997A8C0B37779486399D5AFED00>");
+                        //                            } else if (times == 3) {
+                        //                                sendMsg("<05F238DA815997A8C0B37779486399D5AFED00>");
+                        //                            }
+                        //                            ToastUtils.showToast(Ble_Activity.this, "dier" + times);
+                        //                            //                            String editCon = send_et.getText().toString();
+                        //                            //                            sendMsg(editCon);
+                        //                        } else {
+                        //                            ToastUtils.showToast(Ble_Activity.this, "蓝牙连接中断，请重新连接");
+                        //                            finish();
+                        //                        }
+                    }
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    /*rev_string(接受的数据)(接收到的数据在scrollview上显示)*/
+    private void displayData(final String rev_string) {
+        rev_str += rev_string;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (rev_string.length() < 6) {//第一次连接，接收门禁返回的数据
+                    times++;
+                } else {
+                    String result = rev_string.substring(3, 5);
+                    if ("00".equals(result)) {//第二次及之后接收的结果，00表示成功
+                        if (times == 1) {
+                            String substr = rev_string.substring(5, 13);
+                            String spliStr = substr + "00000000";
+                            String key = "DE7FF98AF2D4CED32BA64F9B4708F980";
+                            String content = TDESDoubleUtils.encryptECB3Des(key, spliStr);
+                            needSend = content;
+                        }
+                        times++;
+                        if (times >= 4) {//已开门
+                            ToastUtils.showToast(Ble_Activity.this, "已开门，欢迎您");
+                            mSendMsgHandler.removeCallbacksAndMessages(null);
+                            finish();
+                        }
+                    }
+                }
+                rev_tv.setText(rev_str);
+                rev_sv.scrollTo(0, rev_tv.getMeasuredHeight());
+            }
+        });
     }
 
     // Activity出来时候，绑定广播接收器，监听蓝牙连接服务传过来的事件
@@ -155,15 +238,25 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        if (mConnected) {
+            sendMsg("<0F0000>");
+        }
+        rippleBackground.stopRippleAnimation();
+        mBluetoothLeService = null;
+        mSendMsgHandler.removeCallbacksAndMessages(null);
+        myHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (null != mShakeHelper) {
             mShakeHelper.Stop();
         }
-        sendMsg("<0F0000>");
         //解除广播接收器
         unregisterReceiver(mGattUpdateReceiver);
-        mBluetoothLeService = null;
     }
 
     /* BluetoothLeService绑定的回调函数 */
@@ -219,27 +312,6 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
         msg.setData(b);
         //将连接状态更新的UI的textview上
         myHandler.sendMessage(msg);
-    }
-
-    /*rev_string(接受的数据)(接收到的数据在scrollview上显示)*/
-    private void displayData(String rev_string) {
-        rev_str += rev_string;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                rev_tv.setText(rev_str);
-                rev_sv.scrollTo(0, rev_tv.getMeasuredHeight());
-                if (times == 0) {
-                    send_et.setText("<010000>");
-                    times++;
-                } else if (times == 1) {
-                    send_et.setText("<02007F6098536D70BAC000>");
-                    times++;
-                } else if (times == 2) {
-                    send_et.setText("<05F238DA815997A8C0B37779486399D5AFED00>");
-                }
-            }
-        });
     }
 
     /* 意图过滤器 */
@@ -329,13 +401,15 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.send_btn:
-                //发送数据
-                String msg = send_et.getText().toString();
-                sendMsg(msg);
-                break;
+            //            case R.id.send_btn:
+            //发送数据
+            //                String msg = send_et.getText().toString();
+            //                sendMsg(msg);
+            //                break;
             case R.id.img_back:
                 finish();
+                break;
+            case R.id.centerImage:
                 break;
         }
     }
