@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
 import com.example.administrator.christie.broadcastReceiver.SearchBlueThBcr;
@@ -48,6 +49,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private BluetoothAdapter      mBtmAdapter;
     private List<BluetoothDevice> mBtData;
     private LvBlueTInfoAdapter    mBlueTInfoAdapter;
+    private ImageView             img_loading;//等待在家动画
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mImg_back = (ImageView) findViewById(R.id.img_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mTv_search = (TextView) findViewById(R.id.tv_search);
+        img_loading = (ImageView) findViewById(R.id.img_loading);
         mLv_blt = (ListView) findViewById(R.id.listview_bluetooth);
         mTv_title.setText("搜索蓝牙设备");
         mImg_back.setOnClickListener(this);
@@ -68,6 +71,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initData() {
+        Glide.with(AddBluetoothActivity.this).load(R.drawable.loadgif).into(img_loading);
         mBtData = new ArrayList();
         mBlueTInfoAdapter = new LvBlueTInfoAdapter(this, mBtData);
         mLv_blt.setAdapter(mBlueTInfoAdapter);
@@ -78,12 +82,14 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 connectBT(i);
             }
         });
+        img_loading.setVisibility(View.INVISIBLE);
     }
 
     private void connectBT(int position) {
         //连接前先关闭蓝牙搜索功能
         isSearchBT = false;
         mTv_search.setText("开始搜索");
+        img_loading.setVisibility(View.INVISIBLE);
         stopSearchBT();
         //获取对应条目的蓝牙设备信息
         final BluetoothDevice btDevice = mBtData.get(position);
@@ -126,6 +132,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 } else {
                     isSearchBT = false;
                     mTv_search.setText("开始搜索");
+                    img_loading.setVisibility(View.INVISIBLE);
                     ToastUtils.showToast(this, "已停止搜索");
                     stopSearchBT();
                 }
@@ -179,6 +186,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private void startSearchBluetooth() {
         isSearchBT = true;
         mTv_search.setText("停止搜索");
+        img_loading.setVisibility(View.VISIBLE);
         mBtData.clear();
         mBlueTInfoAdapter.notifyDataSetChanged();
         //注册广播接收器
