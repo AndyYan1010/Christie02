@@ -125,8 +125,9 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
                         sendMsg("<010000>");
                     } else if (times == 2) {
                         //NO.2发送外指令，部认证
-                        //sendMsg("<02007F6098536D70BAC000>");
-                        sendMsg(needSend);
+                        //sendMsg("<02007F6098536D70BAC000>");7F6098536D70BAC0
+                        String cont2 = "<0200" + needSend + "00>";
+                        sendMsg(cont2);
                     } else if (times == 3) {
                         //Tip:发送模拟刷卡信息包时，蓝牙控制器对APP的外部认证必须已经成功，外部认证有效期持续3分钟，超出时间后需要重新执行外部认证。
                         //NO.3发送模拟刷卡信息包
