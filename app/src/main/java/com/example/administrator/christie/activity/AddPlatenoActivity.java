@@ -19,7 +19,6 @@ import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.AllCapTransformationMethod;
 import com.example.administrator.christie.util.Consts;
 import com.example.administrator.christie.util.HttpOkhUtils;
-import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
@@ -101,8 +100,8 @@ public class AddPlatenoActivity extends AppCompatActivity implements View.OnClic
                     ToastUtils.showToast(AddPlatenoActivity.this, "请输入汽车颜色");
                     return;
                 }
-                boolean b = RegexUtils.checkMobile(mobile);
-                if (!b) {
+//                boolean b = RegexUtils.checkMobile(mobile);
+                if (mobile.length() != 11) {
                     ToastUtils.showToast(AddPlatenoActivity.this, "请输入正确的手机号码");
                     return;
                 }

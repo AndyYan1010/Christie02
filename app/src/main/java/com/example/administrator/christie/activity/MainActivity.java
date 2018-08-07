@@ -249,13 +249,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
                     addFragment(menjin);
                     showFragment(menjin);
-                    ToastUtils.showToast(MainActivity.this, "为空，a添加");
+//                    ToastUtils.showToast(MainActivity.this, "为空，a添加");
                 } else {
                     if (menjin.isHidden()) {
                         showFragment(menjin);
-                        ToastUtils.showToast(MainActivity.this, "不为空，a已隐藏");
+//                        ToastUtils.showToast(MainActivity.this, "不为空，a已隐藏");
                     } else {
-                        ToastUtils.showToast(MainActivity.this, "不为空, a未隐藏");
+//                        ToastUtils.showToast(MainActivity.this, "不为空, a未隐藏");
                     }
                 }
                 break;
@@ -266,14 +266,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
                     addFragment(fangke);
                     showFragment(fangke);
-                    ToastUtils.showToast(MainActivity.this, "为空，b添加");
+//                    ToastUtils.showToast(MainActivity.this, "为空，b添加");
                 } else {
 
                     if (fangke.isHidden()) {
                         showFragment(fangke);
-                        ToastUtils.showToast(MainActivity.this, "不为空，b已隐藏");
+//                        ToastUtils.showToast(MainActivity.this, "不为空，b已隐藏");
                     } else {
-                        ToastUtils.showToast(MainActivity.this, "不为空, b未隐藏");
+//                        ToastUtils.showToast(MainActivity.this, "不为空, b未隐藏");
                     }
                 }
                 break;

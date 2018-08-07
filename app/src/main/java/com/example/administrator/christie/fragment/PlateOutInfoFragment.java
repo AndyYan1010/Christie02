@@ -90,7 +90,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         mTv_title.setText("停车缴费");
 
         //测试 缴费。
-        testPay();
+        //        testPay();
 
         //设置车牌选择器
         dataPlateList = new ArrayList();
@@ -231,7 +231,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                     Gson gson = new Gson();
                     mParkPayInfo = gson.fromJson(resbody, ParkPayInfo.class);
                     int resCode = mParkPayInfo.getResCode();
-                    if (resCode==0){
+                    if (resCode == 0) {
                         mLinear_detail.setVisibility(View.VISIBLE);
                         ParkPayInfo.ParklistBean parklist = mParkPayInfo.getParklist();
                         final String plateNo = parklist.getPlateNo();
@@ -263,8 +263,8 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                                 }
                             }
                         });
-                    }else {
-                        ToastUtils.showToast(getContext(),"未查到需交费车辆");
+                    } else {
+                        ToastUtils.showToast(getContext(), "未查到需交费车辆");
                     }
                 }
             }

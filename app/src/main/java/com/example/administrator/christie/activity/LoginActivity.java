@@ -17,7 +17,6 @@ import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.MD5Util;
 import com.example.administrator.christie.util.ProgressDialogUtils;
-import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
@@ -127,7 +126,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case R.id.bt_login:
                 mPhone = String.valueOf(mEt_acct_num.getText()).trim();
                 mPassword = String.valueOf(mEt_password.getText()).trim();
-                if (!RegexUtils.checkMobile(mPhone)) {
+                if (mPhone.length() != 11) {
                     ToastUtils.showToast(LoginActivity.this, "请输入正确的手机号码");
                     return;
                 }

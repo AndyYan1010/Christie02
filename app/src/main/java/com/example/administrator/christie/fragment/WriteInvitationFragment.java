@@ -21,7 +21,6 @@ import com.example.administrator.christie.modelInfo.PersonalDataInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
-import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.view.CustomDatePicker;
@@ -194,7 +193,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 if (phone.equals("") || phone.equals("请输入来访人电话")) {
                     ToastUtils.showToast(mContext, "来访人电话不能为空");
                     return;
-                } else if (!RegexUtils.checkMobile(phone)) {
+                } else if (phone.length() != 11) {
                     ToastUtils.showToast(mContext, "电话格式不正确");
                     return;
                 }

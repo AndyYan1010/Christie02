@@ -14,7 +14,6 @@ import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UpDataInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.MD5Util;
-import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
@@ -92,7 +91,7 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
                     ToastUtils.showToast(this, "请输入手机号码");
                 } else {
                     // 账号不匹配手机号格式（11位数字且以1开头）
-                    if (!RegexUtils.checkMobile(mPhone_num)) {
+                    if (mPhone_num.length() != 11) {
                         ToastUtils.showToast(this, "手机号码格式不正确");
                     } else {
                         //发送验证码
@@ -115,7 +114,7 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
                     ToastUtils.showToast(this, "请输入手机号码");
                     return;
                 }
-                if (!RegexUtils.checkMobile(mPhone_num)) {
+                if (mPhone_num.length() != 11) {
                     ToastUtils.showToast(this, "请输入正确的手机号码");
                     return;
                 }

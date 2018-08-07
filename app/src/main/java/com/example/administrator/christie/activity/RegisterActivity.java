@@ -15,7 +15,6 @@ import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UpDataInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.MD5Util;
-import com.example.administrator.christie.util.RegexUtils;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
@@ -25,13 +24,13 @@ import java.io.IOException;
 import okhttp3.Request;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
-    private EditText mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass,mEt_user_name;
+    private EditText mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass, mEt_user_name;
     private Button mBt_get_test, mBt_register;
     private ImageView mImg_back;
     private TextView  mTv_title;
     private String    mPhone_num;//手机号
     private String    mtest_pass;//验证码
-    private String    mPassword, mAgainPassword,mUser_name;//密码和重复密码
+    private String    mPassword, mAgainPassword, mUser_name;//密码和重复密码
     private String markVerification = "-12345678";
     private int    count            = 60;//验证码可重新点击发送时间间隔
     private Handler handler;
@@ -92,7 +91,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     ToastUtils.showToast(this, "请输入手机号码");
                 } else {
                     // 账号不匹配手机号格式（11位数字且以1开头）
-                    if (!RegexUtils.checkMobile(mPhone_num)) {
+                    if (mPhone_num.length() != 11) {
                         ToastUtils.showToast(this, "手机号码格式不正确");
                     } else {
                         //发送验证码
@@ -112,7 +111,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 mUser_name = String.valueOf(mEt_user_name.getText()).trim();
                 mPhone_num = String.valueOf(mEt_phone_num.getText()).trim();
                 mtest_pass = String.valueOf(mEdit_test_pass.getText()).trim();
-                if (mUser_name.equals("")||mUser_name.equals("请输入用户名")){
+                if (mUser_name.equals("") || mUser_name.equals("请输入用户名")) {
                     ToastUtils.showToast(this, "请输入用户名");
                     return;
                 }
@@ -120,7 +119,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     ToastUtils.showToast(this, "请输入手机号码");
                     return;
                 }
-                if (!RegexUtils.checkMobile(mPhone_num)) {
+                if (mPhone_num.length() != 11) {
                     ToastUtils.showToast(this, "请输入正确的手机号码");
                     return;
                 }
@@ -129,10 +128,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     return;
                 }
                 boolean isRight = checkVerification();
-                if (isRight){
+                if (isRight) {
                     //注册
                     sendToRegister();
-                }else {
+                } else {
                     ToastUtils.showToast(this, "验证码错误，请从新获取验证码");
                 }
                 break;
@@ -141,11 +140,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     private void sendToRegister() {
         String MD5 = MD5Util.MD5Encode(mPassword, "utf-8", false);
-        String urlToRegist= NetConfig.REGISTERURL;
+        String urlToRegist = NetConfig.REGISTERURL;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("telephone",mPhone_num);
-        params.put("password",MD5);
-        params.put("username",mUser_name);
+        params.put("telephone", mPhone_num);
+        params.put("password", MD5);
+        params.put("username", mUser_name);
         params.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPost(urlToRegist, params, new HttpOkhUtils.HttpCallBack() {
             @Override
@@ -155,8 +154,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void onSuccess(int code, String resbody) {
-                if (code!=200){
-                    ToastUtils.showToast(mContext,"注册失败，请重新注册");
+                if (code != 200) {
+                    ToastUtils.showToast(mContext, "注册失败，请重新注册");
                     return;
                 }
                 Gson gson = new Gson();
@@ -194,8 +193,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void onSuccess(int code, String resbody) {
-                if (code!=200){
-                    ToastUtils.showToast(mContext,"发送失败");
+                if (code != 200) {
+                    ToastUtils.showToast(mContext, "发送失败");
                     return;
                 }
                 Gson gson = new Gson();
