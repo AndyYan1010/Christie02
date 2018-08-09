@@ -28,7 +28,7 @@ import okhttp3.Response;
 
 public class HttpOkhUtils {
     // 网络请求超时时间值(s)
-    private static final int DEFAULT_TIMEOUT = 10;
+    private static final int DEFAULT_TIMEOUT = 30;
     private static HttpOkhUtils okhUtils;
     private        OkHttpClient client;
 
