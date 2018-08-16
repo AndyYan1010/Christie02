@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.administrator.christie.activity.AddBluetoothActivity;
+import com.example.administrator.christie.activity.homeAct.AddBluetoothActivity;
 import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
 import com.example.administrator.christie.util.ToastUtils;
 

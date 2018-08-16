@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_ef"
-    tools:context="com.example.administrator.christie.activity.PlateActivity">
+    tools:context="com.example.administrator.christie.activity.usercenter.PlateActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

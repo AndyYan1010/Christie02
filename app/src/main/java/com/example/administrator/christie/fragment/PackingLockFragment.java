@@ -146,6 +146,11 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
                     }
                     Gson gson = new Gson();
                     LockPlateInfo outPlateInfo = gson.fromJson(resbody, LockPlateInfo.class);
+                    String result = outPlateInfo.getResult();
+                    if ("FAIL".equals(result)) {
+                        ToastUtils.showToast(getContext(), "没有车牌信息");
+                        return;
+                    }
                     List<LockPlateInfo.ListBean> list = outPlateInfo.getList();
                     for (LockPlateInfo.ListBean bean : list) {
                         mList.add(bean);

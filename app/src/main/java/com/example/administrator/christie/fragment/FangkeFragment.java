@@ -13,7 +13,7 @@ import android.widget.ListView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
-import com.example.administrator.christie.activity.MsgDetailActivity;
+import com.example.administrator.christie.activity.msgAct.MsgDetailActivity;
 import com.example.administrator.christie.adapter.LvMsgAdapter;
 import com.example.administrator.christie.modelInfo.MeetingDataInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;

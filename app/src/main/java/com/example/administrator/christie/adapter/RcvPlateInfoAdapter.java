@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.activity.PlateActivity;
+import com.example.administrator.christie.activity.usercenter.PlateActivity;
 import com.example.administrator.christie.modelInfo.PersonalPlateInfo;
 
 import java.util.List;

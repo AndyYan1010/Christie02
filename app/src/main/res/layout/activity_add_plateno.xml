@@ -5,7 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.example.administrator.christie.activity.AddPlatenoActivity">
+              tools:context="com.example.administrator.christie.activity.usercenter.AddPlatenoActivity">
 
     <include layout="@layout/title_view"/>
 

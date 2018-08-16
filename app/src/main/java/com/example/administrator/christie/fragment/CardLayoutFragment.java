@@ -23,7 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
-import com.example.administrator.christie.activity.PlateDetailActivity;
+import com.example.administrator.christie.activity.notme.PlateDetailActivity;
 import com.example.administrator.christie.adapter.CardsAdapter;
 import com.example.administrator.christie.entity.Plate;
 import com.example.administrator.christie.util.Consts;

@@ -14,7 +14,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.activity.TempayActivity;
+import com.example.administrator.christie.activity.notme.TempayActivity;
 
 public class TempayFragment extends Fragment {
     private Context mContext;

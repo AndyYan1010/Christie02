@@ -12,12 +12,12 @@ import android.widget.GridView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
-import com.example.administrator.christie.activity.ApplyActivity;
-import com.example.administrator.christie.activity.CarlockActivity;
-import com.example.administrator.christie.activity.MoonpayActivity;
-import com.example.administrator.christie.activity.PayrecordActivity;
-import com.example.administrator.christie.activity.ShenqingActivity;
-import com.example.administrator.christie.activity.TempayActivity;
+import com.example.administrator.christie.activity.notme.ApplyActivity;
+import com.example.administrator.christie.activity.notme.CarlockActivity;
+import com.example.administrator.christie.activity.notme.MoonpayActivity;
+import com.example.administrator.christie.activity.notme.PayrecordActivity;
+import com.example.administrator.christie.activity.notme.ShenqingActivity;
+import com.example.administrator.christie.activity.notme.TempayActivity;
 import com.example.administrator.christie.adapter.GridViewAdapter;
 import com.example.administrator.christie.entity.MainMenuEntity;
 import com.example.administrator.christie.util.Consts;
@@ -31,8 +31,7 @@ public class ParkFragment extends Fragment {
     private GridView gv_park;
     private int[] resArr = new int[]{R.drawable.yuyue,R.drawable.jiaofei,R.drawable.linshi,R.drawable.suoding,R.drawable.jfjl,0
     };
-    private String[] textArr = new String[]{"车位预约","月卡缴费","临时缴费","车辆锁定","缴费记录查询",""
-    };
+    private String[] textArr = new String[]{"车位预约","月卡缴费","临时缴费","车辆锁定","缴费记录查询",""};
     private List<MainMenuEntity> list;
     private GridViewAdapter adapter;
     private List<String> functionlist = TApplication.user.getFunctionlist();

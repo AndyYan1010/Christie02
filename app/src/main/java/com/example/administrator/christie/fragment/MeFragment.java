@@ -16,10 +16,10 @@ import android.widget.Toast;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
-import com.example.administrator.christie.activity.CardActivity;
-import com.example.administrator.christie.activity.PersonalActivity;
-import com.example.administrator.christie.activity.PlateActivity;
-import com.example.administrator.christie.activity.SettingsActivity;
+import com.example.administrator.christie.activity.usercenter.CardActivity;
+import com.example.administrator.christie.activity.usercenter.PersonalActivity;
+import com.example.administrator.christie.activity.usercenter.PlateActivity;
+import com.example.administrator.christie.activity.usercenter.SettingsActivity;
 import com.example.administrator.christie.activity.usercenter.AboutUsActivity;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.Consts;

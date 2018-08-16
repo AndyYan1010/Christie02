@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.activity.TempayActivity;
+import com.example.administrator.christie.activity.notme.TempayActivity;
 import com.example.administrator.christie.util.AllCapTransformationMethod;
 import com.example.administrator.christie.util.Consts;
 import com.example.administrator.christie.util.HttpUtils;

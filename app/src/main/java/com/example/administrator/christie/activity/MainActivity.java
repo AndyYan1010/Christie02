@@ -63,13 +63,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         TApplication.listActivity.add(this);
         //        setListeners();
+        setViews();
+        setData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setViews();
-        setData();
+
     }
 
     protected void setViews() {

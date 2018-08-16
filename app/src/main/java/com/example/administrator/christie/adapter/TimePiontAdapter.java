@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.activity.ReservatParkingActivity;
+import com.example.administrator.christie.activity.homeAct.ReservatParkingActivity;
 
 import java.util.List;
 

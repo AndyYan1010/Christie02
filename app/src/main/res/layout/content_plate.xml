@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.administrator.christie.activity.PlateActivity"
+    tools:context="com.example.administrator.christie.activity.usercenter.PlateActivity"
     tools:showIn="@layout/activity_plate">
 
     <LinearLayout

@@ -5,7 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.example.administrator.christie.activity.BluetoothActivity">
+              tools:context="com.example.administrator.christie.activity.homeAct.BluetoothActivity">
 
     <include layout="@layout/title_view"/>
 

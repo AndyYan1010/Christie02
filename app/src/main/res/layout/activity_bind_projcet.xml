@@ -200,7 +200,7 @@
         android:background="@drawable/bg_round_blue_30"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:text="绑 定"
+        android:text="提交绑定信息"
         android:textColor="@color/white"
         android:textSize="20sp"/>
 </LinearLayout>

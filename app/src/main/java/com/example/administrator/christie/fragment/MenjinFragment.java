@@ -185,7 +185,7 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
             //导入ViewPager的布局
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.banner_item, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.img_banner);
-            Glide.with(mContext).load("http://220.248.107.62:8084/upFiles/upload/files/20180321/banner1.jpg").into(imageView);
+            Glide.with(mContext).load("https://58pic.aiji66.com/58pic/15/67/88/34d58PICm4p_1024.jpg").into(imageView);
             allListView.add(view);
         }
         //设置播放方式为顺序播放

@@ -14,6 +14,11 @@ import java.util.List;
 public class LockPlateInfo {
 
     private List<ListBean> list;
+    /**
+     * result : fail
+     */
+
+    private String         result;
 
     public List<ListBean> getList() {
         return list;
@@ -21,6 +26,14 @@ public class LockPlateInfo {
 
     public void setList(List<ListBean> list) {
         this.list = list;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public static class ListBean {

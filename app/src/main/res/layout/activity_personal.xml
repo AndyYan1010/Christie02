@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:background="@color/gray_0"
               android:orientation="vertical"
-              tools:context="com.example.administrator.christie.activity.PersonalActivity">
+              tools:context="com.example.administrator.christie.activity.usercenter.PersonalActivity">
 
     <include layout="@layout/title_view"/>
 
