@@ -46,13 +46,13 @@ public class FangkeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         view = inflater.inflate(R.layout.fragment_fangke, container, false);
+        setViews();
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        setViews();
         setData();
         setListeners();
     }

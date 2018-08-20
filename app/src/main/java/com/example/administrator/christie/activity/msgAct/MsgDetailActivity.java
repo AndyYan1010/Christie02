@@ -84,7 +84,7 @@ public class MsgDetailActivity extends BaseActivity implements View.OnClickListe
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", userinfo.getUserid());
         params.put("fmeeting_id", mMsgid);
-        params.put("fread", "1");
+        params.put("fread", "0");
         HttpOkhUtils.getInstance().doPost(msgDetUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
