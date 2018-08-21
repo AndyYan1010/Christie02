@@ -32,4 +32,12 @@ public class GlideLoaderUtil {
                 .crossFade()// 设置淡入淡出效果，默认300ms，可以传参
                 .into(imgeview);
     }
+    public static void showImgWithIcon(Context context,String url,int beforeID,int errorID ,ImageView imgeview) {
+        Glide.with(context)
+                .load(url)// 加载图片
+                .placeholder(beforeID)//图片加载出来前，显示的图片
+                .error(errorID)// 设置错误图片
+                .crossFade()// 设置淡入淡出效果，默认300ms，可以传参
+                .into(imgeview);
+    }
 }

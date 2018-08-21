@@ -28,9 +28,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'com.google.zxing:core:3.3.1'
-    compile 'com.journeyapps:zxing-android-embedded:3.3.0'
-    compile 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.zxing:core:3.3.1'
+    implementation 'com.journeyapps:zxing-android-embedded:3.3.0'
+    implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-5'
     //    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-5'//没有使用特殊Header，可以不加这行
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
@@ -41,4 +41,5 @@ dependencies {
     implementation files('libs/alipaySdk-20170922.jar')//支付宝
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'//微信支付
     implementation 'com.skyfishjy.ripplebackground:library:1.0.1'//脉冲
+    implementation 'org.jsoup:jsoup:1.10.2'//web解析器
 }

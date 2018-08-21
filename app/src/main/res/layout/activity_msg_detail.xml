@@ -10,8 +10,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/include"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -47,23 +48,19 @@
             android:text="2018-10-10"
             android:textSize="16sp"/>
 
-        <TextView
-            android:id="@+id/tv_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:text="最新消息。。。。"
-            android:textColor="@color/bottom_button_text_black"
-            android:textSize="20sp"/>
+        <WebView
+            android:id="@+id/web_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </WebView>
     </LinearLayout>
 
     <ImageView
         android:id="@+id/img_nonet"
-        android:layout_below="@id/include"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/include"
         android:background="@color/white"
-        android:src="@drawable/icon_nonet"/>
+        android:src="@drawable/icon_nonet"
+        android:visibility="gone"/>
 </RelativeLayout>

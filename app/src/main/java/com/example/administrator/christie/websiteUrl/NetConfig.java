@@ -20,6 +20,8 @@ public class NetConfig {
     public static String REGISTERURL         = ROOT + "register";
     //修改密码
     public static String MODIFYPSW           = ROOT + "modifyPsw";
+    //首页轮播图
+    public static String BANNERURL           = ROOT + "bannerList";
     //绑定项目-公司查询
     public static String PROJECT             = ROOT + "project";
     //认证信息

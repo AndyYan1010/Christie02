@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.administrator.christie.InformationMessege.IconListInfo;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
@@ -21,9 +20,11 @@ import com.example.administrator.christie.activity.LoginActivity;
 import com.example.administrator.christie.adapter.GridViewAdapter;
 import com.example.administrator.christie.adapter.IconAdapter;
 import com.example.administrator.christie.entity.MainMenuEntity;
+import com.example.administrator.christie.modelInfo.BannerListInfo;
 import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.GlideLoaderUtil;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.MD5Util;
 import com.example.administrator.christie.util.ProgressDialogUtils;
@@ -68,11 +69,46 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
         //初始化列表数据
         initIconData();
         setViews();
-        setIntData();
-        setListeners();
+        //获取轮播图图片地址
+        getBannerUrl();
         //查看用户是否认证过
         checkIsAuthentication();
         return view;
+    }
+
+    private List<String> imgUrlList;
+
+    private void getBannerUrl() {
+        if (null == imgUrlList) {
+            imgUrlList = new ArrayList<>();
+        } else {
+            imgUrlList.clear();
+        }
+        String bannerUrl = NetConfig.BANNERURL;
+        ProgressDialogUtils.getInstance().show(getActivity(), "正在加载...");
+        HttpOkhUtils.getInstance().doGet(bannerUrl, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(getContext(), "网络错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                ProgressDialogUtils.getInstance().dismiss();
+                if (code != 200) {
+                    ToastUtils.showToast(mContext, "请求异常");
+                    return;
+                }
+                Gson gson = new Gson();
+                final BannerListInfo bannerInfo = gson.fromJson(resbody, BannerListInfo.class);
+                List<BannerListInfo.ArrBean> arr = bannerInfo.getArr();
+                for (BannerListInfo.ArrBean bean : arr) {
+                    imgUrlList.add(bean.getNewpic());
+                }
+                //初始化轮播图
+                setIntData(imgUrlList);
+            }
+        });
     }
 
     private void checkIsAuthentication() {
@@ -164,9 +200,6 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
     }
 
     protected void setViews() {
-        //        gv_menjin = (GridView) view.findViewById(R.id.gv_menjin);
-        //        adapter = new GridViewAdapter(mContext, list);
-        //        gv_menjin.setAdapter(adapter);
         mVp_banner = view.findViewById(R.id.vp_banner);
         mRecyclerView_icon01 = view.findViewById(R.id.recyclerView_icon01);
         GridLayoutManager mGridManager = new GridLayoutManager(getContext(), 3);
@@ -175,17 +208,19 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
         mRecyclerView_icon01.setAdapter(mIconAdapter);
     }
 
-    private void setIntData() {
+    //初始化轮播图
+    private void setIntData(List<String> imgUrlList) {
         if (null == allListView) {
             allListView = new ArrayList<>();
         } else {
             allListView.clear();
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < imgUrlList.size(); i++) {
             //导入ViewPager的布局
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.banner_item, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.img_banner);
-            Glide.with(mContext).load("https://58pic.aiji66.com/58pic/15/67/88/34d58PICm4p_1024.jpg").into(imageView);
+            //            Glide.with(mContext).load(imgUrlList.get(i)).into(imageView);
+            GlideLoaderUtil.showImgWithIcon(getContext(), imgUrlList.get(i), R.drawable.lunbo, R.drawable.lunbo, imageView);
             allListView.add(view);
         }
         //设置播放方式为顺序播放
@@ -195,145 +230,6 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
         mVp_banner.addViews(allListView);
         //开始轮播
         mVp_banner.startPlay();
-
-    }
-
-    protected void setListeners() {
-        //        gv_menjin.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        //            @Override
-        //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //                TextView tv_grid_name = (TextView) view.findViewById(R.id.mydada_text_tv);
-        //                String name = String.valueOf(tv_grid_name.getText());
-        //                //                Intent intent = new Intent(mContext, ShenqingActivity.class);
-        //                if ("二维码开门".equals(name)) {
-        //                    //                    if (functionlist.contains(Consts.QRKM)) {
-        //                    startActivity(new Intent(mContext, QrcodeActivity.class));
-        //                    //                    } else {
-        //                    //                        intent.putExtra("title", getString(R.string.qrcode));
-        //                    //                        intent.putExtra("code", Consts.QRKM);
-        //                    //                        startActivity(intent);
-        //                    //                    }
-        //                }
-        //                if ("蓝牙开门".equals(name)) {
-        //                    //                    if (functionlist.contains(Consts.LYKM)) {
-        //                    startActivity(new Intent(mContext, BluetoothActivity.class));
-        //                    //                    } else {
-        //                    //                        intent.putExtra("title", getString(R.string.bluetooth));
-        //                    //                        intent.putExtra("code", Consts.LYKM);
-        //                    //                        startActivity(intent);
-        //                    //                    }
-        //                }
-        //                if ("门禁数据查询".equals(name)) {
-        //                    //                    if (functionlist.contains(Consts.MJSJCX)) {
-        //                    startActivity(new Intent(mContext, AccessdataActivity.class));
-        //                    //                    } else {
-        //                    //                        intent.putExtra("title", getString(R.string.accessdata));
-        //                    //                        intent.putExtra("code", Consts.MJSJCX);
-        //                    //                        startActivity(intent);
-        //                    //                    }
-        //                }
-        //                if ("访客邀请".equals(name)) {
-        //                    ToastUtils.showToast(getContext(), "正在开发");
-        //                }
-        //                if ("邀请记录".equals(name)) {
-        //                    ToastUtils.showToast(getContext(), "正在开发");
-        //                }
-        //                if ("车位预约".equals(name)) {
-        //                    ToastUtils.showToast(getContext(), "正在开发");
-        //                }
-        //                if ("停车缴费".equals(name)) {
-        //                    ToastUtils.showToast(getContext(), "正在开发");
-        //                }
-        //                if ("缴费记录".equals(name)) {
-        //                    ToastUtils.showToast(getContext(), "正在开发");
-        //                }
-        //                if ("添加".equals(name)) {
-        //                    if (listMore.size() == 0) {
-        //                        ToastUtils.showToast(getContext(), "没有可添加的内容了");
-        //                    } else {
-        //                        //弹出一个popupwindow让用户选择添加icon
-        //                        showMoreIcon(tv_grid_name);
-        //                    }
-        //                }
-        //                //                switch (i){
-        //                //                    case 0:
-        //                //                        if(functionlist.contains(Consts.QRKM)) {
-        //                //                            startActivity(new Intent(mContext, QrcodeActivity.class));
-        //                //                        }else{
-        //                //                            intent.putExtra("title",getString(R.string.qrcode));
-        //                //                            intent.putExtra("code",Consts.QRKM);
-        //                //                            startActivity(intent);
-        //                //                        }
-        //                //                        break;
-        //                //                    case 1:
-        //                //                        if(functionlist.contains(Consts.LYKM)){
-        //                //                            startActivity(new Intent(mContext,BluetoothActivity.class));
-        //                //                        }else{
-        //                //                            intent.putExtra("title",getString(R.string.bluetooth));
-        //                //                            intent.putExtra("code",Consts.LYKM);
-        //                //                            startActivity(intent);
-        //                //                        }
-        //                //                        break;
-        //                //                    case 2:
-        //                //                        if(functionlist.contains(Consts.MJSJCX)) {
-        //                //                            startActivity(new Intent(mContext, AccessdataActivity.class));
-        //                //                        }else {
-        //                //                            intent.putExtra("title",getString(R.string.accessdata));
-        //                //                            intent.putExtra("code",Consts.MJSJCX);
-        //                //                            startActivity(intent);
-        //                //                        }
-        //                //                        break;
-        //                //                }
-        //            }
-        //        });
-        //        gv_menjin.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-        //            @Override
-        //            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
-        //                TextView tv_grid_name = (TextView) view.findViewById(R.id.mydada_text_tv);
-        //                final String name = String.valueOf(tv_grid_name.getText());
-        //                final ImageView img_delete = view.findViewById(R.id.img_delete_icon);
-        //                if (name.equals("二维码开门") || name.equals("蓝牙开门") || name.equals("添加")) {
-        //                    ToastUtils.showToast(getContext(), "该图标不可删除");
-        //                    return true;
-        //                }
-        //                //记录是对应的是否已删除
-        //                if (img_delete.getVisibility() == View.VISIBLE) {
-        //                    img_delete.setVisibility(View.GONE);
-        //                } else {
-        //                    img_delete.setVisibility(View.VISIBLE);
-        //                    img_delete.setOnClickListener(new View.OnClickListener() {
-        //                        @Override
-        //                        public void onClick(View view) {
-        //                            View parent = (View) img_delete.getParent();
-        //                            img_delete.setVisibility(View.GONE);
-        //                            TextView title_name = (TextView) parent.findViewById(R.id.mydada_text_tv);
-        //                            String min_title = String.valueOf(title_name.getText());
-        //                            int whichOne = 0;
-        //                            for (int i = 0; i < list.size(); i++) {
-        //                                MainMenuEntity menuEntity = list.get(i);
-        //                                String text = menuEntity.getText();
-        //                                if (min_title.equals(text)) {
-        //                                    whichOne = i;
-        //                                    break;
-        //                                }
-        //                            }
-        //                            listMore.add(list.get(whichOne));
-        //                            list.remove(whichOne);
-        //                            adapter.notifyDataSetChanged();
-        //                            ThreadUtils.runOnSubThread(new Runnable() {
-        //                                @Override
-        //                                public void run() {
-        //                                    Gson gson = new Gson();
-        //                                    String str = gson.toJson(list);
-        //                                    SpUtils.putString(getContext(), "listStr", str);
-        //                                }
-        //                            });
-        //                        }
-        //                    });
-        //                }
-        //                return true;
-        //            }
-        //        });
     }
 
     @Override
@@ -420,30 +316,4 @@ public class MenjinFragment extends Fragment implements View.OnClickListener {
             }
         });
     }
-    //    private static int REQUEST_ENABLE = 4000;
-    //    @Override
-    //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    //        super.onActivityResult(requestCode, resultCode, data);
-    //        if (requestCode == REQUEST_ENABLE) {
-    //            switch (resultCode) {
-    //                // 点击确认按钮
-    //                case Activity.RESULT_OK: {
-    //                    //用户选择开启 Bluetooth，Bluetooth 会被开启
-    //                    ToastUtils.showToast(mContext,"蓝牙开启了");
-    //                    //跳转摇一摇界面
-    //                    Intent intent = new Intent(mContext, BluetoothActivity.class);
-    //                    mContext.startActivity(intent);
-    //                }
-    //                break;
-    //                // 点击取消按钮或点击返回键
-    //                case Activity.RESULT_CANCELED: {
-    //                    //用户拒绝打开 Bluetooth, Bluetooth 不会被开启
-    //                    ToastUtils.showToast(mContext,"开启蓝牙功能，才能搜索");
-    //                }
-    //                break;
-    //                default:
-    //                    break;
-    //            }
-    //        }
-    //    }
 }

@@ -73,9 +73,11 @@ public class FangkeFragment extends Fragment {
                 MeetingDataInfo.JsonObjectBean jsonObjectBean = mData.get(i);
                 String msgId = jsonObjectBean.getId();
                 String ftype = jsonObjectBean.getFtype();
+                String fread = jsonObjectBean.getFread();
                 Intent intent = new Intent(getContext(), MsgDetailActivity.class);
                 intent.putExtra("msgid", msgId);
                 intent.putExtra("kind",ftype);
+                intent.putExtra("fread",fread);
                 startActivity(intent);
             }
         });
