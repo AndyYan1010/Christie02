@@ -20,7 +20,6 @@ import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.ProgressDialogUtil;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
-import com.example.administrator.christie.view.CustomProgress;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -37,7 +36,6 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
     private LinearLayout ll_yhm, ll_sjh, ll_bd;
     private TextView tv_username, tv_mob, tv_address;
     public static final int SHOW_RESPONSE = 0;
-    private CustomProgress                                 dialog;
     private Context                                        mContext;
     private List<PersonalDataInfo.ArrBean.ListProjectBean> mBangList;
     private ListView                                       mLv_bang;

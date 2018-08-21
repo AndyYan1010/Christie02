@@ -312,7 +312,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
 
     //加载图片
     private void showImage(String imgPath) {
-        //        Bitmap bm = BitmapFactory.decodeFile(imgPath);
+        //Bitmap bm = BitmapFactory.decodeFile(imgPath);
         //压缩图片
         File file = new File(imgPath);
         File newFile = new CompressHelper.Builder(this)

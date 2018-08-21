@@ -61,11 +61,11 @@ public class LvMenuIntrAdapter extends BaseAdapter {
             viewHolder = (MyViewHolder) view.getTag();
         }
         GoodsListInfo.ArrBean arrBean = mList.get(i);
-        String good_pic = arrBean.getGood_pic();
+        String good_newpic = arrBean.getNewpic();
         String good_name = arrBean.getGood_name();
         String good_introduce = arrBean.getGood_introduce();
         double good_price = arrBean.getGood_price();
-        GlideLoaderUtil.showImageView(mContext,good_pic,viewHolder.img_food);
+        GlideLoaderUtil.showImageView(mContext,good_newpic,viewHolder.img_food);
         viewHolder.tv_name.setText(good_name);
         viewHolder.tv_intro.setText(good_introduce);
         viewHolder.tv_price.setText("¥"+good_price);
