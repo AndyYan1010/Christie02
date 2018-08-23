@@ -1,6 +1,7 @@
 package com.example.administrator.christie.activity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -17,6 +18,7 @@ public class BaseActivity extends AppCompatActivity {
             protectApp();
         }
         TApplication.listActivity.add(this);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     protected void protectApp() {

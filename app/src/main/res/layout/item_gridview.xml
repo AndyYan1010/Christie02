@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_centerInParent="true"
-              android:background="@color/white"
+              android:background="@color/gray_ef"
               android:gravity="center"
               android:orientation="vertical">
 
@@ -12,27 +12,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="2dp"
-        android:background="@color/white">
+        android:layout_marginBottom="0.5dp"
+        android:layout_marginRight="0.5dp"
+        android:background="@color/white"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/mydada_icon_img"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/code"/>
 
         <ImageView
             android:id="@+id/img_delete_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_centerInParent="true"
             android:src="@drawable/delete_icon"
             android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/img_add_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_centerInParent="true"
             android:src="@drawable/add_icon"
             android:visibility="gone"/>
@@ -44,7 +47,7 @@
             android:layout_below="@+id/mydada_icon_img"
             android:layout_centerHorizontal="true"
             android:text="Christie"
-            android:textSize="15sp"/>
+            android:textSize="14sp"/>
     </RelativeLayout>
 
 </LinearLayout>

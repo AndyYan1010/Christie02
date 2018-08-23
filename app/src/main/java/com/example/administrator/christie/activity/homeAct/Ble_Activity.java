@@ -74,6 +74,7 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
     private ShakeHelper      mShakeHelper;//振动类
     private RippleBackground rippleBackground;//脉冲图像
     private ImageView        centerImage;
+    private String           mBlueOpenInfo;
 
     /*byte[] b=new byte[]{65,66,67,68};//字节数组
       String s=new String(b,"ascii");//第二个参数指定编码方式*/
@@ -85,6 +86,7 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
         //从意图获取显示的蓝牙信息
         mDeviceAddress = b.getString(EXTRAS_DEVICE_ADDRESS);
         mDeviceName = b.getString(EXTRAS_DEVICE_NAME);
+        mBlueOpenInfo = getIntent().getStringExtra("blueOpenInfo");
         /* 启动蓝牙service */
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -132,7 +134,8 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
                         //Tip:发送模拟刷卡信息包时，蓝牙控制器对APP的外部认证必须已经成功，外部认证有效期持续3分钟，超出时间后需要重新执行外部认证。
                         //NO.3发送模拟刷卡信息包
                         String key = "71C5A4430AC94865C94A9B8710ECDD29";
-                        String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
+//                        String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
+                        String testPackInfo = mBlueOpenInfo;
                         String cont3 = TDESDoubleUtils.encryptECB3Des(key, testPackInfo);
                         String encryStr = "<05F2" + cont3 + "00>";
                         sendMsg(encryStr);

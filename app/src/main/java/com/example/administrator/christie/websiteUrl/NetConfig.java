@@ -72,5 +72,6 @@ public class NetConfig {
     public static String UNIFIEDORDER        = ROOT + "unifiedOrder";
     //支付宝异步回调支付完成接口
     public static String Alipayurl           = "118.89.109.106:8080/YKTJK/AliPay";
-
+    //蓝牙刷卡信息包
+    public static String USERCARD            = ROOT + "usercard";
 }

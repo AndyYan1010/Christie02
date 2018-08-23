@@ -85,7 +85,7 @@ public class MenuDetailShowActivity extends BaseActivity implements View.OnClick
                     mImg_nonet.setVisibility(View.GONE);
                     Gson gson = new Gson();
                     GoodsDetailInfo goodsDetailInfo = gson.fromJson(resbody, GoodsDetailInfo.class);
-                    String good_pic = goodsDetailInfo.getGood_pic();
+                    String good_pic = goodsDetailInfo.getNewpic();
                     String good_name = goodsDetailInfo.getGood_name();
                     double good_price = goodsDetailInfo.getGood_price();
                     String good_introduce = goodsDetailInfo.getGood_introduce();

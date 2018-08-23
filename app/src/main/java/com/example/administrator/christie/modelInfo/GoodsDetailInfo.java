@@ -22,6 +22,11 @@ public class GoodsDetailInfo {
     private String good_name;
     private String good_pic;
     private String good_introduce;
+    /**
+     * newpic : http://118.89.109.106:8080/upFiles/upload/files/20180821/a.jpg
+     */
+
+    private String newpic;
 
     public double getGood_price() {
         return good_price;
@@ -53,5 +58,13 @@ public class GoodsDetailInfo {
 
     public void setGood_introduce(String good_introduce) {
         this.good_introduce = good_introduce;
+    }
+
+    public String getNewpic() {
+        return newpic;
+    }
+
+    public void setNewpic(String newpic) {
+        this.newpic = newpic;
     }
 }
