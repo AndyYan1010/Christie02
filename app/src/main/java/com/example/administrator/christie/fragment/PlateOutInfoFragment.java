@@ -58,6 +58,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     private LinearLayout      mLinear_lock;
     private String            mUserid;
     private ParkPayInfo       mParkPayInfo;
+    private String            mPlateNo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         mTv_explain = mRootView.findViewById(R.id.tv_explain);
         mTv_price = mRootView.findViewById(R.id.tv_price);     //停车费用
         mTv_submit = mRootView.findViewById(R.id.tv_submit);
-        //        mLv_plate = mRootView.findViewById(R.id.lv_plate);
+        //mLv_plate = mRootView.findViewById(R.id.lv_plate);
     }
 
     private void initData() {
@@ -90,7 +91,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         mTv_title.setText("停车缴费");
 
         //测试 缴费。
-        testPay();
+        //        testPay();
 
         //设置车牌选择器
         dataPlateList = new ArrayList();
@@ -106,6 +107,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                 String project_name = msg.getProject_name();
                 if (!"请选择车牌".equals(project_name)) {
                     //获取停车缴费数据
+                    mPlateNo = project_name;
                     getParkingPayInfo(project_name);
                 }
             }
@@ -128,6 +130,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                     FragmentTransaction ftt = getFragmentManager().beginTransaction();
                     PayForPackingFragment payPackFragment = new PayForPackingFragment();
                     payPackFragment.setParkPayInfo(mParkPayInfo);
+                    payPackFragment.setPlateNo(mPlateNo);
                     ftt.add(R.id.frame_pay, payPackFragment, "payPackFragment");
                     ftt.addToBackStack(null);
                     ftt.commit();
@@ -166,6 +169,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         FragmentTransaction ftt = getFragmentManager().beginTransaction();
         PayForPackingFragment payPackFragment = new PayForPackingFragment();
         payPackFragment.setParkPayInfo(mParkPayInfo);
+        payPackFragment.setPlateNo(mPlateNo);
         ftt.add(R.id.frame_pay, payPackFragment, "payPackFragment");
         ftt.addToBackStack(null);
         ftt.commit();
@@ -216,7 +220,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     }
 
     private void getParkingPayInfo(final String plateno) {
-        String payInfoUrl = NetConfig.PARKINGRECORDSEARCH;
+        String payInfoUrl = NetConfig.PARKINGSEARCH;
         RequestParamsFM params = new RequestParamsFM();
         params.put("plateNo", plateno);
         HttpOkhUtils.getInstance().doPost(payInfoUrl, params, new HttpOkhUtils.HttpCallBack() {
@@ -233,16 +237,15 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                     int resCode = mParkPayInfo.getResCode();
                     if (resCode == 0) {
                         mLinear_detail.setVisibility(View.VISIBLE);
-                        ParkPayInfo.ParklistBean parklist = mParkPayInfo.getParklist();
-                        final String plateNo = parklist.getPlateNo();
-                        double amount = parklist.getAmount();
-                        final int fstatus = parklist.getFstatus();
-                        String inTime = parklist.getInTime();
-                        String outTime = parklist.getOutTime();
+                        final String plateNo = plateno;
+                        double amount = mParkPayInfo.getAmount();
+                        final String fstatus = mParkPayInfo.getFstatus();
+                        String inTime = mParkPayInfo.getInTime();
+                        String outTime = mParkPayInfo.getOutTime();
                         mTv_plate.setText(plateNo);
                         mTv_enter_time.setText(inTime);
                         mTv_out_time.setText(outTime);
-                        if (fstatus == 0) {
+                        if ("0".equals(fstatus)) {
                             mTv_state.setText("未锁定");
                             mTv_state.setTextColor(Color.BLACK);
                             mTv_explain.setVisibility(View.GONE);
@@ -257,7 +260,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                         mLinear_lock.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (fstatus != 0) {
+                                if (!"0".equals(fstatus)) {
                                     //解锁
                                     changeLockPlate("0", plateNo);
                                 }
@@ -271,7 +274,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         });
     }
 
-    private void changeLockPlate(String state, String plate) {
+    private void changeLockPlate(String state, final String plate) {
         String changeLockUrl = NetConfig.LOCKPLATE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", mUserid);
@@ -301,6 +304,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                                 FragmentTransaction ftt = getFragmentManager().beginTransaction();
                                 PayForPackingFragment payPackFragment = new PayForPackingFragment();
                                 payPackFragment.setParkPayInfo(mParkPayInfo);
+                                payPackFragment.setPlateNo(plate);
                                 ftt.add(R.id.frame_pay, payPackFragment, "payPackFragment");
                                 ftt.addToBackStack(null);
                                 ftt.commit();

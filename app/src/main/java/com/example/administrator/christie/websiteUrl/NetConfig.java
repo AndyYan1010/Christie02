@@ -67,7 +67,9 @@ public class NetConfig {
     //车位锁定
     public static String LOCKPLATE           = ROOT + "lock";
     //停车收费
-    public static String PARKINGRECORDSEARCH = ROOT + "parkingRecordSearch";
+    public static String PARKINGSEARCH = ROOT + "parkingSearch";
+
+    //    public static String PARKINGRECORDSEARCH = ROOT + "parkingRecordSearch";
     //支付下单接口
     public static String UNIFIEDORDER        = ROOT + "unifiedOrder";
     //支付宝异步回调支付完成接口

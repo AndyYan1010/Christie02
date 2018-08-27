@@ -28,7 +28,6 @@ import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
 import com.example.administrator.christie.adapter.ProSpinnerAdapter;
 import com.example.administrator.christie.broadcastReceiver.SearchBlueThBcr;
 import com.example.administrator.christie.modelInfo.BlueOpenInfo;
-import com.example.administrator.christie.modelInfo.ProjectInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.BluetoothManagerUtils;
@@ -65,13 +64,11 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private BluetoothAdapter      mBtmAdapter;
     private List<BluetoothDevice> mBtData;
     private LvBlueTInfoAdapter    mBlueTInfoAdapter;
-    private ImageView             img_loading;//等待在家动画
-    private Spinner               mSpinner_village, mSpinner_unit;
-    private List<ProjectMsg> dataProList, dataInfoList;
-    private ProSpinnerAdapter mProjAdapter, mDetailAdapter;
-    private String mProjectID;
-    private String mDetailID;
-    private String mBlueOpenInfo;
+    private ImageView             img_loading;//等待加载动画
+    private Spinner               mSpinner_village;
+    private List<ProjectMsg>      dataProList;
+    private ProSpinnerAdapter     mProjAdapter;
+    private String                mBlueOpenInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +85,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         img_loading = (ImageView) findViewById(R.id.img_loading);
         mLv_blt = (ListView) findViewById(R.id.listview_bluetooth);
         mSpinner_village = (Spinner) findViewById(R.id.spinner_village);
-        mSpinner_unit = (Spinner) findViewById(R.id.spinner_unit);
         mTv_title.setText("搜索蓝牙设备");
         mImg_back.setOnClickListener(this);
         mTv_search.setOnClickListener(this);
@@ -107,14 +103,17 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 connectBT(i);
             }
         });
+
+        //获取刷卡信息包
+        getBlueOpenInfo();
+
         dataProList = new ArrayList<>();
         ProjectMsg projectInfo = new ProjectMsg();
-        projectInfo.setProject_name("请选择公司");
+        projectInfo.setProject_name("请选择地址");
         dataProList.add(projectInfo);
         mProjAdapter = new ProSpinnerAdapter(AddBluetoothActivity.this, dataProList);
         mSpinner_village.setAdapter(mProjAdapter);
         //从网络获取项目
-        getProjectFromServer("1");
         mSpinner_village.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -122,30 +121,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 ProjectMsg projectInfo = dataProList.get(i);
                 String project_name = projectInfo.getProject_name();
                 if (!project_name.equals("请选择公司")) {
-                    mProjectID = projectInfo.getId();
-                    //to intnet
-                    getDetailFromInt(mProjectID);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        dataInfoList = new ArrayList<>();
-        dataInfoList.add(projectInfo);
-        mDetailAdapter = new ProSpinnerAdapter(AddBluetoothActivity.this, dataInfoList);
-        mSpinner_unit.setAdapter(mDetailAdapter);
-        mSpinner_unit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ProjectMsg projectInfo = dataInfoList.get(i);
-                String project_name = projectInfo.getProject_name();
-                if (!project_name.equals("请选择公司")) {
-                    mDetailID = projectInfo.getId();
-                    //获取刷卡信息包
-                    getBlueOpenInfo(mDetailID);
+                    mBlueOpenInfo = projectInfo.getDetail_name();
                 }
             }
 
@@ -157,14 +133,13 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     //获取刷卡信息包
-    private void getBlueOpenInfo(String detailID) {
+    private void getBlueOpenInfo() {
         ProgressDialogUtil.startShow(AddBluetoothActivity.this, "正在查找,请稍等");
         UserInfo userinfo = SPref.getObject(AddBluetoothActivity.this, UserInfo.class, "userinfo");
         String id = userinfo.getUserid();
         String url = NetConfig.USERCARD;
         RequestParamsFM params = new RequestParamsFM();
         params.put("user_id", id);
-        params.put("projectdetail_id", detailID);
         HttpOkhUtils.getInstance().doGetWithParams(url, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -181,7 +156,14 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 }
                 Gson gson = new Gson();
                 BlueOpenInfo info = gson.fromJson(resbody, BlueOpenInfo.class);
-                mBlueOpenInfo = info.getXinxi();
+                List<BlueOpenInfo.ArrBean> arr = info.getArr();
+                for (BlueOpenInfo.ArrBean bean : arr) {
+                    ProjectMsg msg = new ProjectMsg();
+                    msg.setProject_name(bean.getFname());
+                    msg.setId(bean.getProjectdetail_id());
+                    msg.setDetail_name(bean.getXinxi());
+                    dataProList.add(msg);
+                }
             }
         });
 
@@ -198,7 +180,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         Intent intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
         intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getName());
         intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getAddress());
-        intent.putExtra("blueOpenInfo",mBlueOpenInfo);
+        intent.putExtra("blueOpenInfo", mBlueOpenInfo);
         // 启动Ble_Activity
         startActivity(intent);
     }
@@ -210,10 +192,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.tv_search:
-                if (null == mDetailID || "".equals(mDetailID)) {
-                    ToastUtils.showToast(AddBluetoothActivity.this, "请先选择小区，获取刷卡信息");
-                    return;
-                }
                 if (null == mBlueOpenInfo || "".equals(mBlueOpenInfo)) {
                     ToastUtils.showToast(AddBluetoothActivity.this, "未获取到刷卡信息");
                     return;
@@ -277,80 +255,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     break;
             }
         }
-    }
-
-    private void getProjectFromServer(String i) {
-        String url = NetConfig.PROJECT + "?id=" + i;
-        HttpOkhUtils.getInstance().doGet(url, new HttpOkhUtils.HttpCallBack() {
-            @Override
-            public void onError(Request request, IOException e) {
-                ToastUtils.showToast(AddBluetoothActivity.this, "网络错误");
-            }
-
-            @Override
-            public void onSuccess(int code, String resbody) {
-                if (code != 200) {
-                    ToastUtils.showToast(AddBluetoothActivity.this, "网络获取失败");
-                    return;
-                }
-                if (null == dataProList) {
-                    dataProList = new ArrayList<>();
-                } else {
-                    dataProList.clear();
-                }
-                ProjectMsg projectMsg = new ProjectMsg();
-                projectMsg.setProject_name("请选择公司");
-                dataProList.add(projectMsg);
-                Gson gson = new Gson();
-                ProjectInfo info = gson.fromJson(resbody, ProjectInfo.class);
-                List<ProjectInfo.ProjectlistBean> projectlist = info.getProjectlist();
-                for (int i = 0; i < projectlist.size(); i++) {
-                    ProjectInfo.ProjectlistBean projectlistBean = projectlist.get(i);
-                    ProjectMsg projectMsgN = new ProjectMsg();
-                    projectMsgN.setProject_name(projectlistBean.getProject_name());
-                    projectMsgN.setId(projectlistBean.getId());
-                    dataProList.add(projectMsgN);
-                }
-                mProjAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    private void getDetailFromInt(String id) {
-        String url = NetConfig.PROJECT + "?id=" + id;
-        HttpOkhUtils.getInstance().doGet(url, new HttpOkhUtils.HttpCallBack() {
-            @Override
-            public void onError(Request request, IOException e) {
-                ToastUtils.showToast(AddBluetoothActivity.this, "网络请求失败");
-            }
-
-            @Override
-            public void onSuccess(int code, String resbody) {
-                if (code != 200) {
-                    ToastUtils.showToast(AddBluetoothActivity.this, "网络错误");
-                    return;
-                }
-                if (null == dataInfoList) {
-                    dataInfoList = new ArrayList<>();
-                } else {
-                    dataInfoList.clear();
-                }
-                ProjectMsg projectMsg = new ProjectMsg();
-                projectMsg.setProject_name("请选择公司");
-                dataInfoList.add(projectMsg);
-                Gson gson = new Gson();
-                ProjectInfo info = gson.fromJson(resbody, ProjectInfo.class);
-                List<ProjectInfo.ProjectdetalilistBean> projectdetalilist = info.getProjectdetalilist();
-                for (int i = 0; i < projectdetalilist.size(); i++) {
-                    ProjectInfo.ProjectdetalilistBean detalilistBean = projectdetalilist.get(i);
-                    ProjectMsg projectMsgN = new ProjectMsg();
-                    projectMsgN.setProject_name(detalilistBean.getFname());
-                    projectMsgN.setId(detalilistBean.getId());
-                    dataInfoList.add(projectMsgN);
-                }
-                mDetailAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override

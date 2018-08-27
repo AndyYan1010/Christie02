@@ -50,9 +50,7 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
     private List<MainMenuEntity> mData;
     private List<MainMenuEntity> mOtherdata;
     private int                  mKind;
-    private              boolean needShow                        = false;
-    private static       int     REQUEST_ENABLE                  = 4000;
-    private static final int     BLUETOOTH_DISCOVERABLE_DURATION = 120;//Bluetooth 设备可见时间，单位：秒，不设置默认120s。
+    private boolean needShow = false;
 
     public IconAdapter(Context context, List<MainMenuEntity> maindata, List<MainMenuEntity> otherdata, int kind) {
         this.mContext = context;

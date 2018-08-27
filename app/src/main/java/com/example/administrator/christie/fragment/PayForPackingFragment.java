@@ -61,7 +61,9 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     private int payKind = 0;
     private Context     mContext;
     private ParkPayInfo payInfo;//车牌付费信息
+    private String      mPlateNo;
     private double      orderPrice;//订单价格
+    private String      mUserid;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,14 +89,13 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
         mImg_back.setOnClickListener(this);
         mTv_title.setText("停车缴费");
         UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
-        //TODO:
+        mUserid = userinfo.getUserid();
+        mTv_username.setText(userinfo.getUsername());
         //        ParkPayInfo.ParklistBean parklist = payInfo.getParklist();
         //        String plateNo = parklist.getPlateNo();
-        //        String username = userinfo.getUsername();
-        //        orderPrice = parklist.getAmount();
-        //        mTv_plate.setText(plateNo);
-        //        mTv_username.setText(username);
-        //        mTv_price.setText("¥" + orderPrice);
+        orderPrice = payInfo.getAmount();
+        mTv_plate.setText(mPlateNo);
+        mTv_price.setText("¥" + orderPrice);
         mCb_weixin.setOnClickListener(this);
         mCb_zfb.setOnClickListener(this);
         mBt_pay.setOnClickListener(this);
@@ -140,11 +141,12 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     // （具体返回参数：appid，商户号：partnerid，预支付id：prepay_id，扩展字段package（固定值Sign=WXPay）,随机字符串noncestr，时间戳timestamp，签名sign），
                     //获取返回参数后，调用微信app支付
                     RequestParamsFM params = new RequestParamsFM();
-                    params.put("userid", "3");
+                    params.put("userid", mUserid);
                     params.put("device_id", "");
                     params.put("paycode", "2");
                     params.put("ip", "205.168.1.102");
                     params.put("fee", "0.01");
+                    params.put("plateno", mPlateNo);
                     params.setUseJsonStreamer(true);
                     HttpOkhUtils.getInstance().doPost(NetConfig.UNIFIEDORDER, params, new HttpOkhUtils.HttpCallBack() {
                         @Override
@@ -169,7 +171,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                                 String nonceStr = orderResInfo.getNonceStr();
                                 int timeStamp = orderResInfo.getTimeStamp();
                                 String sign = orderResInfo.getSign();
-                                toWXPay(appId,partnerId,prepayId,nonceStr,timeStamp,sign);
+                                toWXPay(appId, partnerId, prepayId, nonceStr, timeStamp, sign);
                             }
                             ToastUtils.showToast(getContext(), return_msg);
                         }
@@ -183,11 +185,12 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //接收支付宝返回的支付信息：取消支付，成功支付，支付失败。
                     //支付成功，再在服务器上下单，确认订单已支付.该订单支付完成
                     RequestParamsFM params = new RequestParamsFM();
-                    params.put("userid", "3");
+                    params.put("userid", mUserid);
                     params.put("device_id", "");
                     params.put("paycode", "1");
                     params.put("ip", "205.168.1.102");
                     params.put("fee", "0.01");
+                    params.put("plateno", mPlateNo);
                     params.setUseJsonStreamer(true);
                     HttpOkhUtils.getInstance().doPost(NetConfig.UNIFIEDORDER, params, new HttpOkhUtils.HttpCallBack() {
                         @Override
@@ -212,7 +215,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                                 //                                double resultPrice = Double.parseDouble(df.format(orderPrice));
                                 orderPrice = 0.01;
                                 if (orderPrice < 0.01) {
-                                    //                                    orderOverOK(orderStr, "", "zhifubao");
+                                    // orderOverOK(orderStr, "", "zhifubao");
                                     ToastUtils.showToast(getContext(), "免费");
                                 } else {
                                     if (checkAliPayInstalled(mContext)) {
@@ -255,27 +258,27 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
         payThread.start();
     }
 
-//    private void orderOverOK(String order_num, String pay_no, String pay_type) {
-//        RequestParamsFM params = new RequestParamsFM();
-//        params.put("", "");
-//        HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
-//            @Override
-//            public void onError(Request request, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onSuccess(int code, String resbody) {
-//                if (code != 200) {
-//
-//                }
-//                if (code == 200) {
-//                    ToastUtils.showToast(mContext, "下单成功");
-//                    getActivity().finish();
-//                }
-//            }
-//        });
-//    }
+    //    private void orderOverOK(String order_num, String pay_no, String pay_type) {
+    //        RequestParamsFM params = new RequestParamsFM();
+    //        params.put("", "");
+    //        HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
+    //            @Override
+    //            public void onError(Request request, IOException e) {
+    //
+    //            }
+    //
+    //            @Override
+    //            public void onSuccess(int code, String resbody) {
+    //                if (code != 200) {
+    //
+    //                }
+    //                if (code == 200) {
+    //                    ToastUtils.showToast(mContext, "下单成功");
+    //                    getActivity().finish();
+    //                }
+    //            }
+    //        });
+    //    }
 
     private static final int    SDK_ALPAY_FLAG = 1001;
     private static final int    SDK_WXPAY_FLAG = 1000;
@@ -319,18 +322,18 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
             super.handleMessage(msg);
             switch (msg.what) {
                 case SDK_ALPAY_FLAG:
-                    //                    Map<String, String> map = (Map<String, String>) msg.obj;
+                    //Map<String, String> map = (Map<String, String>) msg.obj;
                     PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     //同步获取结果
                     String resultInfo = payResult.getResult();
-                    Log.i("Pay", "Pay:" + resultInfo);
                     String resultStatus = payResult.getResultStatus();
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
                         Toast.makeText(mContext, "支付成功", Toast.LENGTH_SHORT).show();
-                        String tradeNo = resultInfo.split("trade_no\":\"")[1];
-                        tradeNo = tradeNo.substring(0, tradeNo.indexOf("\""));
-                        //                        orderOverOK(orderStr, tradeNo, "zhifubao");
+                        getActivity().finish();
+                        // String tradeNo = resultInfo.split("trade_no\":\"")[1];
+                        // tradeNo = tradeNo.substring(0, tradeNo.indexOf("\""));
+                        // orderOverOK(orderStr, tradeNo, "zhifubao");
                     } else {
                         Toast.makeText(mContext, "支付失败", Toast.LENGTH_SHORT).show();
                         //                        sendDataToIntnet();
@@ -340,6 +343,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     String result = String.valueOf(msg.obj);
                     if ("支付成功".equals(result)) {
                         ToastUtils.showToast(getContext(), "支付成功");
+                        getActivity().finish();
                     } else {
                         ToastUtils.showToast(getContext(), "支付失败");
                     }
@@ -357,5 +361,9 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
 
     public void setParkPayInfo(ParkPayInfo payInfo) {
         this.payInfo = payInfo;
+    }
+
+    public void setPlateNo(String plateNo) {
+        this.mPlateNo = plateNo;
     }
 }

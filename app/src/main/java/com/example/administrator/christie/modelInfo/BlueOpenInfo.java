@@ -1,5 +1,7 @@
 package com.example.administrator.christie.modelInfo;
 
+import java.util.List;
+
 /**
  * @创建者 AndyYan
  * @创建时间 2018/8/23 15:55
@@ -10,47 +12,59 @@ package com.example.administrator.christie.modelInfo;
  */
 
 public class BlueOpenInfo {
-    /**
-     * xinxi :
-     * user_id : 5
-     * projectdetail_id : 4d2881e8636152a201636185fd6a0051
-     * cardno :
-     */
+    private List<ArrBean> arr;
 
-    private String xinxi;
-    private String user_id;
-    private String projectdetail_id;
-    private String cardno;
-
-    public String getXinxi() {
-        return xinxi;
+    public List<ArrBean> getArr() {
+        return arr;
     }
 
-    public void setXinxi(String xinxi) {
-        this.xinxi = xinxi;
+    public void setArr(List<ArrBean> arr) {
+        this.arr = arr;
     }
 
-    public String getUser_id() {
-        return user_id;
-    }
+    public static class ArrBean {
+        /**
+         * fname : A小区
+         * xinxi : 000000004D928CFBCEAA6C01A48911B2
+         * projectdetail_id : 8a8080866517061501651d5fc139004b
+         * cardno : AE4E714800000000
+         */
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
+        private String fname;
+        private String xinxi;
+        private String projectdetail_id;
+        private String cardno;
 
-    public String getProjectdetail_id() {
-        return projectdetail_id;
-    }
+        public String getFname() {
+            return fname;
+        }
 
-    public void setProjectdetail_id(String projectdetail_id) {
-        this.projectdetail_id = projectdetail_id;
-    }
+        public void setFname(String fname) {
+            this.fname = fname;
+        }
 
-    public String getCardno() {
-        return cardno;
-    }
+        public String getXinxi() {
+            return xinxi;
+        }
 
-    public void setCardno(String cardno) {
-        this.cardno = cardno;
+        public void setXinxi(String xinxi) {
+            this.xinxi = xinxi;
+        }
+
+        public String getProjectdetail_id() {
+            return projectdetail_id;
+        }
+
+        public void setProjectdetail_id(String projectdetail_id) {
+            this.projectdetail_id = projectdetail_id;
+        }
+
+        public String getCardno() {
+            return cardno;
+        }
+
+        public void setCardno(String cardno) {
+            this.cardno = cardno;
+        }
     }
 }

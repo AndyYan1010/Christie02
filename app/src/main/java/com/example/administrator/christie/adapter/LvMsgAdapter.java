@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.modelInfo.MeetingDataInfo;
+import com.example.administrator.christie.util.DelHTMLTagUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,7 +86,8 @@ public class LvMsgAdapter extends BaseAdapter {
             viewHolder.tv_kind.setTextColor(mContext.getResources().getColor(R.color.blue_kind));
             viewHolder.img_head.setImageResource(R.drawable.meeting_icon);
         }
-        viewHolder.tv_msg.setText(meeting_content);
+        String content = DelHTMLTagUtil.delHTMLTag(meeting_content);
+        viewHolder.tv_msg.setText(content);
         if ("0".equals(fread)) {
             viewHolder.tv_state.setText("未读");
         } else {

@@ -173,6 +173,10 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
                 if (code == 200) {
                     Gson gson = new Gson();
                     LoginInfo loginInfo = gson.fromJson(resbody, LoginInfo.class);
+                    if (!"1".equals(loginInfo.getResult())) {
+                        ToastUtils.showToast(QrcodeActivity.this, "获取二维码失败");
+                        return;
+                    }
                     String qrcode = loginInfo.getQrcode();
                     //生成二维码
                     generateQr(qrcode);
