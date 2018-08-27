@@ -76,8 +76,6 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
     private ImageView        centerImage;
     private String           mBlueOpenInfo;
 
-    /*byte[] b=new byte[]{65,66,67,68};//字节数组
-      String s=new String(b,"ascii");//第二个参数指定编码方式*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +120,9 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
             public void run() {
                 if (mConnected) {
                     //在判断是第几次发送
-                    if (times == 1) {
+                    if (times == 0) {
+                        times = 1;
+                    } else if (times == 1) {
                         //NO.1发送消息，获取四位随机数
                         sendMsg("<010000>");
                     } else if (times == 2) {
@@ -134,10 +134,14 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
                         //Tip:发送模拟刷卡信息包时，蓝牙控制器对APP的外部认证必须已经成功，外部认证有效期持续3分钟，超出时间后需要重新执行外部认证。
                         //NO.3发送模拟刷卡信息包
                         String key = "71C5A4430AC94865C94A9B8710ECDD29";
-//                        String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
+                        //                      String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
                         String testPackInfo = mBlueOpenInfo;
-                        String cont3 = TDESDoubleUtils.encryptECB3Des(key, testPackInfo);
-                        String encryStr = "<05F2" + cont3 + "00>";
+                        //正式使用
+                        //                        String cont3 = TDESDoubleUtils.encryptECB3Des(key, testPackInfo);
+                        //                        String encryStr = "<05F2" + cont3 + "00>";
+
+                        //测试，不需加密
+                        String encryStr = "<05F1" + testPackInfo + "00>";
                         sendMsg(encryStr);
                         // sendMsg("<05F238DA815997A8C0B37779486399D5AFED00>");
                     }
@@ -165,10 +169,9 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
                         ToastUtils.showToast(Ble_Activity.this, "蓝牙已连接");
                     } else {
                         ToastUtils.showToast(Ble_Activity.this, "蓝牙连接中断，请退出重新连接");
-                        //                        finish();
                     }
                     break;
-                case 10086://接收到消息要发送数据//TODO
+                case 10086://接收到消息要发送数据
                     String message = msg.getData().getString("needSendMsg");
                     String con = String.valueOf(connect_state.getText());
                     if ("ToSendMsg".equals(message)) {
@@ -204,23 +207,39 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
             @Override
             public void run() {
                 if (rev_string.length() < 6) {//第一次连接，接收门禁返回的数据
-                    times++;
+                    //                    times++;
                 } else {
-                    String result = rev_string.substring(3, 5);
-                    if ("00".equals(result)) {//第二次及之后接收的结果，00表示成功
-                        if (times == 1) {
-                            String substr = rev_string.substring(5, 13);
-                            String spliStr = substr + "00000000";
-                            String key = "DE7FF98AF2D4CED32BA64F9B4708F980";
-                            String content = TDESDoubleUtils.encryptECB3Des(key, spliStr);
-                            needSend = content;
-                        }
-                        times++;
-                        if (times >= 4) {//已开门
-                            ToastUtils.showToast(Ble_Activity.this, "已开门，欢迎您");
-                            mSendMsgHandler.removeCallbacksAndMessages(null);
-                            finish();
-                        }
+                    //                    String result = rev_string.substring(3, 5);
+                    //                    if ("00".equals(result)) {//第二次及之后接收的结果，00表示成功
+                    //                        if (times == 1) {
+                    //                            String substr = rev_string.substring(5, 13);
+                    //                            String spliStr = substr + "00000000";
+                    //                            String key = "DE7FF98AF2D4CED32BA64F9B4708F980";
+                    //                            String content = TDESDoubleUtils.encryptECB3Des(key, spliStr);
+                    //                            needSend = content;
+                    //                        }
+                    //                        times++;
+                    //                        if (times >= 4) {//已开门
+                    //                            ToastUtils.showToast(Ble_Activity.this, "已开门，欢迎您");
+                    //                            mSendMsgHandler.removeCallbacksAndMessages(null);
+                    //                            finish();
+                    //                        }
+                    //                    }
+                    if (rev_string.startsWith("<0100")) {
+                        String substr = rev_string.substring(5, 13);
+                        String spliStr = substr + "00000000";
+                        String key = "DE7FF98AF2D4CED32BA64F9B4708F980";
+                        String content = TDESDoubleUtils.encryptECB3Des(key, spliStr);
+                        needSend = content;
+                        times = 2;
+                    }
+                    if (rev_string.startsWith("<0200")) {
+                        times = 3;
+                    }
+                    if (rev_string.startsWith("<0500")) {
+                        ToastUtils.showToast(Ble_Activity.this, "已开门，欢迎您");
+                        mSendMsgHandler.removeCallbacksAndMessages(null);
+                        finish();
                     }
                 }
                 rev_tv.setText(rev_str);
