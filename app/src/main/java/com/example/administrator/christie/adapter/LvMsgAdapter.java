@@ -78,16 +78,17 @@ public class LvMsgAdapter extends BaseAdapter {
         String between = judgeTimeByNow(create_date);
         viewHolder.tv_time.setText(between);
         if ("1".equals(ftype)) {
-            viewHolder.tv_kind.setText("公告");
-            viewHolder.tv_kind.setTextColor(mContext.getResources().getColor(R.color.yellow_kind));
-            viewHolder.img_head.setImageResource(R.drawable.notices);
-        } else if ("2".equals(ftype)) {
             viewHolder.tv_kind.setText("会议");
             viewHolder.tv_kind.setTextColor(mContext.getResources().getColor(R.color.blue_kind));
             viewHolder.img_head.setImageResource(R.drawable.meeting_icon);
+        } else if ("2".equals(ftype)) {
+            viewHolder.tv_kind.setText("公告");
+            viewHolder.tv_kind.setTextColor(mContext.getResources().getColor(R.color.yellow_kind));
+            viewHolder.img_head.setImageResource(R.drawable.notices);
         }
         String content = DelHTMLTagUtil.delHTMLTag(meeting_content);
-        viewHolder.tv_msg.setText(content);
+        String meeting_name = jsonBean.getMeeting_name();
+        viewHolder.tv_msg.setText(meeting_name);
         if ("0".equals(fread)) {
             viewHolder.tv_state.setText("未读");
         } else {

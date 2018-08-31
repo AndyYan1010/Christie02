@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.activity.homeAct.AddBluetoothActivity;
 import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
 import com.example.administrator.christie.util.ToastUtils;
@@ -25,36 +26,50 @@ import java.util.List;
  */
 
 public class SearchBlueThBcr extends BroadcastReceiver {
-    private List<BluetoothDevice> mList;
-    private LvBlueTInfoAdapter    mAdapter;
+    //    private List<BluetoothDevice> mList;
+    private List<ProjectMsg>   mList;
+    private LvBlueTInfoAdapter mAdapter;
     private boolean isHad = false;
-    private TextView  tv_title;
-    private ImageView img_load;
+    private TextView         tv_title;
+    private ImageView        img_load;
+    private List<ProjectMsg> mSumList;
 
-    public SearchBlueThBcr(List mData, LvBlueTInfoAdapter adapter) {
+    public SearchBlueThBcr(List mData, LvBlueTInfoAdapter adapter, List<ProjectMsg> sumList) {
         this.mList = mData;
         this.mAdapter = adapter;
+        this.mSumList = sumList;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //        Toast.makeText(context, "触发广播", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(context, "触发广播", Toast.LENGTH_SHORT).show();
         String action = intent.getAction();
         switch (action) {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String address = device.getAddress();
-                //                Toast.makeText(context, "找到设备" + device.getName(), Toast.LENGTH_SHORT).show();
+                String name = device.getName();
+                //  Toast.makeText(context, "找到设备" + device.getName(), Toast.LENGTH_SHORT).show();
                 if (mAdapter != null) {
                     for (int i = 0; i < mList.size(); i++) {
-                        BluetoothDevice bluetoothDevice = mList.get(i);
-                        String address1 = bluetoothDevice.getAddress();
+                        //BluetoothDevice bluetoothDevice = mList.get(i);
+                        ProjectMsg bluetoothDevice = mList.get(i);
+                        String address1 = bluetoothDevice.getDetail_name();
                         if (address.equals(address1)) {
                             isHad = true;
                         }
                     }
                     if (!isHad) {
-                        mList.add(device);
+                        for (ProjectMsg msg : mSumList) {
+                            String project_name = msg.getProject_name();
+                            String detail_name = msg.getDetail_name();//蓝牙地址
+                            if (detail_name.equals(device.getAddress())) {
+                                ProjectMsg proMsg = new ProjectMsg();
+                                proMsg.setProject_name(project_name);
+                                proMsg.setDetail_name(detail_name);
+                                mList.add(proMsg);
+                            }
+                        }
                         mAdapter.notifyDataSetChanged();
                     }
                     isHad = false;

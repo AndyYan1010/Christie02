@@ -99,8 +99,8 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
         rev_sv = (ScrollView) this.findViewById(R.id.rev_sv);
         rev_tv = (TextView) this.findViewById(R.id.rev_tv);
         connect_state = (TextView) this.findViewById(R.id.connect_state);
-        //        send_btn = (Button) this.findViewById(R.id.send_btn);
-        //        send_et = (EditText) this.findViewById(R.id.send_et);
+        // send_btn = (Button) this.findViewById(R.id.send_btn);
+        // send_et = (EditText) this.findViewById(R.id.send_et);
         rippleBackground = (RippleBackground) findViewById(R.id.content);
         centerImage = (ImageView) findViewById(R.id.centerImage);
     }
@@ -111,8 +111,8 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
         tv_title.setText(mDeviceName);
         img_back.setOnClickListener(this);
         connect_state.setText(status);
-        //        send_btn.setOnClickListener(this);
-        //        send_et.setText("<010000>");
+        // send_btn.setOnClickListener(this);
+        // send_et.setText("<010000>");
         mShakeHelper = new ShakeHelper(this, myHandler);
         mShakeHelper.Start();
         mSendMsgHandler.postDelayed(new Runnable() {
@@ -134,11 +134,11 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
                         //Tip:发送模拟刷卡信息包时，蓝牙控制器对APP的外部认证必须已经成功，外部认证有效期持续3分钟，超出时间后需要重新执行外部认证。
                         //NO.3发送模拟刷卡信息包
                         String key = "71C5A4430AC94865C94A9B8710ECDD29";
-                        //                      String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
+                        // String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
                         String testPackInfo = mBlueOpenInfo;
                         //正式使用
-                        //                        String cont3 = TDESDoubleUtils.encryptECB3Des(key, testPackInfo);
-                        //                        String encryStr = "<05F2" + cont3 + "00>";
+                        //  String cont3 = TDESDoubleUtils.encryptECB3Des(key, testPackInfo);
+                        //  String encryStr = "<05F2" + cont3 + "00>";
 
                         //测试，不需加密
                         String encryStr = "<05F1" + testPackInfo + "00>";
@@ -206,8 +206,10 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                rev_tv.setText(rev_str);
+                rev_sv.scrollTo(0, rev_tv.getMeasuredHeight());
                 if (rev_string.length() < 6) {//第一次连接，接收门禁返回的数据
-                    //                    times++;
+                    // times++;
                 } else {
                     //                    String result = rev_string.substring(3, 5);
                     //                    if ("00".equals(result)) {//第二次及之后接收的结果，00表示成功
@@ -242,8 +244,6 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
                         finish();
                     }
                 }
-                rev_tv.setText(rev_str);
-                rev_sv.scrollTo(0, rev_tv.getMeasuredHeight());
             }
         });
     }

@@ -45,7 +45,7 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
     private ListView                    mLv_menu;
     private List<GoodsListInfo.ArrBean> mData;
     private Spinner                     mSpinner_id;
-    private String menuId = "4d2881e8636152a201636184b04f0047";
+    private String menuId = "4d2881e8636152a2016361840fd50043";
     private LvMenuIntrAdapter mMenuAdapter;
     private ImageView         mImg_back;
     private TextView          mTv_title;

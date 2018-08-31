@@ -32,8 +32,10 @@ import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.BluetoothManagerUtils;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.IsInternetUtil;
 import com.example.administrator.christie.util.ProgressDialogUtil;
 import com.example.administrator.christie.util.SPref;
+import com.example.administrator.christie.util.SpUtils;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
@@ -61,14 +63,16 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     public static        boolean isSearchBT                      = false;
     private static       int     REQUEST_ENABLE                  = 400;
     private static final int     BLUETOOTH_DISCOVERABLE_DURATION = 120;//Bluetooth 设备可见时间，单位：秒，不设置默认120s。
-    private BluetoothAdapter      mBtmAdapter;
-    private List<BluetoothDevice> mBtData;
-    private LvBlueTInfoAdapter    mBlueTInfoAdapter;
-    private ImageView             img_loading;//等待加载动画
-    private Spinner               mSpinner_village;
-    private List<ProjectMsg>      dataProList;
-    private ProSpinnerAdapter     mProjAdapter;
-    private String                mBlueOpenInfo;
+    private BluetoothAdapter   mBtmAdapter;
+    //    private List<BluetoothDevice> mBtData;
+    private List<ProjectMsg>   mBtData;
+    private LvBlueTInfoAdapter mBlueTInfoAdapter;
+    private ImageView          img_loading;//等待加载动画
+    private Spinner            mSpinner_village;
+    private List<ProjectMsg>   dataDetList;
+    private ProSpinnerAdapter  mSpDetAdapter;
+    private String             mBlueOpenInfo;
+    private List<ProjectMsg>   sumDataList;//存放所有的授权蓝牙信息
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mTv_search = (TextView) findViewById(R.id.tv_search);
         img_loading = (ImageView) findViewById(R.id.img_loading);
         mLv_blt = (ListView) findViewById(R.id.listview_bluetooth);
+        // spinner_proj = (Spinner) findViewById(R.id.spinner_proj);
         mSpinner_village = (Spinner) findViewById(R.id.spinner_village);
         mTv_title.setText("搜索蓝牙设备");
         mImg_back.setOnClickListener(this);
@@ -94,6 +99,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         img_loading.setVisibility(View.INVISIBLE);
         Glide.with(AddBluetoothActivity.this).load(R.drawable.loadgif).into(img_loading);
         mBtData = new ArrayList();
+        sumDataList = new ArrayList<>();
         mBlueTInfoAdapter = new LvBlueTInfoAdapter(this, mBtData);
         mLv_blt.setAdapter(mBlueTInfoAdapter);
         mLv_blt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,21 +110,50 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             }
         });
 
-        //获取刷卡信息包
-        getBlueOpenInfo();
+        //项目地址填充
+        //        datProList = new ArrayList<>();
+        //        ProjectMsg proInfo = new ProjectMsg();
+        //        proInfo.setProject_name("请选择地址");
+        //        datProList.add(proInfo);
+        //        mProjAdapter = new ProSpinnerAdapter(AddBluetoothActivity.this, dataDetList);
+        //        spinner_proj.setAdapter(mProjAdapter);
+        //        spinner_proj.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //            @Override
+        //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        //                //获取点击条目ID，给spinner2设置数据
+        //                ProjectMsg projectInfo = datProList.get(i);
+        //                String project_name = projectInfo.getProject_name();
+        //                if (!project_name.equals("请选择地址")) {
+        //                    proItem = i;
+        //                    BlueOpenInfo.ArrBean bean = sumDataList.get(i);
+        //                    mBlueOpenInfo = bean.getXinxi();
+        //                    List<BlueOpenInfo.ArrBean.LanyaBean> lanya = bean.getLanya();
+        //                    if (lanya.size() == 0) {
+        //                        mSpinner_village.setVisibility(View.GONE);
+        //                    } else {
+        //                        mSpinner_village.setVisibility(View.VISIBLE);
+        //                    }
+        //                }
+        //            }
+        //
+        //            @Override
+        //            public void onNothingSelected(AdapterView<?> adapterView) {
+        //
+        //            }
+        //        });
 
-        dataProList = new ArrayList<>();
+        //详细地址填充
+        dataDetList = new ArrayList<>();
         ProjectMsg projectInfo = new ProjectMsg();
         projectInfo.setProject_name("请选择地址");
-        dataProList.add(projectInfo);
-        mProjAdapter = new ProSpinnerAdapter(AddBluetoothActivity.this, dataProList);
-        mSpinner_village.setAdapter(mProjAdapter);
-        //从网络获取项目
+        dataDetList.add(projectInfo);
+        mSpDetAdapter = new ProSpinnerAdapter(AddBluetoothActivity.this, dataDetList);
+        mSpinner_village.setAdapter(mSpDetAdapter);
         mSpinner_village.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //获取点击条目ID，给spinner2设置数据
-                ProjectMsg projectInfo = dataProList.get(i);
+                ProjectMsg projectInfo = dataDetList.get(i);
                 String project_name = projectInfo.getProject_name();
                 if (!project_name.equals("请选择公司")) {
                     mBlueOpenInfo = projectInfo.getDetail_name();
@@ -130,12 +165,58 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
 
             }
         });
+        //判断是否联网
+        boolean networkAvalible = IsInternetUtil.isNetworkAvalible(this);
+        if (networkAvalible) {
+            //获取刷卡信息包
+            getBlueOpenInfo();
+        } else {
+            //没有网络，获取本地存储数据解析
+            getLocalBlueInfo();
+        }
+    }
+
+    private void getLocalBlueInfo() {
+        String blueRightInfo = SpUtils.getString(this, "BlueRight", "");
+        if ("".equals(blueRightInfo)) {
+            ToastUtils.showToast(this, "未获取到存储蓝牙信息");
+        } else {
+            Gson gson = new Gson();
+            BlueOpenInfo info = gson.fromJson(blueRightInfo, BlueOpenInfo.class);
+            List<BlueOpenInfo.ArrBean> arr = info.getArr();
+            for (BlueOpenInfo.ArrBean bean : arr) {
+                ProjectMsg proInfo = new ProjectMsg();
+                proInfo.setProject_name(bean.getProjectname());
+                proInfo.setDetail_name(bean.getXinxi());
+                dataDetList.add(proInfo);
+                List<BlueOpenInfo.ArrBean.LanyaBean> lanya = bean.getLanya();
+                for (BlueOpenInfo.ArrBean.LanyaBean lanyaBean : lanya) {
+                    String fangxiang = lanyaBean.getFangxiang();
+                    if ("0".equals(fangxiang)) {
+                        ProjectMsg lanyaInfo = new ProjectMsg();
+                        lanyaInfo.setProject_name(lanyaBean.getName1());
+                        lanyaInfo.setDetail_name(lanyaBean.getAddress1());
+                        sumDataList.add(lanyaInfo);
+                    } else {
+                        ProjectMsg lanyaInfo1 = new ProjectMsg();
+                        lanyaInfo1.setProject_name(lanyaBean.getName1());
+                        lanyaInfo1.setDetail_name(lanyaBean.getAddress1());
+                        ProjectMsg lanyaInfo2 = new ProjectMsg();
+                        lanyaInfo2.setProject_name(lanyaBean.getName2());
+                        lanyaInfo2.setDetail_name(lanyaBean.getAddress2());
+                        sumDataList.add(lanyaInfo1);
+                        sumDataList.add(lanyaInfo2);
+                    }
+                }
+            }
+            isSearchBT = false;
+        }
     }
 
     //获取刷卡信息包
     private void getBlueOpenInfo() {
-        ProgressDialogUtil.startShow(AddBluetoothActivity.this, "正在查找,请稍等");
-        UserInfo userinfo = SPref.getObject(AddBluetoothActivity.this, UserInfo.class, "userinfo");
+        ProgressDialogUtil.startShow(this, "正在查找,请稍等");
+        UserInfo userinfo = SPref.getObject(this, UserInfo.class, "userinfo");
         String id = userinfo.getUserid();
         String url = NetConfig.USERCARD;
         RequestParamsFM params = new RequestParamsFM();
@@ -144,7 +225,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void onError(Request request, IOException e) {
                 ProgressDialogUtil.hideDialog();
-                ToastUtils.showToast(AddBluetoothActivity.this, "获取刷卡信息失败");
+                ToastUtils.showToast(AddBluetoothActivity.this, "网络连接错误");
             }
 
             @Override
@@ -158,15 +239,35 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 BlueOpenInfo info = gson.fromJson(resbody, BlueOpenInfo.class);
                 List<BlueOpenInfo.ArrBean> arr = info.getArr();
                 for (BlueOpenInfo.ArrBean bean : arr) {
-                    ProjectMsg msg = new ProjectMsg();
-                    msg.setProject_name(bean.getFname());
-                    msg.setId(bean.getProjectdetail_id());
-                    msg.setDetail_name(bean.getXinxi());
-                    dataProList.add(msg);
+                    ProjectMsg proInfo = new ProjectMsg();
+                    proInfo.setProject_name(bean.getProjectname());
+                    proInfo.setDetail_name(bean.getXinxi());
+                    dataDetList.add(proInfo);
+                    List<BlueOpenInfo.ArrBean.LanyaBean> lanya = bean.getLanya();
+                    for (BlueOpenInfo.ArrBean.LanyaBean lanyaBean : lanya) {
+                        String fangxiang = lanyaBean.getFangxiang();
+                        if ("0".equals(fangxiang)) {
+                            ProjectMsg lanyaInfo = new ProjectMsg();
+                            lanyaInfo.setProject_name(lanyaBean.getName1());
+                            lanyaInfo.setDetail_name(lanyaBean.getAddress1());
+                            sumDataList.add(lanyaInfo);
+                        } else {
+                            ProjectMsg lanyaInfo1 = new ProjectMsg();
+                            lanyaInfo1.setProject_name(lanyaBean.getName1());
+                            lanyaInfo1.setDetail_name(lanyaBean.getAddress1());
+                            ProjectMsg lanyaInfo2 = new ProjectMsg();
+                            lanyaInfo2.setProject_name(lanyaBean.getName2());
+                            lanyaInfo2.setDetail_name(lanyaBean.getAddress2());
+                            sumDataList.add(lanyaInfo1);
+                            sumDataList.add(lanyaInfo2);
+                        }
+                    }
                 }
+                mSpDetAdapter.notifyDataSetChanged();
+                //本地保存授权蓝牙信息
+                SpUtils.putString(AddBluetoothActivity.this, "BlueRight", resbody);
             }
         });
-
     }
 
     private void connectBT(int position) {
@@ -176,10 +277,11 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         img_loading.setVisibility(View.INVISIBLE);
         stopSearchBT();
         //获取对应条目的蓝牙设备信息
-        final BluetoothDevice btDevice = mBtData.get(position);
+        //final BluetoothDevice btDevice = mBtData.get(position);
+        final ProjectMsg btDevice = mBtData.get(position);
         Intent intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
-        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getName());
-        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getAddress());
+        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getProject_name());
+        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
         intent.putExtra("blueOpenInfo", mBlueOpenInfo);
         // 启动Ble_Activity
         startActivity(intent);
@@ -294,7 +396,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
 
     private void registerRec() {
         //3.注册蓝牙广播
-        mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter);
+        mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter, sumDataList);
         mReceiver.setUI(mTv_search, img_loading);
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙

@@ -76,13 +76,13 @@ public class MsgDetailActivity extends BaseActivity implements View.OnClickListe
     private void initData() {
         mImg_back.setOnClickListener(this);
         if ("1".equals(mKind)) {
-            mTv_title.setText("公告详情");
-            mTv_kind.setTextColor(getResources().getColor(R.color.yellow_kind));
-            mImg_type.setImageResource(R.drawable.notices);
-        } else if ("2".equals(mKind)) {
             mTv_title.setText("会议详情");
             mTv_kind.setTextColor(getResources().getColor(R.color.blue_kind));
             mImg_type.setImageResource(R.drawable.meeting_icon);
+        } else if ("2".equals(mKind)) {
+            mTv_title.setText("公告详情");
+            mTv_kind.setTextColor(getResources().getColor(R.color.yellow_kind));
+            mImg_type.setImageResource(R.drawable.notices);
         }
         //获取消息详情
         getMsgDetail();
@@ -117,11 +117,13 @@ public class MsgDetailActivity extends BaseActivity implements View.OnClickListe
                         String create_date = detail.getCreate_date();
                         String ftype = detail.getFtype();
                         String meeting_content = detail.getMeeting_content();
-                        if ("1".equals(ftype)) {
-                            mTv_kind.setText("公告");
-                        } else {
-                            mTv_kind.setText("会议");
-                        }
+                        String meeting_name = detail.getMeeting_name();
+                        mTv_kind.setText(meeting_name);
+                        //                        if ("1".equals(ftype)) {
+                        //                            mTv_kind.setText("公告");
+                        //                        } else {
+                        //                            mTv_kind.setText("会议");
+                        //                        }
                         mTv_time.setText(create_date);
                         web_detail.loadDataWithBaseURL("", getNewContent(meeting_content), "text/html", "utf-8", "");
                         //启用支持javascript

@@ -1,12 +1,12 @@
 package com.example.administrator.christie.adapter;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
 
 import java.util.List;
@@ -21,8 +21,8 @@ import java.util.List;
  */
 
 public class LvBlueTInfoAdapter extends BaseAdapter {
-    private List    mList;
-    private Context mContext;
+    private List<ProjectMsg> mList;
+    private Context          mContext;
 
     public LvBlueTInfoAdapter(Context context, List mData) {
         this.mList = mData;
@@ -56,19 +56,24 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
         } else {
             viewHolder = (LvBlueTInfoAdapter.MyViewHolder) view.getTag();
         }
-        BluetoothDevice btDevice = (BluetoothDevice) mList.get(i);
-        String name = btDevice.getName();
-        if (null == name || "".equals(name) || "null".equals(name)) {
-            viewHolder.tv_btinfo.setText(btDevice.getAddress());
-        } else {
-            viewHolder.tv_btinfo.setText(name);
-        }
-        int bondState = btDevice.getBondState();
-        if (bondState == BluetoothDevice.BOND_BONDED) {
-            viewHolder.tv_state.setText("已配对过");
-        } else {
-            viewHolder.tv_state.setText("未配对过");
-        }
+        ProjectMsg msg = mList.get(i);
+        String project_name = msg.getProject_name();
+        viewHolder.tv_btinfo.setText(project_name);
+
+
+        //        BluetoothDevice btDevice = (BluetoothDevice) mList.get(i);
+        //        String name = btDevice.getName();
+        //        if (null == name || "".equals(name) || "null".equals(name)) {
+        //            viewHolder.tv_btinfo.setText(btDevice.getAddress());
+        //        } else {
+        //            viewHolder.tv_btinfo.setText(name);
+        //        }
+        //        int bondState = btDevice.getBondState();
+        //        if (bondState == BluetoothDevice.BOND_BONDED) {
+        //            viewHolder.tv_state.setText("已配对过");
+        //        } else {
+        //            viewHolder.tv_state.setText("未配对过");
+        //        }
         return view;
     }
 

@@ -22,7 +22,7 @@ public class ParkPayInfo {
 
     private String inTime;
     private String fstatus;
-    private int    amount;
+    private double amount;
     private int    resCode;
     private String resMsg;
     private String outTime;
@@ -43,11 +43,11 @@ public class ParkPayInfo {
         this.fstatus = fstatus;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
