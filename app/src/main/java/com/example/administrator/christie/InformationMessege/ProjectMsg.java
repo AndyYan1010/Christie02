@@ -18,6 +18,11 @@ public class ProjectMsg {
     private String id;
     private String project_name;
     private String detail_name;
+    /**
+     * toNext : 0
+     */
+
+    private String toNext;
 
     public String getId() {
         return id;
@@ -41,5 +46,13 @@ public class ProjectMsg {
 
     public void setDetail_name(String detail_name) {
         this.detail_name = detail_name;
+    }
+
+    public String getToNext() {
+        return toNext;
+    }
+
+    public void setToNext(String toNext) {
+        this.toNext = toNext;
     }
 }

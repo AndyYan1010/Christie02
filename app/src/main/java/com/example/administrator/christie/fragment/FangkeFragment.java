@@ -37,10 +37,10 @@ public class FangkeFragment extends Fragment {
     private Context mContext = null;
     private View view;
     private List<String> functionlist = TApplication.user.getFunctionlist();
-    private ListView                             mLv_messege;
-    private List<MeetingDataInfo.JsonObjectBean> mData;
-    private LvMsgAdapter                         mLvMsgAdapter;
-    private SmartRefreshLayout                   mSmt_refresh;
+    private ListView                      mLv_messege;
+    private List<MeetingDataInfo.ArrBean> mData;
+    private LvMsgAdapter                  mLvMsgAdapter;
+    private SmartRefreshLayout            mSmt_refresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,14 +70,14 @@ public class FangkeFragment extends Fragment {
         mLv_messege.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MeetingDataInfo.JsonObjectBean jsonObjectBean = mData.get(i);
-                String msgId = jsonObjectBean.getId();
-                String ftype = jsonObjectBean.getFtype();
-                String fread = jsonObjectBean.getFread();
+                MeetingDataInfo.ArrBean arrBean = mData.get(i);
+                String msgId = arrBean.getId();
+                String ftype = arrBean.getFtype();
+                String fread = "" + arrBean.getFread();
                 Intent intent = new Intent(getContext(), MsgDetailActivity.class);
                 intent.putExtra("msgid", msgId);
-                intent.putExtra("kind",ftype);
-                intent.putExtra("fread",fread);
+                intent.putExtra("kind", ftype);
+                intent.putExtra("fread", fread);
                 startActivity(intent);
             }
         });
@@ -103,21 +103,19 @@ public class FangkeFragment extends Fragment {
                     Gson gson = new Gson();
                     MeetingDataInfo meetingInfo = gson.fromJson(resbody, MeetingDataInfo.class);
                     String message = meetingInfo.getMessage();
-                    if ("查找成功".equals(message)) {
-                        if (null == mData) {
-                            mData = new ArrayList<>();
-                        } else {
-                            mData.clear();
-                        }
-                        List<MeetingDataInfo.JsonObjectBean> jsonObject = meetingInfo.getJsonObject();
-                        for (int i = 0; i < jsonObject.size(); i++) {
-                            MeetingDataInfo.JsonObjectBean jsonBean = jsonObject.get(i);
-                            mData.add(jsonBean);
-                        }
-                        mLvMsgAdapter.notifyDataSetChanged();
+                    if (null == mData) {
+                        mData = new ArrayList<>();
                     } else {
-                        ToastUtils.showToast(getActivity(), "数据未查找到");
+                        mData.clear();
                     }
+                    List<MeetingDataInfo.ArrBean> arr = meetingInfo.getArr();
+                    mData.addAll(arr);
+                    mLvMsgAdapter.notifyDataSetChanged();
+                    //                    if ("查找成功".equals(message)) {
+                    //
+                    //                    } else {
+                    //                        ToastUtils.showToast(getActivity(), "数据未查找到");
+                    //                    }
                 } else {
                     ToastUtils.showToast(getActivity(), "网络错误");
                 }

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.modelInfo.MeetingDataInfo;
-import com.example.administrator.christie.util.DelHTMLTagUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,8 +25,8 @@ import java.util.List;
  */
 
 public class LvMsgAdapter extends BaseAdapter {
-    private List<MeetingDataInfo.JsonObjectBean> mList;
-    private Context                              mContext;
+    private List<MeetingDataInfo.ArrBean> mList;
+    private Context                       mContext;
 
     public LvMsgAdapter(Context context, List data) {
         this.mList = data;
@@ -70,11 +69,11 @@ public class LvMsgAdapter extends BaseAdapter {
         //        } else {
         //            viewHolder.liner_msg.setBackgroundResource(R.color.blue_06);
         //        }
-        MeetingDataInfo.JsonObjectBean jsonBean = mList.get(i);
-        String ftype = jsonBean.getFtype();
-        String create_date = jsonBean.getCreate_date();
-        String meeting_content = jsonBean.getMeeting_content();
-        String fread = jsonBean.getFread();
+        MeetingDataInfo.ArrBean arrBean = mList.get(i);
+        String ftype = arrBean.getFtype();
+        String create_date = arrBean.getCreate_date();
+        //        String meeting_content = arrBean.getMeeting_content();
+        String fread = "" + arrBean.getFread();
         String between = judgeTimeByNow(create_date);
         viewHolder.tv_time.setText(between);
         if ("1".equals(ftype)) {
@@ -86,8 +85,8 @@ public class LvMsgAdapter extends BaseAdapter {
             viewHolder.tv_kind.setTextColor(mContext.getResources().getColor(R.color.yellow_kind));
             viewHolder.img_head.setImageResource(R.drawable.notices);
         }
-        String content = DelHTMLTagUtil.delHTMLTag(meeting_content);
-        String meeting_name = jsonBean.getMeeting_name();
+        //        String content = DelHTMLTagUtil.delHTMLTag(meeting_content);
+        String meeting_name = arrBean.getMeeting_name();
         viewHolder.tv_msg.setText(meeting_name);
         if ("0".equals(fread)) {
             viewHolder.tv_state.setText("未读");
@@ -139,11 +138,11 @@ public class LvMsgAdapter extends BaseAdapter {
         else if (spaceSecond / (60 * 60 * 24) > 0 && spaceSecond / (60 * 60 * 24) < 3) {
             return spaceSecond / (60 * 60 * 24) + "天之前";
         } else {
-            //            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             //            Date date = new Date(time);
             //            String dateStr = simpleDateFormat.format(date);
             //            return dateStr;
-            return "3天之前";
+            return "超过3天";
         }
     }
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.BDInfoSpinnerAdapter;
+import com.example.administrator.christie.modelInfo.InvoteFkResultInfo;
 import com.example.administrator.christie.modelInfo.PersonalDataInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
@@ -220,7 +221,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     }
 
     private void getInvitationQc(String name, String phone, String date, String longtime, String reason, String detail_id) {
-        date = date+" 00:00:00";
+        //        date = date + " 00:00:00";
         String InvitationQcUrl = NetConfig.INVITE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", mUserid);
@@ -240,16 +241,24 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
             @Override
             public void onSuccess(int code, String resbody) {
                 if (code == 200) {
-                    //获取开始时间 和结束时间，跳转数据结果
-                    FragmentTransaction ftt = getFragmentManager().beginTransaction();
-                    InvitationQRcodeFragment invitationQRcodeFgt = new InvitationQRcodeFragment();
-                    String detailJson = "name:";
-                    //                    String detailJson = "name:" + name + "phone:" + phone + "date:" + date + "longtime:" + longtime + "reason:" + reason;
-                    //                    invitationQRcodeFgt.setInfoJson(detailJson);
-                    //                    ftt.add(R.id.frame_accessdata, invitationQRcodeFgt, "invitationQRcodeFgt");
-                    //                    ftt.addToBackStack(null);
-                    //                    ftt.commit();
-                    ToastUtils.showToast(getContext(), "测试二维码");
+                    Gson gson = new Gson();
+                    InvoteFkResultInfo invoteFkResultInfo = gson.fromJson(resbody, InvoteFkResultInfo.class);
+                    String result = invoteFkResultInfo.getResult();
+                    if ("1".equals(result)) {
+                        String code1 = invoteFkResultInfo.getCode();
+                        //获取开始时间 和结束时间，跳转数据结果
+                        FragmentTransaction ftt = getFragmentManager().beginTransaction();
+                        InvitationQRcodeFragment invitationQRcodeFgt = new InvitationQRcodeFragment();
+                        // String detailJson = "name:";
+                        // String detailJson = "name:" + name + "phone:" + phone + "date:" + date + "longtime:" + longtime + "reason:" + reason;
+                        invitationQRcodeFgt.setInfoJson("{" + code1 + "}");
+                        ftt.add(R.id.frame_accessdata, invitationQRcodeFgt, "invitationQRcodeFgt");
+                        ftt.addToBackStack(null);
+                        ftt.commit();
+                        //                        ToastUtils.showToast(getContext(), "测试二维码");
+                    } else {
+                        ToastUtils.showToast(getContext(), "提交失败");
+                    }
                 } else {
                     ToastUtils.showToast(getContext(), "数据请求失败");
                 }

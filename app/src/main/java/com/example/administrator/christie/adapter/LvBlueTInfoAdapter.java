@@ -59,7 +59,14 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
         ProjectMsg msg = mList.get(i);
         String project_name = msg.getProject_name();
         viewHolder.tv_btinfo.setText(project_name);
-
+        String toNext = msg.getToNext();
+        if ("0".equals(toNext)) {
+            viewHolder.tv_btinfo.setTextColor(mContext.getResources().getColor(R.color.vm_black_87));
+            viewHolder.tv_state.setText("该设备不在附近");
+        } else {
+            viewHolder.tv_btinfo.setTextColor(mContext.getResources().getColor(R.color.orange));
+            viewHolder.tv_state.setText("该设备可连接");
+        }
 
         //        BluetoothDevice btDevice = (BluetoothDevice) mList.get(i);
         //        String name = btDevice.getName();

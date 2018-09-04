@@ -53,7 +53,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
         msg.what = SDK_WXPAY_FLAG;
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
             if (resp.errCode == 0) {
-                //                Toast.makeText(this, "支付成功", Toast.LENGTH_LONG).show();
+                // Toast.makeText(this, "支付成功", Toast.LENGTH_LONG).show();
                 msg.obj = "支付成功";
             } else if (resp.errCode == -1) {
                 Toast.makeText(this, "支付失败", Toast.LENGTH_LONG).show();

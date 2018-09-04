@@ -26,7 +26,7 @@ import java.util.List;
  */
 
 public class SearchBlueThBcr extends BroadcastReceiver {
-    //    private List<BluetoothDevice> mList;
+    //private List<BluetoothDevice> mList;
     private List<ProjectMsg>   mList;
     private LvBlueTInfoAdapter mAdapter;
     private boolean isHad = false;
@@ -48,8 +48,7 @@ public class SearchBlueThBcr extends BroadcastReceiver {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String address = device.getAddress();
-                String name = device.getName();
-                //  Toast.makeText(context, "找到设备" + device.getName(), Toast.LENGTH_SHORT).show();
+                //                String name = device.getName();
                 if (mAdapter != null) {
                     for (int i = 0; i < mList.size(); i++) {
                         //BluetoothDevice bluetoothDevice = mList.get(i);
@@ -63,10 +62,11 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                         for (ProjectMsg msg : mSumList) {
                             String project_name = msg.getProject_name();
                             String detail_name = msg.getDetail_name();//蓝牙地址
-                            if (detail_name.equals(device.getAddress())) {
+                            if (detail_name.equals(address)) {
                                 ProjectMsg proMsg = new ProjectMsg();
                                 proMsg.setProject_name(project_name);
-                                proMsg.setDetail_name(detail_name);
+                                proMsg.setDetail_name(address);
+                                proMsg.setToNext("1");
                                 mList.add(proMsg);
                             }
                         }
@@ -77,6 +77,28 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                 ToastUtils.showToast(context, "搜索结束");
+                boolean isHave;
+                for (ProjectMsg msg : mSumList) {
+                    String project_name = msg.getProject_name();
+                    String detail_name = msg.getDetail_name();//蓝牙地址
+                    msg.setToNext("0");
+                    isHave = false;
+                    for (ProjectMsg locMsg : mList) {
+                        String project_name1 = locMsg.getProject_name();
+                        String detail_name1 = locMsg.getDetail_name();
+                        if (project_name.equals(project_name1) && detail_name.equals(detail_name1)) {
+                            isHave = true;
+                        }
+                    }
+                    if (!isHave) {
+                        ProjectMsg proMsg = new ProjectMsg();
+                        proMsg.setProject_name(project_name);
+                        proMsg.setDetail_name(detail_name);
+                        proMsg.setToNext("0");
+                        mList.add(proMsg);
+                    }
+                }
+                mAdapter.notifyDataSetChanged();
                 AddBluetoothActivity.isSearchBT = false;
                 tv_title.setText("开始搜索");
                 img_load.setVisibility(View.INVISIBLE);

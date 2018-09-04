@@ -1,6 +1,5 @@
 package com.example.administrator.christie.activity.homeAct;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -21,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.activity.BaseActivity;
 import com.example.administrator.christie.service.BluetoothLeService;
 import com.example.administrator.christie.util.ShakeHelper;
 import com.example.administrator.christie.util.TDESDoubleUtils;
@@ -40,7 +40,7 @@ import java.util.List;
  * @更新描述 ${TODO}
  */
 
-public class Ble_Activity extends Activity implements View.OnClickListener {
+public class Ble_Activity extends BaseActivity implements View.OnClickListener {
 
     //蓝牙4.0的UUID,其中0000ffe1-0000-1000-8000-00805f9b34fb是广州汇承信息科技有限公司08蓝牙模块的UUID
     public static String  HEART_RATE_MEASUREMENT = "0000ffe1-0000-1000-8000-00805f9b34fb";
@@ -70,7 +70,7 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
     private String    mDeviceName;
     private TextView  tv_title;
     private ImageView img_back;
-    private int times = 0;//记录是第几次连接
+    private int times = 0;//记录是第几步发送
     private ShakeHelper      mShakeHelper;//振动类
     private RippleBackground rippleBackground;//脉冲图像
     private ImageView        centerImage;
@@ -124,7 +124,9 @@ public class Ble_Activity extends Activity implements View.OnClickListener {
                         times = 1;
                     } else if (times == 1) {
                         //NO.1发送消息，获取四位随机数
-                        sendMsg("<010000>");
+                        if (null != target_chara) {
+                            sendMsg("<010000>");
+                        }
                     } else if (times == 2) {
                         //NO.2发送外指令，部认证
                         //sendMsg("<02007F6098536D70BAC000>");7F6098536D70BAC0

@@ -105,6 +105,12 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mLv_blt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ProjectMsg msg = mBtData.get(i);
+                String toNext = msg.getToNext();
+                if ("0".equals(toNext)) {
+                    ToastUtils.showToast(AddBluetoothActivity.this, "该设备不在附近，不可连接");
+                    return;
+                }
                 //连接点击的蓝牙设备
                 connectBT(i);
             }

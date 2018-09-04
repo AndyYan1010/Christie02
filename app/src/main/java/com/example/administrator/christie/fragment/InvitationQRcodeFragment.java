@@ -12,8 +12,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
+import com.example.administrator.christie.global.AppConstants;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.util.ZxingUtils;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXImageObject;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 
 
 /**
@@ -30,12 +39,15 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
     private String    mDetailJson;
     private TextView  mTv_title;
     private ImageView mImg_back, mImg_code;
-    private Button mBt_share;
+    private Button       mBt_share;
     private LinearLayout mLiner;
+    private IWXAPI       api;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_invitation_code, container, false);
+        api = WXAPIFactory.createWXAPI(getContext(), AppConstants.WX_Pay_APP_ID, true);
+        api.registerApp(AppConstants.WX_Pay_APP_ID);
         initView();
         initData();
         return mRootView;
@@ -78,15 +90,59 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
                 getFragmentManager().popBackStackImmediate(null, 0);
                 break;
             case R.id.bt_share:
+                mImg_code.setDrawingCacheEnabled(true);
+                Bitmap bitmap = Bitmap.createBitmap(mImg_code.getDrawingCache());
+                mImg_code.setDrawingCacheEnabled(false);
+                WXImageObject imgObj = new WXImageObject(bitmap);
+                WXMediaMessage msg = new WXMediaMessage();
+                msg.mediaObject = imgObj;
 
+                //设置缩略图
+                Bitmap mBp = Bitmap.createScaledBitmap(bitmap, 120, 120, true);
+                bitmap.recycle();
+                msg.thumbData = bmpToByteArray(mBp, true);
+                //  Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, THUMB_SIZE, THUMB_SIZE, true);
+                //  bitmap.recycle();
+                //  msg.thumbData = getBytesByBitmap(bitmap);
+
+                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                req.transaction = buildTransaction("img");
+//                req.transaction = String.valueOf(System.currentTimeMillis());
+                req.message = msg;
+                req.scene = SendMessageToWX.Req.WXSceneSession;
+                api.sendReq(req);
                 break;
         }
     }
+
     private void generateQr(String data) {
         Bitmap bitmap = ZxingUtils.createQRImage(data, 200, 200);
-        System.out.println(bitmap);
-        if (null!=bitmap){
+        if (null != bitmap) {
             mImg_code.setImageBitmap(bitmap);
         }
+    }
+
+    public byte[] getBytesByBitmap(Bitmap bitmap) {
+        ByteBuffer buffer = ByteBuffer.allocate(bitmap.getByteCount());
+        return buffer.array();
+    }
+
+    public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+        if (needRecycle) {
+            bmp.recycle();
+        }
+
+        byte[] result = output.toByteArray();
+        try {
+            output.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    private String buildTransaction(final String type) {
+        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
 }
