@@ -23,9 +23,6 @@ import com.example.administrator.christie.view.CustomDatePicker;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -127,7 +124,7 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
         String userid = userinfo.getUserid();
         String mjInfoUrl = NetConfig.EGDETAIL;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("id", userid);
+        params.put("userid", userid);
         params.put("starttime", startT);
         params.put("endtime", endT);
         HttpOkhUtils.getInstance().doGetWithParams(mjInfoUrl, params, new HttpOkhUtils.HttpCallBack() {
@@ -142,23 +139,17 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
                     ToastUtils.showToast(getContext(), "网络请求成功");
                     //解析返回数据
                     Gson gson = new Gson();
-                    try {
-                        //获取开始时间 和结束时间，跳转数据结果
-                        FragmentTransaction ftt = getFragmentManager().beginTransaction();
-                        AccessInfoResultFragment infoResultFragment = new AccessInfoResultFragment();
-                        List menjinInfoList = infoResultFragment.getMenjinInfoList();
-                        JSONArray jsonArray = new JSONArray(resbody);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            MenjinInfo menjinInfo = gson.fromJson(jsonArray.get(i).toString(), MenjinInfo.class);
-                            menjinInfoList.add(menjinInfo);
-                        }
-                        infoResultFragment.setData(startT, endT);
-                        ftt.add(R.id.frame_accessdata, infoResultFragment, "infoResultFragment");
-                        ftt.addToBackStack(null);
-                        ftt.commit();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    MenjinInfo menjinInfo = gson.fromJson(resbody, MenjinInfo.class);
+                    List<MenjinInfo.ArrBean> arr = menjinInfo.getArr();
+                    //获取开始时间 和结束时间，跳转数据结果
+                    FragmentTransaction ftt = getFragmentManager().beginTransaction();
+                    AccessInfoResultFragment infoResultFragment = new AccessInfoResultFragment();
+                    List menjinInfoList = infoResultFragment.getMenjinInfoList();
+                    menjinInfoList.addAll(arr);
+                    infoResultFragment.setData(startT, endT);
+                    ftt.add(R.id.frame_accessdata, infoResultFragment, "infoResultFragment");
+                    ftt.addToBackStack(null);
+                    ftt.commit();
                 } else {
                     ToastUtils.showToast(getContext(), "网络错误,错误码:" + code);
                 }

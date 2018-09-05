@@ -31,7 +31,7 @@ public class AccessInfoResultFragment extends Fragment implements View.OnClickLi
     private TextView mTv_title, mTv_st_end, mTv_nodata;
     private ImageView mImg_back;
     private ListView  mLv_result;
-    private List<MenjinInfo> menjinInfoList = new ArrayList();//记录门禁数据
+    private List<MenjinInfo.ArrBean> menjinInfoList = new ArrayList();//记录门禁数据
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class AccessInfoResultFragment extends Fragment implements View.OnClickLi
     private void initData() {
         mTv_title.setText("门禁数据结果");
         mImg_back.setOnClickListener(this);
-        mTv_st_end.setText("下方数据为" + mstartT.substring(0,9) + "至" + mendT + "的数据");
+        mTv_st_end.setText("下方数据为" + mstartT.substring(0, 10) + "至" + mendT.substring(0, 10) + "的数据");
         if (menjinInfoList.size() > 0) {
             mTv_nodata.setVisibility(View.GONE);
         }

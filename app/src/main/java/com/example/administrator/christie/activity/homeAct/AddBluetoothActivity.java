@@ -111,6 +111,13 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     ToastUtils.showToast(AddBluetoothActivity.this, "该设备不在附近，不可连接");
                     return;
                 }
+                //判断是否联网
+                boolean networkAvalible = IsInternetUtil.isNetworkAvalible(AddBluetoothActivity.this);
+                if (networkAvalible) {//有网,通知服务器开了哪个门
+                    String id = msg.getId();
+                    String type = msg.getType();
+                    sendOpenMsgToService(id, type);
+                }
                 //连接点击的蓝牙设备
                 connectBT(i);
             }
@@ -158,7 +165,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mSpinner_village.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //获取点击条目ID，给spinner2设置数据
+                //获取点击条目ID
                 ProjectMsg projectInfo = dataDetList.get(i);
                 String project_name = projectInfo.getProject_name();
                 if (!project_name.equals("请选择公司")) {
@@ -180,6 +187,29 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             //没有网络，获取本地存储数据解析
             getLocalBlueInfo();
         }
+    }
+
+    //发送开门信息给服务器
+    private void sendOpenMsgToService(String deviceID, String type) {
+        UserInfo userinfo = SPref.getObject(this, UserInfo.class, "userinfo");
+        String id = userinfo.getUserid();
+        String insertMJUrl = NetConfig.INSERTMENJIN;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("userid", id);
+        params.put("lanyaid", deviceID);
+        params.put("type", type);
+        params.setUseJsonStreamer(true);
+        HttpOkhUtils.getInstance().doPost(insertMJUrl, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+
+            }
+        });
     }
 
     private void getLocalBlueInfo() {
@@ -252,18 +282,25 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     List<BlueOpenInfo.ArrBean.LanyaBean> lanya = bean.getLanya();
                     for (BlueOpenInfo.ArrBean.LanyaBean lanyaBean : lanya) {
                         String fangxiang = lanyaBean.getFangxiang();
+                        String id1 = lanyaBean.getId();//蓝牙id
                         if ("0".equals(fangxiang)) {
                             ProjectMsg lanyaInfo = new ProjectMsg();
                             lanyaInfo.setProject_name(lanyaBean.getName1());
+                            lanyaInfo.setId(id1);
+                            lanyaInfo.setType("1");
                             lanyaInfo.setDetail_name(lanyaBean.getAddress1());
                             sumDataList.add(lanyaInfo);
                         } else {
                             ProjectMsg lanyaInfo1 = new ProjectMsg();
                             lanyaInfo1.setProject_name(lanyaBean.getName1());
                             lanyaInfo1.setDetail_name(lanyaBean.getAddress1());
+                            lanyaInfo1.setId(id1);
+                            lanyaInfo1.setType("1");
                             ProjectMsg lanyaInfo2 = new ProjectMsg();
                             lanyaInfo2.setProject_name(lanyaBean.getName2());
                             lanyaInfo2.setDetail_name(lanyaBean.getAddress2());
+                            lanyaInfo2.setId(id1);
+                            lanyaInfo2.setType("2");
                             sumDataList.add(lanyaInfo1);
                             sumDataList.add(lanyaInfo2);
                         }

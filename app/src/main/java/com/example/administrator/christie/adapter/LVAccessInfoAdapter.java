@@ -22,9 +22,9 @@ import java.util.List;
  */
 
 public class LVAccessInfoAdapter extends BaseAdapter {
-    private List<MenjinInfo> mList;
-    private Context          mContext;
-    private int              mKind;//0门禁记录,1缴费记录
+    private List    mList;
+    private Context mContext;
+    private int     mKind;//0门禁记录,1缴费记录
 
     public LVAccessInfoAdapter(Context context, List data, int kind) {
         this.mList = data;
@@ -78,14 +78,14 @@ public class LVAccessInfoAdapter extends BaseAdapter {
         //            }
         //        } else {
         if (mKind == 0) {
-            MenjinInfo menjinInfo = mList.get(i);
-            String time = menjinInfo.getTime();
+            MenjinInfo.ArrBean arrBean = (MenjinInfo.ArrBean) mList.get(i);
+            String time = arrBean.getTime();
             String subtime = time.substring(0, 10);
             viewHolder.tv_date.setText(subtime);
-            viewHolder.tv_door_name.setText(menjinInfo.getDevice_name());
-            viewHolder.tv_area.setText(menjinInfo.getDevice_address());
+            viewHolder.tv_door_name.setText(arrBean.getDevice_name());
+            viewHolder.tv_area.setText(arrBean.getDevice_address());
         } else if (mKind == 1) {
-            MenjinInfo payInfo = mList.get(i);
+            MenjinInfo payInfo = (MenjinInfo) mList.get(i);
             String time = payInfo.getTime();
             int paycode = payInfo.getPaycode();
             double amount = payInfo.getAmount();

@@ -23,6 +23,11 @@ public class ProjectMsg {
      */
 
     private String toNext;
+    /**
+     * type : 1
+     */
+
+    private String type;
 
     public String getId() {
         return id;
@@ -54,5 +59,13 @@ public class ProjectMsg {
 
     public void setToNext(String toNext) {
         this.toNext = toNext;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
