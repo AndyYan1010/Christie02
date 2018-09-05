@@ -28,6 +28,7 @@ import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
 import com.example.administrator.christie.adapter.ProSpinnerAdapter;
 import com.example.administrator.christie.broadcastReceiver.SearchBlueThBcr;
 import com.example.administrator.christie.modelInfo.BlueOpenInfo;
+import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.BluetoothManagerUtils;
@@ -202,12 +203,21 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         HttpOkhUtils.getInstance().doPost(insertMJUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
-
+                ToastUtils.showToast(AddBluetoothActivity.this, "网络连接错误");
             }
 
             @Override
             public void onSuccess(int code, String resbody) {
-
+                if (code == 200) {
+                    Gson gson = new Gson();
+                    LoginInfo loginInfo = gson.fromJson(resbody, LoginInfo.class);
+                    String result = loginInfo.getResult();
+                    if ("1".equals(result)) {
+                        ToastUtils.showToast(AddBluetoothActivity.this, "提交成功");
+                    }
+                } else {
+                    ToastUtils.showToast(AddBluetoothActivity.this, "网络连接错误");
+                }
             }
         });
     }

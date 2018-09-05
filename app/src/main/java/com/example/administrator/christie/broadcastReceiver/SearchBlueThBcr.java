@@ -62,11 +62,15 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                         for (ProjectMsg msg : mSumList) {
                             String project_name = msg.getProject_name();
                             String detail_name = msg.getDetail_name();//蓝牙地址
+                            String id = msg.getId();
+                            String type = msg.getType();
                             if (detail_name.equals(address)) {
                                 ProjectMsg proMsg = new ProjectMsg();
                                 proMsg.setProject_name(project_name);
                                 proMsg.setDetail_name(address);
                                 proMsg.setToNext("1");
+                                proMsg.setId(id);
+                                proMsg.setType(type);
                                 mList.add(proMsg);
                             }
                         }
