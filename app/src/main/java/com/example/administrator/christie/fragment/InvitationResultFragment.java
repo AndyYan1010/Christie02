@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -30,7 +30,7 @@ public class InvitationResultFragment extends Fragment implements View.OnClickLi
     private View   mRootView;
     private String mstartT, mendT;
     private TextView mTv_title, mTv_st_end, mTv_nodata;
-    private ImageView    mImg_back;
+    private LinearLayout linear_back;
     private RecyclerView mRecview_result;
     private List<FkRecordInfo.ListBean> mFkRecordList = new ArrayList<>();
 
@@ -44,7 +44,7 @@ public class InvitationResultFragment extends Fragment implements View.OnClickLi
 
 
     private void initView() {
-        mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
+        linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mTv_nodata = (TextView) mRootView.findViewById(R.id.tv_nodata);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mTv_st_end = (TextView) mRootView.findViewById(R.id.tv_st_end);
@@ -53,7 +53,7 @@ public class InvitationResultFragment extends Fragment implements View.OnClickLi
 
     private void initData() {
         mTv_title.setText("邀请记录结果");
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_st_end.setText("下方数据为" + mstartT + "至" + mendT + "的数据");
         if (mFkRecordList.size() > 0) {
             mTv_nodata.setVisibility(View.GONE);
@@ -72,7 +72,7 @@ public class InvitationResultFragment extends Fragment implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 //弹出回退栈最上面的fragment
                 getFragmentManager().popBackStackImmediate(null, 0);
                 break;

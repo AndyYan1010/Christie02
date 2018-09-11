@@ -35,10 +35,11 @@ import java.nio.ByteBuffer;
  */
 
 public class InvitationQRcodeFragment extends Fragment implements View.OnClickListener {
-    private View      mRootView;
-    private String    mDetailJson;
-    private TextView  mTv_title;
-    private ImageView mImg_back, mImg_code;
+    private View         mRootView;
+    private LinearLayout linear_back;
+    private String       mDetailJson;
+    private TextView     mTv_title;
+    private ImageView    mImg_code;
     private Button       mBt_share;
     private LinearLayout mLiner;
     private IWXAPI       api;
@@ -61,7 +62,7 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
             return;
         }
         mLiner = (LinearLayout) mRootView.findViewById(R.id.liner);
-        mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
+        linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mImg_code = (ImageView) mRootView.findViewById(R.id.img_code);
         mBt_share = (Button) mRootView.findViewById(R.id.bt_share);
@@ -69,7 +70,7 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
 
     private void initData() {
         mLiner.setOnClickListener(this);
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("二维码分享");
         mBt_share.setOnClickListener(this);
         //生成二维码
@@ -85,7 +86,7 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
         switch (view.getId()) {
             case R.id.liner:
                 break;
-            case R.id.img_back:
+            case R.id.linear_back:
                 //弹出回退栈最上面的fragment
                 getFragmentManager().popBackStackImmediate(null, 0);
                 break;
@@ -107,7 +108,7 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
 
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.transaction = buildTransaction("img");
-//                req.transaction = String.valueOf(System.currentTimeMillis());
+                //                req.transaction = String.valueOf(System.currentTimeMillis());
                 req.message = msg;
                 req.scene = SendMessageToWX.Req.WXSceneSession;
                 api.sendReq(req);
@@ -142,6 +143,7 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
         }
         return result;
     }
+
     private String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }

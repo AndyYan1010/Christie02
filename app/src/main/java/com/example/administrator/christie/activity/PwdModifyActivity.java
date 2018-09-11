@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -31,10 +31,10 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
     //    private Button          btn_next;
     //    private CustomProgress  dialog;
     //    private String          code;
-    private Context   mContext;
-    private ImageView mImg_back;
-    private TextView  mTv_title;
-    private EditText  mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass;
+    private Context      mContext;
+    private LinearLayout linear_back;
+    private TextView     mTv_title;
+    private EditText     mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass;
     private Button mBt_get_test, mBt_register;
     private String mPhone_num;//手机号
     private String mtest_pass;//验证码
@@ -61,7 +61,7 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
         //        et_code = (EditText)findViewById(R.id.et_code);
         //        btn_code = (CountdownButton) findViewById(R.id.btn_code);
         //        btn_next = (Button)findViewById(R.id.btn_next);
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mEt_phone_num = (EditText) findViewById(R.id.et_phone_num);
         mEt_password = (EditText) findViewById(R.id.et_password);
@@ -72,7 +72,7 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void setData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("忘记密码");
         mBt_get_test.setOnClickListener(this);
         mBt_register.setOnClickListener(this);
@@ -81,7 +81,7 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.bt_get_test:
@@ -185,9 +185,12 @@ public class PwdModifyActivity extends BaseActivity implements View.OnClickListe
                             handler.postDelayed(this, 1000);//递归执行，一秒执行一次
                             if (count > 0) {
                                 count--;
+                                mBt_get_test.setBackground(getResources().getDrawable(R.drawable.bg_round_gray));
                                 mBt_get_test.setText(count + "秒后可重新发送");
                                 mBt_get_test.setClickable(false);
                             } else {
+                                count = 60;
+                                mBt_get_test.setBackground(getResources().getDrawable(R.drawable.bg_round_blue_mormal));
                                 mBt_get_test.setText("发送验证码");
                                 mBt_get_test.setClickable(true);
                                 handler.removeCallbacks(this);

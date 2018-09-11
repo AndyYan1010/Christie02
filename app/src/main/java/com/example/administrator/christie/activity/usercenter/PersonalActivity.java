@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,7 +39,7 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
     private List<PersonalDataInfo.ArrBean.ListProjectBean> mBangList;
     private ListView                                       mLv_bang;
     private BindInfoAdapter                                mInfoAdapter;
-    private ImageView                                      mImg_back;
+    private LinearLayout                                   linear_back;
     private TextView                                       mTv_title;
     private SmartRefreshLayout                             mSmt_refresh;
 
@@ -54,7 +53,7 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
     }
 
     protected void setViews() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mSmt_refresh = (SmartRefreshLayout) findViewById(R.id.smt_refresh);
         ll_yhm = (LinearLayout) findViewById(R.id.ll_yhm);
@@ -68,7 +67,7 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
         //        GetThread thread = new GetThread(TApplication.user.getId());
         //        thread.start();
         mLv_bang = (ListView) findViewById(R.id.lv_bang);
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText(R.string.person);
         if (null == mBangList) {
             mBangList = new ArrayList();
@@ -198,7 +197,7 @@ public class PersonalActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
         }

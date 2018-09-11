@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -48,8 +48,7 @@ import okhttp3.Request;
  */
 
 public class ReservatParkingActivity extends BaseActivity implements View.OnClickListener {
-
-    private ImageView mImg_back;
+    private LinearLayout linear_back;
     private TextView  mTv_title, mTv_park_time, mTv_username;
     private RecyclerView mRecv_stop_time;
     private Button       mBt_order;
@@ -72,7 +71,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
     }
 
     private void initView() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_username = (TextView) findViewById(R.id.tv_username);
         mSpinner_plate = (Spinner) findViewById(R.id.spinner_plate);
         mSpinner_pro = (Spinner) findViewById(R.id.spinner_pro);
@@ -83,7 +82,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
     }
 
     private void initData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("车位预约");
         mUserinfo = SPref.getObject(ReservatParkingActivity.this, UserInfo.class, "userinfo");
         String username = mUserinfo.getUsername();
@@ -207,7 +206,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.tv_park_time:

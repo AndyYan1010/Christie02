@@ -8,6 +8,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -41,11 +42,11 @@ import okhttp3.Request;
  */
 
 public class MsgDetailActivity extends BaseActivity implements View.OnClickListener {
-
-    private TextView  mTv_kind;
-    private TextView  mTv_time;
-    private String    mMsgid;
-    private ImageView mImg_back, mImg_type, mImg_nonet;
+    private LinearLayout linear_back;
+    private TextView     mTv_kind;
+    private TextView     mTv_time;
+    private String       mMsgid;
+    private ImageView    mImg_type, mImg_nonet;
     private TextView mTv_title;
     private String   mKind;
     private String   mFread;
@@ -65,7 +66,7 @@ public class MsgDetailActivity extends BaseActivity implements View.OnClickListe
 
     private void initView() {
         mImg_nonet = (ImageView) findViewById(R.id.img_nonet);
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mImg_type = (ImageView) findViewById(R.id.img_type);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mTv_kind = (TextView) findViewById(R.id.tv_kind);
@@ -74,7 +75,7 @@ public class MsgDetailActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         if ("1".equals(mKind)) {
             mTv_title.setText("会议详情");
             mTv_kind.setTextColor(getResources().getColor(R.color.blue_kind));
@@ -160,7 +161,7 @@ public class MsgDetailActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
         }

@@ -2,7 +2,7 @@ package com.example.administrator.christie.activity.usercenter;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -18,9 +18,8 @@ import com.example.administrator.christie.activity.BaseActivity;
  */
 
 public class AboutUsActivity extends BaseActivity implements View.OnClickListener {
-
-    private ImageView mImg_back;
-    private TextView mTv_title;
+    private LinearLayout linear_back;
+    private TextView     mTv_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,19 +30,19 @@ public class AboutUsActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void initView() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
     }
 
     private void initData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("关于");
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
         }

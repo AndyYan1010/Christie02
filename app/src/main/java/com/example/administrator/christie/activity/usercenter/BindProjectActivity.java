@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -54,10 +55,10 @@ import okhttp3.Request;
  */
 
 public class BindProjectActivity extends BaseActivity implements View.OnClickListener {
-
-    private ImageView mImg_back, mImg_id_pic;
-    private TextView mTv_title;
-    private Spinner  mSpinner_village, mSpinner_unit;
+    private LinearLayout linear_back;
+    private ImageView    mImg_id_pic;
+    private TextView     mTv_title;
+    private Spinner      mSpinner_village, mSpinner_unit;
     private List<ProjectMsg> dataProList, dataInfoList;
     private ProSpinnerAdapter mProjAdapter, mDetailAdapter;
     private Button mBt_submit, mBt_insert_pic;
@@ -76,7 +77,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void setViews() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mImg_id_pic = (ImageView) findViewById(R.id.img_id_pic);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mSpinner_village = (Spinner) findViewById(R.id.spinner_village);
@@ -88,7 +89,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void setData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("绑定项目");
         dataProList = new ArrayList<>();
         ProjectMsg projectInfo = new ProjectMsg();
@@ -216,7 +217,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.bt_submit:
@@ -305,7 +306,11 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
             c.moveToFirst();
             int columnIndex = c.getColumnIndex(filePathColumns[0]);
             String imagePath = c.getString(columnIndex);
-            showImage(imagePath);
+            try {
+                showImage(imagePath);
+            } catch (Exception e) {
+                ToastUtils.showToast(this, "文件上传失败，请查看原图片是否存在");
+            }
             c.close();
         }
     }
@@ -315,21 +320,25 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         //Bitmap bm = BitmapFactory.decodeFile(imgPath);
         //压缩图片
         File file = new File(imgPath);
-        File newFile = new CompressHelper.Builder(this)
-                .setMaxWidth(720)  // 默认最大宽度为720
-                .setMaxHeight(960) // 默认最大高度为960
-                .setQuality(100)    // 默认压缩质量为80
-                .setFileName("sendPic") // 设置你需要修改的文件名
-                .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
-                .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES).getAbsolutePath())
-                .build()
-                .compressToFile(file);
-        Bitmap bm = BitmapFactory.decodeFile(newFile.getPath());
-        mImg_id_pic.setImageBitmap(bm);
-        mImg_onSer = "";
-        //上传图片
-        sendImgToService(bm);
+        if (null != file) {
+            File newFile = new CompressHelper.Builder(this)
+                    .setMaxWidth(720)  // 默认最大宽度为720
+                    .setMaxHeight(960) // 默认最大高度为960
+                    .setQuality(100)    // 默认压缩质量为80
+                    .setFileName("sendPic") // 设置你需要修改的文件名
+                    .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
+                    .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES).getAbsolutePath())
+                    .build()
+                    .compressToFile(file);
+            Bitmap bm = BitmapFactory.decodeFile(newFile.getPath());
+            mImg_id_pic.setImageBitmap(bm);
+            mImg_onSer = "";
+            //上传图片
+            sendImgToService(bm);
+        }else {
+            ToastUtils.showToast(this, "未获取到源文件，请查看原图片是否存在");
+        }
     }
 
     private void sendImgToService(Bitmap bm) {

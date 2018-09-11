@@ -7,7 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -36,9 +36,9 @@ import java.util.List;
 import okhttp3.Request;
 
 public class PlateActivity extends BaseActivity implements View.OnClickListener {
+    private LinearLayout         linear_back;
     private String               count;
     private FloatingActionButton fab_default, fab_add, fab_back;
-    private ImageView               mImg_back;
     private TextView                mTv_title;
     private RecyclerView            mRcv_plate;
     private List<PersonalPlateInfo> mPlateData;
@@ -57,7 +57,7 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void setview() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mSmt_refresh = (SmartRefreshLayout) findViewById(R.id.smt_refresh);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mRcv_plate = (RecyclerView) findViewById(R.id.rcv_plate);
@@ -67,7 +67,7 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void setData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText(R.string.license);
         userinfo = SPref.getObject(PlateActivity.this, UserInfo.class, "userinfo");
         mPlateData = new ArrayList();
@@ -242,7 +242,7 @@ public class PlateActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
         }

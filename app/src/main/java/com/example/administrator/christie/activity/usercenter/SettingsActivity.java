@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -16,9 +16,9 @@ import com.example.administrator.christie.activity.LoginActivity;
 import com.example.administrator.christie.modelInfo.UserInfo;
 
 public class SettingsActivity extends BaseActivity implements View.OnClickListener {
-    private Button btn_signout;
-    private ImageView mImg_back;
-    private TextView mTv_title;
+    private Button       btn_signout;
+    private LinearLayout linear_back;
+    private TextView     mTv_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,18 +29,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         setListeners();
     }
 
-    protected void setViews(){
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+    protected void setViews() {
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
-        btn_signout = (Button)findViewById(R.id.btn_signout);
+        btn_signout = (Button) findViewById(R.id.btn_signout);
     }
 
     private void setData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText(getResources().getString(R.string.settings));
     }
 
-    protected void setListeners(){
+    protected void setListeners() {
         btn_signout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,18 +51,18 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                         SharedPreferences.Editor edit = sharedPreferences.edit();
                         edit.remove("userinfo");
                         edit.commit();
-                        startActivity(new Intent(SettingsActivity.this,LoginActivity.class));
+                        startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
                         finish();
                     }
-                }).setNegativeButton("取消",null).show();
+                }).setNegativeButton("取消", null).show();
             }
         });
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.img_back:
+        switch (view.getId()) {
+            case R.id.linear_back:
                 finish();
                 break;
         }

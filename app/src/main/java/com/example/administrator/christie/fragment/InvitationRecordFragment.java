@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -41,9 +42,10 @@ import okhttp3.Request;
  */
 
 public class InvitationRecordFragment extends Fragment implements View.OnClickListener {
-    private View     mRootView;
-    private TextView mTv_title, mTv_start_time, mTv_end_time;
-    private ImageView mImg_back, mImg_select_st, mImg_select_end;
+    private View         mRootView;
+    private LinearLayout linear_back;
+    private TextView     mTv_title, mTv_start_time, mTv_end_time;
+    private ImageView mImg_select_st, mImg_select_end;
     private Button mBt_search;
 
     @Override
@@ -54,9 +56,8 @@ public class InvitationRecordFragment extends Fragment implements View.OnClickLi
         return mRootView;
     }
 
-
     private void initView() {
-        mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
+        linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mTv_start_time = (TextView) mRootView.findViewById(R.id.tv_start_time);
         mTv_end_time = (TextView) mRootView.findViewById(R.id.tv_end_time);
@@ -64,7 +65,7 @@ public class InvitationRecordFragment extends Fragment implements View.OnClickLi
         mImg_select_end = (ImageView) mRootView.findViewById(R.id.img_select_end);
         mBt_search = (Button) mRootView.findViewById(R.id.bt_search);
         mTv_title.setText("邀请记录");
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mImg_select_st.setOnClickListener(this);
         mImg_select_end.setOnClickListener(this);
         mBt_search.setOnClickListener(this);
@@ -81,7 +82,7 @@ public class InvitationRecordFragment extends Fragment implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 getActivity().finish();
                 break;
             case R.id.img_select_st:

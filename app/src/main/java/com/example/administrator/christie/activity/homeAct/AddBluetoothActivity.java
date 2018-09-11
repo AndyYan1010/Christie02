@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -57,9 +58,8 @@ import okhttp3.Request;
  */
 
 public class AddBluetoothActivity extends BaseActivity implements View.OnClickListener {
-
-    private ImageView mImg_back;
-    private TextView  mTv_title, mTv_search;
+    private LinearLayout linear_back;
+    private TextView     mTv_title, mTv_search;
     private ListView mLv_blt;
     public static        boolean isSearchBT                      = false;
     private static       int     REQUEST_ENABLE                  = 400;
@@ -84,7 +84,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initView() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mTv_search = (TextView) findViewById(R.id.tv_search);
         img_loading = (ImageView) findViewById(R.id.img_loading);
@@ -92,7 +92,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         // spinner_proj = (Spinner) findViewById(R.id.spinner_proj);
         mSpinner_village = (Spinner) findViewById(R.id.spinner_village);
         mTv_title.setText("搜索蓝牙设备");
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_search.setOnClickListener(this);
     }
 
@@ -343,7 +343,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.tv_search:

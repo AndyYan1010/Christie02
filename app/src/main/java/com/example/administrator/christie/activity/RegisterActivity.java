@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -26,11 +26,11 @@ import okhttp3.Request;
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
     private EditText mEt_phone_num, mEt_password, mEt_again, mEdit_test_pass, mEt_user_name;
     private Button mBt_get_test, mBt_register;
-    private ImageView mImg_back;
-    private TextView  mTv_title;
-    private String    mPhone_num;//手机号
-    private String    mtest_pass;//验证码
-    private String    mPassword, mAgainPassword, mUser_name;//密码和重复密码
+    private LinearLayout linear_back;
+    private TextView     mTv_title;
+    private String       mPhone_num;//手机号
+    private String       mtest_pass;//验证码
+    private String       mPassword, mAgainPassword, mUser_name;//密码和重复密码
     private String markVerification = "-12345678";
     private int    count            = 60;//验证码可重新点击发送时间间隔
     private Handler handler;
@@ -60,7 +60,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         //        btn_register = (Button)findViewById(R.id.btn_register);
         //        et_pwd = (EditText)findViewById(R.id.et_pwd);
         //        et_repeat = (EditText)findViewById(R.id.et_repeat);
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mEt_user_name = (EditText) findViewById(R.id.et_user_name);
         mEt_phone_num = (EditText) findViewById(R.id.et_phone_num);
@@ -72,7 +72,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void setData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("注册用户");
         mBt_get_test.setOnClickListener(this);
         mBt_register.setOnClickListener(this);
@@ -81,7 +81,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.bt_get_test:
@@ -209,9 +209,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                             handler.postDelayed(this, 1000);//递归执行，一秒执行一次
                             if (count > 0) {
                                 count--;
+                                mBt_get_test.setBackground(getResources().getDrawable(R.drawable.bg_round_gray));
                                 mBt_get_test.setText(count + "秒后可重新发送");
                                 mBt_get_test.setClickable(false);
                             } else {
+                                count = 60;
+                                mBt_get_test.setBackground(getResources().getDrawable(R.drawable.bg_round_blue_mormal));
                                 mBt_get_test.setText("发送验证码");
                                 mBt_get_test.setClickable(true);
                                 handler.removeCallbacks(this);

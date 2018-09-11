@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -42,7 +42,7 @@ import okhttp3.Request;
 
 public class PackingLockFragment extends Fragment implements View.OnClickListener {
     private View                         mRootView;
-    private ImageView                    mImg_back;
+    private LinearLayout                 linear_back;
     private TextView                     mTv_title;
     private ListView                     mLv_lockinfo;
     private List<LockPlateInfo.ListBean> mList;
@@ -60,7 +60,7 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
     }
 
     private void initView() {
-        mImg_back = mRootView.findViewById(R.id.img_back);
+        linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mTv_title = mRootView.findViewById(R.id.tv_title);
         mTv_noinfo = mRootView.findViewById(R.id.tv_noinfo);
         mSmt_refresh = mRootView.findViewById(R.id.smt_refresh);
@@ -68,7 +68,7 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
     }
 
     private void initData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("车位锁定");
         mList = new ArrayList();
         mAdapter = new LockingInfoAdapter(getContext(), mList);
@@ -169,7 +169,7 @@ public class PackingLockFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 getActivity().finish();
                 break;
         }

@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,10 +26,10 @@ import java.util.List;
  */
 
 public class AccessInfoResultFragment extends Fragment implements View.OnClickListener {
-    private View   mRootView;
-    private String mstartT, mendT;
+    private View         mRootView;
+    private LinearLayout linear_back;
+    private String       mstartT, mendT;
     private TextView mTv_title, mTv_st_end, mTv_nodata;
-    private ImageView mImg_back;
     private ListView  mLv_result;
     private List<MenjinInfo.ArrBean> menjinInfoList = new ArrayList();//记录门禁数据
 
@@ -42,16 +42,16 @@ public class AccessInfoResultFragment extends Fragment implements View.OnClickLi
     }
 
     private void initView() {
+        linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mTv_st_end = (TextView) mRootView.findViewById(R.id.tv_st_end);
         mTv_nodata = (TextView) mRootView.findViewById(R.id.tv_nodata);
-        mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
         mLv_result = (ListView) mRootView.findViewById(R.id.lv_result);
     }
 
     private void initData() {
         mTv_title.setText("门禁数据结果");
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_st_end.setText("下方数据为" + mstartT.substring(0, 10) + "至" + mendT.substring(0, 10) + "的数据");
         if (menjinInfoList.size() > 0) {
             mTv_nodata.setVisibility(View.GONE);
@@ -63,7 +63,7 @@ public class AccessInfoResultFragment extends Fragment implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 //弹出回退栈最上面的fragment
                 getFragmentManager().popBackStackImmediate(null, 0);
                 break;

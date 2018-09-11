@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +42,11 @@ import java.util.ArrayList;
 import okhttp3.Request;
 
 public class AddPlatenoActivity extends AppCompatActivity implements View.OnClickListener {
-    private EditText et_plateno, et_model, et_color, et_mob;
+    private LinearLayout linear_back;
+    private EditText     et_plateno, et_model, et_color, et_mob;
     private Button btn_submit;
     public static final int SHOW_RESPONSE = 0;
-    private ImageView mImg_back;
-    private TextView  mTv_title;
+    private TextView mTv_title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class AddPlatenoActivity extends AppCompatActivity implements View.OnClic
     }
 
     protected void setViews() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         et_plateno = (EditText) findViewById(R.id.et_plateno);
         et_model = (EditText) findViewById(R.id.et_model);
@@ -68,7 +68,7 @@ public class AddPlatenoActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText(R.string.addlicense);
     }
 
@@ -80,7 +80,7 @@ public class AddPlatenoActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.btn_submit:
@@ -100,7 +100,7 @@ public class AddPlatenoActivity extends AppCompatActivity implements View.OnClic
                     ToastUtils.showToast(AddPlatenoActivity.this, "请输入汽车颜色");
                     return;
                 }
-//                boolean b = RegexUtils.checkMobile(mobile);
+                //                boolean b = RegexUtils.checkMobile(mobile);
                 if (mobile.length() != 11) {
                     ToastUtils.showToast(AddPlatenoActivity.this, "请输入正确的手机号码");
                     return;

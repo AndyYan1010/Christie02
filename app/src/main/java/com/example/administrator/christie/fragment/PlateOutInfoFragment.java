@@ -45,13 +45,14 @@ import okhttp3.Request;
  */
 
 public class PlateOutInfoFragment extends Fragment implements View.OnClickListener {
-    private View      mRootView;
-    private ImageView mImg_back, mImg_nonet;
-    private TextView mTv_title;
+    private View         mRootView;
+    private LinearLayout linear_back;
+    private ImageView    mImg_nonet;
+    private TextView     mTv_title;
     //    private ListView          mLv_plate;
-    private List     mDatalist;
-    private Spinner  mSpinner;
-    private TextView mTv_nodata, mTv_plate, mTv_enter_time, mTv_out_time, mTv_state, mTv_explain, mTv_price, mTv_submit;
+    private List         mDatalist;
+    private Spinner      mSpinner;
+    private TextView     mTv_nodata, mTv_plate, mTv_enter_time, mTv_out_time, mTv_state, mTv_explain, mTv_price, mTv_submit;
     private ProSpinnerAdapter mProjAdapter;//选择车牌适配器
     private List<ProjectMsg>  dataPlateList;//车牌数据
     private LinearLayout      mLinear_detail;
@@ -69,7 +70,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     }
 
     private void initView() {
-        mImg_back = mRootView.findViewById(R.id.img_back);
+        linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mImg_nonet = mRootView.findViewById(R.id.img_nonet);
         mTv_title = mRootView.findViewById(R.id.tv_title);
         mTv_nodata = mRootView.findViewById(R.id.tv_nodata);
@@ -87,7 +88,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     }
 
     private void initData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("停车缴费");
 
         //测试 缴费。
@@ -319,7 +320,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 getActivity().finish();
                 break;
         }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.R;
@@ -30,12 +31,11 @@ import okhttp3.Request;
  */
 
 public class MenuDetailShowActivity extends BaseActivity implements View.OnClickListener {
-
-
-    private ImageView mImg_back, mImg_nonet;
-    private TextView  mTv_title;
-    private ImageView mImg_food;
-    private TextView  mTv_name, mTv_price, mTv_intro;
+    private LinearLayout linear_back;
+    private ImageView    mImg_nonet;
+    private TextView     mTv_title;
+    private ImageView    mImg_food;
+    private TextView     mTv_name, mTv_price, mTv_intro;
     private String mMenuId;
 
     @Override
@@ -49,7 +49,7 @@ public class MenuDetailShowActivity extends BaseActivity implements View.OnClick
     }
 
     private void initView() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mImg_nonet = (ImageView) findViewById(R.id.img_nonet);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mImg_food = (ImageView) findViewById(R.id.img_food);
@@ -63,7 +63,7 @@ public class MenuDetailShowActivity extends BaseActivity implements View.OnClick
             ToastUtils.showToast(MenuDetailShowActivity.this, "请传入菜品id");
             finish();
         }
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("菜品详细");
         //获取菜品详情
         getMenuDetail();
@@ -101,7 +101,7 @@ public class MenuDetailShowActivity extends BaseActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
         }

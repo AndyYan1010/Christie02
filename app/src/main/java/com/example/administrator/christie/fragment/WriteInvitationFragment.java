@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -46,10 +46,10 @@ import okhttp3.Request;
  */
 
 public class WriteInvitationFragment extends Fragment implements View.OnClickListener {
-    private Context   mContext;
-    private View      view;
-    private ImageView mImg_back;
-    private TextView  mTv_title, mTv_date;
+    private Context      mContext;
+    private View         view;
+    private LinearLayout linear_back;
+    private TextView     mTv_title, mTv_date;
     private Button   mBt_create;
     private EditText mEdit_name, mEdit_phone, mEdit_longtime, mEdit_reason;
     private Spinner              mSpinner_area;
@@ -71,7 +71,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     }
 
     private void setViews() {
-        mImg_back = (ImageView) view.findViewById(R.id.img_back);
+        linear_back = (LinearLayout) view.findViewById(R.id.linear_back);
         mTv_title = (TextView) view.findViewById(R.id.tv_title);
         mEdit_name = (EditText) view.findViewById(R.id.edit_name);
         mEdit_phone = (EditText) view.findViewById(R.id.edit_phone);
@@ -83,7 +83,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     }
 
     private void setData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("访客邀请");
         //设置小区选择器
         dataProList = new ArrayList<>();
@@ -163,7 +163,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 getActivity().finish();
                 break;
             case R.id.tv_date:

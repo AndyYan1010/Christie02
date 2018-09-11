@@ -38,6 +38,18 @@ public class GoodsListInfo {
         private String good_name;
         private String good_pic;
         private String good_introduce;
+        /**
+         * type : 0
+         */
+
+        private String type;
+        /**
+         * like : 0
+         * dislike : 0
+         */
+
+        private int like;
+        private int dislike;
 
         public int getGood_price() {
             return good_price;
@@ -85,6 +97,30 @@ public class GoodsListInfo {
 
         public void setGood_introduce(String good_introduce) {
             this.good_introduce = good_introduce;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public int getLike() {
+            return like;
+        }
+
+        public void setLike(int like) {
+            this.like = like;
+        }
+
+        public int getDislike() {
+            return dislike;
+        }
+
+        public void setDislike(int dislike) {
+            this.dislike = dislike;
         }
     }
 

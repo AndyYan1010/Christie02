@@ -81,9 +81,9 @@ public class MeFragment extends Fragment {
         boolean fstatus = userinfo.getFstatus();
         tv_username.setText(username);
         if (fstatus) {
-            img_att.setImageResource(R.drawable.authentication);
+            img_att.setImageResource(R.drawable.authentication02);
             tv_att.setText("已认证");
-            tv_att.setTextColor(getContext().getResources().getColor(R.color.green));
+            tv_att.setTextColor(getContext().getResources().getColor(R.color.yellow_kind));
         } else {
             img_att.setImageResource(R.drawable.no_authentication);
             tv_att.setText("未认证");

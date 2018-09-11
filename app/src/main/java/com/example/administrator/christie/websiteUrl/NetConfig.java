@@ -78,4 +78,6 @@ public class NetConfig {
     public static String USERCARD     = ROOT + "usercard";
     //发送蓝牙开门信息
     public static String INSERTMENJIN = ROOT + "insertmenjin";
+    //点赞，踩
+    public static String USERLIKEGOOD = ROOT + "userlikegood";
 }

@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,9 +53,9 @@ import okhttp3.Request;
  */
 
 public class PayForPackingFragment extends Fragment implements View.OnClickListener {
-    private View      mRootView;
-    private ImageView mImg_back;
-    private TextView  mTv_title, mTv_plate, mTv_username, mTv_price;
+    private View         mRootView;
+    private LinearLayout linear_back;
+    private TextView     mTv_title, mTv_plate, mTv_username, mTv_price;
     private Button   mBt_pay;
     private CheckBox mCb_weixin, mCb_zfb;
     private int payKind = 0;
@@ -75,7 +75,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     }
 
     private void initView() {
-        mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
+        linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mTv_plate = (TextView) mRootView.findViewById(R.id.tv_plate);
         mTv_username = (TextView) mRootView.findViewById(R.id.tv_username);
@@ -86,7 +86,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     }
 
     private void initData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("停车缴费");
         UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
         mUserid = userinfo.getUserid();
@@ -104,7 +104,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 //弹出回退栈最上面的fragment
                 getFragmentManager().popBackStackImmediate(null, 0);
                 break;

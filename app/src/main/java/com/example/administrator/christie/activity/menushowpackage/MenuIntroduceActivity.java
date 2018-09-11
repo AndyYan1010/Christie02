@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,15 +42,16 @@ import okhttp3.Request;
 
 public class MenuIntroduceActivity extends BaseActivity implements View.OnClickListener {
     private Context                     mContext;
+    private LinearLayout                linear_back;
     private ListView                    mLv_menu;
     private List<GoodsListInfo.ArrBean> mData;
     private Spinner                     mSpinner_id;
     private String menuId = "4d2881e8636152a2016361840fd50043";
     private LvMenuIntrAdapter mMenuAdapter;
-    private ImageView         mImg_back;
     private TextView          mTv_title;
     private List<ProjectMsg>  mListProId;
     private ProSpinnerAdapter mProjAdapter;
+    private String            userid;//用户id
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +63,16 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
     }
 
     private void initView() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mSpinner_id = (Spinner) findViewById(R.id.spinner_id);
         mLv_menu = (ListView) findViewById(R.id.lv_menu);
     }
 
     private void initData() {
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
+        UserInfo userinfo = SPref.getObject(MenuIntroduceActivity.this, UserInfo.class, "userinfo");
+        userid = userinfo.getUserid();
         mTv_title.setText("菜单");
         if (null == mData) {
             mData = new ArrayList();
@@ -106,7 +109,7 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
             }
         });
         //访问网络获取菜品
-//        getMenuFromIntnet(menuId);
+        //        getMenuFromIntnet(menuId);
         //获取个人绑定项目id
         getProjectId();
         mLv_menu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -114,16 +117,14 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 GoodsListInfo.ArrBean arrBean = mData.get(i);
                 String id = arrBean.getId();
-                Intent intent = new Intent(MenuIntroduceActivity.this,MenuDetailShowActivity.class);
-                intent.putExtra("menuId",id);
+                Intent intent = new Intent(MenuIntroduceActivity.this, MenuDetailShowActivity.class);
+                intent.putExtra("menuId", id);
                 startActivity(intent);
             }
         });
     }
 
     private void getProjectId() {
-        UserInfo userinfo = SPref.getObject(MenuIntroduceActivity.this, UserInfo.class, "userinfo");
-        String userid = userinfo.getUserid();
         String proId = NetConfig.PROJECTBYTEL;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", userid);
@@ -167,6 +168,7 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
         String goodsIdUrl = NetConfig.GOODSLIST;
         RequestParamsFM params = new RequestParamsFM();
         params.put("project_id", projectID);
+        params.put("userid", userid);
         HttpOkhUtils.getInstance().doGetWithParams(goodsIdUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
             public void onError(Request request, IOException e) {
@@ -195,7 +197,7 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
         }

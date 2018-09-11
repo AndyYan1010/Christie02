@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
@@ -27,10 +28,11 @@ import java.util.List;
 import okhttp3.Request;
 
 public class QrcodeActivity extends BaseActivity implements View.OnClickListener {
-    private ImageView iv_code, img_back;
-    private Thread thread;
+    private ImageView    iv_code;
+    private LinearLayout linear_back;
+    private Thread       thread;
+    private TextView     mTv_title;
     private boolean isAlive = true;
-    private TextView         mTv_title;
     //    private Spinner          mSpinner_village;//项目
     //    private Spinner          mSpinner_unit;//小区
     //    private Spinner          mSpinner_men;//大门
@@ -51,7 +53,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
     }
 
     protected void setViews() {
-        img_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         //        mSpinner_unit = (Spinner) findViewById(R.id.spinner_unit);
         //        mSpinner_men = (Spinner) findViewById(R.id.spinner_men);
@@ -60,7 +62,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void setData() {
-        img_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_title.setText("二维码开门");
         //        dataInfoList = new ArrayList<>();
         //        ProjectMsg detailInfo = new ProjectMsg();
@@ -147,7 +149,7 @@ public class QrcodeActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.bt_submit:

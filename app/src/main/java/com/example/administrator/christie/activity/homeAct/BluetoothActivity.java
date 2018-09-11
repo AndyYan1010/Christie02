@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BluetoothActivity extends BaseActivity implements View.OnClickListener {
-
-    private ImageView    mImg_back;
+    private LinearLayout linear_back;
     private TextView     mTv_title;
     private ShakeHelper  mShakeHelper;
     private LinearLayout mLiner_add_equipment;
@@ -40,13 +39,13 @@ public class BluetoothActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initView() {
-        mImg_back = (ImageView) findViewById(R.id.img_back);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mImg_shake = (ImageView) findViewById(R.id.img_shake);
         mLiner_add_equipment = (LinearLayout) findViewById(R.id.liner_add_equipment);
         mLv_old_bt = (ListView) findViewById(R.id.lv_old_bt);
         mTv_title.setText("蓝牙开门");
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mLiner_add_equipment.setOnClickListener(this);
     }
 
@@ -80,7 +79,7 @@ public class BluetoothActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.liner_add_equipment:

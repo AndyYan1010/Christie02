@@ -16,6 +16,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -67,9 +68,9 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
     private static BluetoothGattCharacteristic                       target_chara         = null;
     private        Handler                                           mhandler             = new Handler();
     private        Handler                                           mSendMsgHandler      = new Handler();
-    private String    mDeviceName;
-    private TextView  tv_title;
-    private ImageView img_back;
+    private String       mDeviceName;
+    private TextView     tv_title;
+    private LinearLayout linear_back;
     private int times = 0;//记录是第几步发送
     private ShakeHelper      mShakeHelper;//振动类
     private RippleBackground rippleBackground;//脉冲图像
@@ -95,10 +96,10 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
 
     private void initView() {
         tv_title = (TextView) findViewById(R.id.tv_title);
-        img_back = (ImageView) findViewById(R.id.img_back);
-        rev_sv = (ScrollView) this.findViewById(R.id.rev_sv);
-        rev_tv = (TextView) this.findViewById(R.id.rev_tv);
-        connect_state = (TextView) this.findViewById(R.id.connect_state);
+        linear_back = (LinearLayout) findViewById(R.id.linear_back);
+        rev_sv = (ScrollView) findViewById(R.id.rev_sv);
+        rev_tv = (TextView) findViewById(R.id.rev_tv);
+        connect_state = (TextView) findViewById(R.id.connect_state);
         // send_btn = (Button) this.findViewById(R.id.send_btn);
         // send_et = (EditText) this.findViewById(R.id.send_et);
         rippleBackground = (RippleBackground) findViewById(R.id.content);
@@ -109,7 +110,7 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
 
     private void initData() {
         tv_title.setText(mDeviceName);
-        img_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         connect_state.setText(status);
         // send_btn.setOnClickListener(this);
         // send_et.setText("<010000>");
@@ -431,7 +432,7 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
             //                String msg = send_et.getText().toString();
             //                sendMsg(msg);
             //                break;
-            case R.id.img_back:
+            case R.id.linear_back:
                 finish();
                 break;
             case R.id.centerImage:

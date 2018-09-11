@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,11 +26,10 @@ import java.util.List;
  */
 
 public class PaymentResultFragment extends Fragment implements View.OnClickListener {
-
-    private View   mRootView;
-    private String mstartT, mendT;
+    private LinearLayout linear_back;
+    private View         mRootView;
+    private String       mstartT, mendT;
     private TextView mTv_title, mTv_st_end, mTv_date, mTv_door_name, mTv_area, mTv_nodata;
-    private ImageView mImg_back;
     private ListView  mLv_result;
     private List<PayRecordInfo.ListBean> mPayInfoList = new ArrayList();
 
@@ -43,19 +42,19 @@ public class PaymentResultFragment extends Fragment implements View.OnClickListe
     }
 
     private void initView() {
+        linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mTv_st_end = (TextView) mRootView.findViewById(R.id.tv_st_end);
         mTv_nodata = (TextView) mRootView.findViewById(R.id.tv_nodata);
         mTv_date = (TextView) mRootView.findViewById(R.id.tv_date);
         mTv_door_name = (TextView) mRootView.findViewById(R.id.tv_door_name);
         mTv_area = (TextView) mRootView.findViewById(R.id.tv_area);
-        mImg_back = (ImageView) mRootView.findViewById(R.id.img_back);
         mLv_result = (ListView) mRootView.findViewById(R.id.lv_result);
     }
 
     private void initData() {
         mTv_title.setText("缴费记录结果");
-        mImg_back.setOnClickListener(this);
+        linear_back.setOnClickListener(this);
         mTv_st_end.setText("下方数据为" + mstartT + "至" + mendT + "的数据");
         mTv_date.setText("缴费日期");
         mTv_door_name.setText("支付方式");
@@ -70,7 +69,7 @@ public class PaymentResultFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.img_back:
+            case R.id.linear_back:
                 //弹出回退栈最上面的fragment
                 getFragmentManager().popBackStackImmediate(null, 0);
                 break;

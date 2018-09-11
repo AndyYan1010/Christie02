@@ -277,7 +277,7 @@
             android:layout_height="35dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:background="@drawable/bg_round_blue_38"
+            android:background="@drawable/bg_round_blue_mormal"
             android:text="发送验证码"
             android:textColor="@color/white"
             android:textSize="12sp"/>
