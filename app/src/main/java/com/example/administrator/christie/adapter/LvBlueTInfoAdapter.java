@@ -70,9 +70,9 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
             viewHolder.tv_btinfo.setTextColor(mContext.getResources().getColor(R.color.orange));
             viewHolder.img_signal.setVisibility(View.VISIBLE);
             int rssi = msg.getRssi();
-            if (rssi >= -60) {
+            if (rssi >= -70) {
                 viewHolder.img_signal.setImageResource(R.drawable.signal_1);
-            } else if (rssi > -80 && rssi < -60) {
+            } else if (rssi > -80 && rssi < -70) {
                 viewHolder.img_signal.setImageResource(R.drawable.signal_2);
             } else {
                 viewHolder.img_signal.setImageResource(R.drawable.signal_3);

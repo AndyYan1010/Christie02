@@ -462,23 +462,23 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         leScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
-//                ToastUtils.showToast(AddBluetoothActivity.this, bluetoothDevice.getName() + "&&&" + i);
+                //                ToastUtils.showToast(AddBluetoothActivity.this, bluetoothDevice.getName() + "&&&" + i);
                 String blAddress = bluetoothDevice.getAddress();
                 for (ProjectMsg msg : mBtData) {
-                    int rssi = msg.getRssi();
+                    //                    int rssi = msg.getRssi();
                     String detail_name = msg.getDetail_name();
                     if (detail_name.equals(blAddress)) {
-                        if (rssi == 0) {
-                            msg.setRssi(i);
-                        }
+                        msg.setRssi(i);
+                        //                        if (rssi == 0) {
+                        //                        }
                     }
                 }
                 //排序,信号强的在前面
                 for (int m = 0; m < mBtData.size(); m++) {
                     ProjectMsg msg = mBtData.get(m);
-                    if ("1".equals(msg.getToNext())) {
-                        for (int n = m + 1; n < mBtData.size(); n++) {
-                            ProjectMsg msg1 = mBtData.get(n);
+                    for (int n = m + 1; n < mBtData.size(); n++) {
+                        ProjectMsg msg1 = mBtData.get(n);
+                        if ("1".equals(msg.getToNext()) && "1".equals(msg1.getToNext())) {
                             if (msg.getRssi() < msg1.getRssi()) {
                                 mBtData.set(m, msg1);
                                 mBtData.set(n, msg);
