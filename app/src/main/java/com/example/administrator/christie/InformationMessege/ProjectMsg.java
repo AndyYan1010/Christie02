@@ -28,6 +28,11 @@ public class ProjectMsg {
      */
 
     private String type;
+    /**
+     * rssi : -70
+     */
+
+    private int    rssi;//蓝牙信号强度
 
     public String getId() {
         return id;
@@ -67,5 +72,13 @@ public class ProjectMsg {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getRssi() {
+        return rssi;
+    }
+
+    public void setRssi(int rssi) {
+        this.rssi = rssi;
     }
 }

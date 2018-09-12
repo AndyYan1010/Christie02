@@ -48,7 +48,7 @@ public class SearchBlueThBcr extends BroadcastReceiver {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String address = device.getAddress();
-                //                String name = device.getName();
+                // String name = device.getName();
                 if (mAdapter != null) {
                     for (int i = 0; i < mList.size(); i++) {
                         //BluetoothDevice bluetoothDevice = mList.get(i);
@@ -59,6 +59,13 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                         }
                     }
                     if (!isHad) {
+                        //                        ProjectMsg proMsg = new ProjectMsg();
+                        //                        proMsg.setProject_name(device.getName());
+                        //                        proMsg.setDetail_name(address);
+                        //                        proMsg.setToNext("1");
+                        //                        proMsg.setId("");
+                        //                        proMsg.setType("");
+                        //                        mList.add(proMsg);
                         for (ProjectMsg msg : mSumList) {
                             String project_name = msg.getProject_name();
                             String detail_name = msg.getDetail_name();//蓝牙地址

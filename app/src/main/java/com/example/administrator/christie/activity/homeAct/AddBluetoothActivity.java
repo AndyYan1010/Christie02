@@ -58,8 +58,8 @@ import okhttp3.Request;
  */
 
 public class AddBluetoothActivity extends BaseActivity implements View.OnClickListener {
-    private LinearLayout linear_back;
-    private TextView     mTv_title, mTv_search;
+    private LinearLayout linear_back, linear_selc_pro;
+    private TextView mTv_title, mTv_search;
     private ListView mLv_blt;
     public static        boolean isSearchBT                      = false;
     private static       int     REQUEST_ENABLE                  = 400;
@@ -85,6 +85,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
 
     private void initView() {
         linear_back = (LinearLayout) findViewById(R.id.linear_back);
+        linear_selc_pro = (LinearLayout) findViewById(R.id.linear_selc_pro);//选择项目UI条目
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mTv_search = (TextView) findViewById(R.id.tv_search);
         img_loading = (ImageView) findViewById(R.id.img_loading);
@@ -255,6 +256,14 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     }
                 }
             }
+            if (dataDetList.size() == 1) {
+                linear_selc_pro.setVisibility(View.GONE);
+                ToastUtils.showToast(AddBluetoothActivity.this, "您未绑定任何项目，无法使用蓝牙搜索功能");
+            } else if (dataDetList.size() == 2) {
+                mSpinner_village.setSelection(1);
+                mBlueOpenInfo = dataDetList.get(1).getDetail_name();
+                linear_selc_pro.setVisibility(View.GONE);
+            }
             isSearchBT = false;
         }
     }
@@ -317,6 +326,14 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     }
                 }
                 mSpDetAdapter.notifyDataSetChanged();
+                if (dataDetList.size() == 1) {
+                    linear_selc_pro.setVisibility(View.GONE);
+                    ToastUtils.showToast(AddBluetoothActivity.this, "您未绑定任何项目，无法使用蓝牙搜索功能");
+                } else if (dataDetList.size() == 2) {
+                    mSpinner_village.setSelection(1);
+                    mBlueOpenInfo = dataDetList.get(1).getDetail_name();
+                    linear_selc_pro.setVisibility(View.GONE);
+                }
                 //本地保存授权蓝牙信息
                 SpUtils.putString(AddBluetoothActivity.this, "BlueRight", resbody);
             }
@@ -387,6 +404,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private void stopSearchBT() {
         if (mBtmAdapter != null && mBtmAdapter.isDiscovering()) {
             mBtmAdapter.cancelDiscovery();
+            mBtmAdapter.stopLeScan(leScanCallback);
         }
     }
 
@@ -427,6 +445,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
+    private BluetoothAdapter.LeScanCallback leScanCallback;
+
     private void startSearchBluetooth() {
         isSearchBT = true;
         mTv_search.setText("停止搜索");
@@ -435,13 +455,51 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mBlueTInfoAdapter.notifyDataSetChanged();
         //注册广播接收器
         registerRec();
-        ToastUtils.showToast(this, "正在搜索。。");
+        ToastUtils.showToast(this, "正在搜索。。。");
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+
+        //TODO:扫描获取蓝牙强度
+        leScanCallback = new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
+                ToastUtils.showToast(AddBluetoothActivity.this, bluetoothDevice.getName() + "&&&" + i);
+                String blAddress = bluetoothDevice.getAddress();
+                for (ProjectMsg msg : mBtData) {
+                    int rssi = msg.getRssi();
+                    String detail_name = msg.getDetail_name();
+                    if (detail_name.equals(blAddress)) {
+                        if (rssi == 0) {
+                            msg.setRssi(i);
+                        }
+                    }
+                }
+                //排序,信号强的在前面
+                for (int m = 0; m < mBtData.size(); m++) {
+                    ProjectMsg msg = mBtData.get(m);
+                    if ("1".equals(msg.getToNext())) {
+                        for (int n = m + 1; n < mBtData.size(); n++) {
+                            ProjectMsg msg1 = mBtData.get(n);
+                            if (msg.getRssi() < msg1.getRssi()) {
+                                mBtData.set(m, msg1);
+                                mBtData.set(n, msg);
+                            }
+                        }
+                    }
+                }
+            }
+        };
         //获取BluetoothAdapter
         if (bluetoothManager != null) {
             mBtmAdapter = bluetoothManager.getAdapter();
-            if (null != mBtmAdapter && !mBtmAdapter.isDiscovering())
+            if (null != mBtmAdapter && !mBtmAdapter.isDiscovering()) {
                 mBtmAdapter.startDiscovery();
+                mBtmAdapter.startLeScan(leScanCallback);
+            }
+            //            if (null != mBtmAdapter) {
+            //                mBtmAdapter.startLeScan(leScanCallback);
+            //            }
+        } else {
+            ToastUtils.showToast(AddBluetoothActivity.this, "未获取到手机自带的蓝牙设备");
         }
     }
 
@@ -470,6 +528,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             //解除广播接收器
             unregisterReceiver(mReceiver);
         }
+        stopSearchBT();
     }
 
     //申请定位权限

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
@@ -52,6 +53,7 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
             viewHolder = new LvBlueTInfoAdapter.MyViewHolder();
             viewHolder.tv_btinfo = (TextView) view.findViewById(R.id.tv_btinfo);
             viewHolder.tv_state = (TextView) view.findViewById(R.id.tv_state);
+            viewHolder.img_signal = (ImageView) view.findViewById(R.id.img_signal);
             view.setTag(viewHolder);
         } else {
             viewHolder = (LvBlueTInfoAdapter.MyViewHolder) view.getTag();
@@ -62,10 +64,20 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
         String toNext = msg.getToNext();
         if ("0".equals(toNext)) {
             viewHolder.tv_btinfo.setTextColor(mContext.getResources().getColor(R.color.vm_black_87));
+            viewHolder.img_signal.setVisibility(View.GONE);
             viewHolder.tv_state.setText("该设备不在附近");
         } else {
             viewHolder.tv_btinfo.setTextColor(mContext.getResources().getColor(R.color.orange));
-            viewHolder.tv_state.setText("该设备可连接");
+            viewHolder.img_signal.setVisibility(View.VISIBLE);
+            int rssi = msg.getRssi();
+            if (rssi >= -60) {
+                viewHolder.img_signal.setImageResource(R.drawable.signal_1);
+            } else if (rssi > -80 && rssi < -60) {
+                viewHolder.img_signal.setImageResource(R.drawable.signal_2);
+            } else {
+                viewHolder.img_signal.setImageResource(R.drawable.signal_3);
+            }
+            viewHolder.tv_state.setText("信号强度" + (rssi + 100));
         }
 
         //        BluetoothDevice btDevice = (BluetoothDevice) mList.get(i);
@@ -86,5 +98,6 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
 
     private class MyViewHolder {
         TextView tv_btinfo, tv_state;
+        ImageView img_signal;
     }
 }
