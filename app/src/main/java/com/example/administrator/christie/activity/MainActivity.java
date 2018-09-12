@@ -74,7 +74,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     protected void setViews() {
-        linear0 = (LinearLayout) findViewById(R.id.linear0);//一卡通
+        linear0 = (LinearLayout) findViewById(R.id.linear0);//主页
         linear1 = (LinearLayout) findViewById(R.id.linear1);//消息
         linear2 = (LinearLayout) findViewById(R.id.linear2);//个人中心
         //        btns[0] = (Button) findViewById(R.id.btn_menjin);//一卡通
