@@ -63,7 +63,7 @@ public class LvBlueTInfoAdapter extends BaseAdapter {
         viewHolder.tv_btinfo.setText(project_name);
         String toNext = msg.getToNext();
         if ("0".equals(toNext)) {
-            viewHolder.tv_btinfo.setTextColor(mContext.getResources().getColor(R.color.vm_black_87));
+            viewHolder.tv_btinfo.setTextColor(mContext.getResources().getColor(R.color.gray_65));
             viewHolder.img_signal.setVisibility(View.GONE);
             viewHolder.tv_state.setText("该设备不在附近");
         } else {

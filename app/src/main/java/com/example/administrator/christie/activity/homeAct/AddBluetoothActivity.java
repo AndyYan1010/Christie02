@@ -462,7 +462,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         leScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
-                ToastUtils.showToast(AddBluetoothActivity.this, bluetoothDevice.getName() + "&&&" + i);
+//                ToastUtils.showToast(AddBluetoothActivity.this, bluetoothDevice.getName() + "&&&" + i);
                 String blAddress = bluetoothDevice.getAddress();
                 for (ProjectMsg msg : mBtData) {
                     int rssi = msg.getRssi();
