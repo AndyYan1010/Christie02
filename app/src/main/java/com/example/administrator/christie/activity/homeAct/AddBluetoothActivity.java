@@ -70,10 +70,11 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private LvBlueTInfoAdapter mBlueTInfoAdapter;
     private ImageView          img_loading;//等待加载动画
     private Spinner            mSpinner_village;
-    private List<ProjectMsg>   dataDetList;
+    private List<ProjectMsg>   dataDetList;//记录项目地址
     private ProSpinnerAdapter  mSpDetAdapter;
     private String             mBlueOpenInfo;
-    private List<ProjectMsg>   sumDataList;//存放所有的授权蓝牙信息
+    private String mUpperID = "";//选择的小区id
+    private List<ProjectMsg> sumDataList;//存放所有的授权蓝牙信息
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +172,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 ProjectMsg projectInfo = dataDetList.get(i);
                 String project_name = projectInfo.getProject_name();
                 if (!project_name.equals("请选择公司")) {
-                    mBlueOpenInfo = projectInfo.getDetail_name();
+                    mUpperID = projectInfo.getUpperID();
+                    mBlueOpenInfo = projectInfo.getDetail_name();//信息包
                 }
             }
 
@@ -235,6 +237,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 ProjectMsg proInfo = new ProjectMsg();
                 proInfo.setProject_name(bean.getProjectname());
                 proInfo.setDetail_name(bean.getXinxi());
+                proInfo.setUpperID(bean.getProjectdetail_id());//小区id
                 dataDetList.add(proInfo);
                 List<BlueOpenInfo.ArrBean.LanyaBean> lanya = bean.getLanya();
                 for (BlueOpenInfo.ArrBean.LanyaBean lanyaBean : lanya) {
@@ -297,6 +300,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     ProjectMsg proInfo = new ProjectMsg();
                     proInfo.setProject_name(bean.getProjectname());
                     proInfo.setDetail_name(bean.getXinxi());
+                    proInfo.setUpperID(bean.getProjectdetail_id());//小区id
                     dataDetList.add(proInfo);
                     List<BlueOpenInfo.ArrBean.LanyaBean> lanya = bean.getLanya();
                     for (BlueOpenInfo.ArrBean.LanyaBean lanyaBean : lanya) {
@@ -305,7 +309,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                         if ("0".equals(fangxiang)) {
                             ProjectMsg lanyaInfo = new ProjectMsg();
                             lanyaInfo.setProject_name(lanyaBean.getName1());
-                            lanyaInfo.setId(id1);
+                            lanyaInfo.setId(id1);//具体门的id
+                            lanyaInfo.setUpperID(bean.getProjectdetail_id());//所属小区id
                             lanyaInfo.setType("1");
                             lanyaInfo.setDetail_name(lanyaBean.getAddress1());
                             sumDataList.add(lanyaInfo);
@@ -314,11 +319,13 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                             lanyaInfo1.setProject_name(lanyaBean.getName1());
                             lanyaInfo1.setDetail_name(lanyaBean.getAddress1());
                             lanyaInfo1.setId(id1);
+                            lanyaInfo1.setUpperID(bean.getProjectdetail_id());//所属小区id
                             lanyaInfo1.setType("1");
                             ProjectMsg lanyaInfo2 = new ProjectMsg();
                             lanyaInfo2.setProject_name(lanyaBean.getName2());
                             lanyaInfo2.setDetail_name(lanyaBean.getAddress2());
                             lanyaInfo2.setId(id1);
+                            lanyaInfo2.setUpperID(bean.getProjectdetail_id());//所属小区id
                             lanyaInfo2.setType("2");
                             sumDataList.add(lanyaInfo1);
                             sumDataList.add(lanyaInfo2);
@@ -508,7 +515,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private void registerRec() {
         //3.注册蓝牙广播
         mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter, sumDataList);
-        mReceiver.setUI(mTv_search, img_loading);
+        mReceiver.setUI(mTv_search, img_loading, mUpperID);
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);//搜索结束

@@ -221,7 +221,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     }
 
     private void getInvitationQc(String name, String phone, String date, String longtime, String reason, String detail_id) {
-        //        date = date + " 00:00:00";
+        //date = date + " 00:00:00";
         String InvitationQcUrl = NetConfig.INVITE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", mUserid);

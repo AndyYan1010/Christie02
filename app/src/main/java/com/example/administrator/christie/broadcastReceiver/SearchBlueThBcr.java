@@ -33,6 +33,7 @@ public class SearchBlueThBcr extends BroadcastReceiver {
     private TextView         tv_title;
     private ImageView        img_load;
     private List<ProjectMsg> mSumList;
+    private String           upperID;
 
     public SearchBlueThBcr(List mData, LvBlueTInfoAdapter adapter, List<ProjectMsg> sumList) {
         this.mList = mData;
@@ -59,13 +60,6 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                         }
                     }
                     if (!isHad) {
-                        //                        ProjectMsg proMsg = new ProjectMsg();
-                        //                        proMsg.setProject_name(device.getName());
-                        //                        proMsg.setDetail_name(address);
-                        //                        proMsg.setToNext("1");
-                        //                        proMsg.setId("");
-                        //                        proMsg.setType("");
-                        //                        mList.add(proMsg);
                         for (ProjectMsg msg : mSumList) {
                             String project_name = msg.getProject_name();
                             String detail_name = msg.getDetail_name();//蓝牙地址
@@ -92,6 +86,7 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                 for (ProjectMsg msg : mSumList) {
                     String project_name = msg.getProject_name();
                     String detail_name = msg.getDetail_name();//蓝牙地址
+                    String upperID1 = msg.getUpperID();
                     msg.setToNext("0");
                     isHave = false;
                     for (ProjectMsg locMsg : mList) {
@@ -102,11 +97,13 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                         }
                     }
                     if (!isHave) {
-                        ProjectMsg proMsg = new ProjectMsg();
-                        proMsg.setProject_name(project_name);
-                        proMsg.setDetail_name(detail_name);
-                        proMsg.setToNext("0");
-                        mList.add(proMsg);
+                        if (upperID == null || upperID.equals("") || upperID.equals(upperID1)) {
+                            ProjectMsg proMsg = new ProjectMsg();
+                            proMsg.setProject_name(project_name);
+                            proMsg.setDetail_name(detail_name);
+                            proMsg.setToNext("0");
+                            mList.add(proMsg);
+                        }
                     }
                 }
                 mAdapter.notifyDataSetChanged();
@@ -117,8 +114,9 @@ public class SearchBlueThBcr extends BroadcastReceiver {
         }
     }
 
-    public void setUI(TextView tv, ImageView img_load) {
+    public void setUI(TextView tv, ImageView img_load, String upperID) {
         this.tv_title = tv;
         this.img_load = img_load;
+        this.upperID = upperID;
     }
 }

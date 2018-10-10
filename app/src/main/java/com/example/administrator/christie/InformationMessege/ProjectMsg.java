@@ -16,6 +16,7 @@ public class ProjectMsg {
      */
 
     private String id;
+    private String upperid;//小区id
     private String project_name;
     private String detail_name;
     /**
@@ -40,6 +41,14 @@ public class ProjectMsg {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUpperID() {
+        return upperid;
+    }
+
+    public void setUpperID(String upperid) {
+        this.upperid = upperid;
     }
 
     public String getProject_name() {
