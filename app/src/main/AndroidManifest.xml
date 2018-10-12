@@ -50,6 +50,8 @@
         <activity android:name=".activity.notme.PayrecordActivity"/>
         <activity android:name=".activity.notme.MessageActivity"/>
         <activity android:name=".activity.usercenter.PersonalActivity"/>
+        <activity android:name=".activity.usercenter.MineCarActivity"/>
+        <activity android:name=".activity.usercenter.AddCarNoActivity"/>
         <activity android:name=".activity.usercenter.CardActivity"/>
         <activity android:name=".activity.RegisterActivity"/>
         <activity android:name=".activity.usercenter.SettingsActivity"/>

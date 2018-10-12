@@ -1,11 +1,10 @@
 package com.example.administrator.christie.activity.homeAct;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -14,10 +13,7 @@ import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.activity.BaseActivity;
 import com.example.administrator.christie.adapter.BDInfoSpinnerAdapter;
-import com.example.administrator.christie.adapter.PlateSpinnerAdapter;
-import com.example.administrator.christie.adapter.TimePiontAdapter;
 import com.example.administrator.christie.modelInfo.PersonalDataInfo;
-import com.example.administrator.christie.modelInfo.PersonalPlateInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
@@ -26,9 +22,6 @@ import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.view.CustomDatePicker;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -49,18 +42,21 @@ import okhttp3.Request;
 
 public class ReservatParkingActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout linear_back;
-    private TextView  mTv_title, mTv_park_time, mTv_username;
-    private RecyclerView mRecv_stop_time;
-    private Button       mBt_order;
+    private TextView     mTv_title, mTv_park_time, mTv_username;
+    //    private RecyclerView mRecv_stop_time;
+    private Button mBt_order;
     private int mSelected = 0;
-    private List<String> mTimeData;
-    private String       markData, choosePlate, chooseProID;
-    private UserInfo mUserinfo;
-    private List     mBangList;
-    private Spinner  mSpinner_plate, mSpinner_pro;
-    private PlateSpinnerAdapter  mProjAdapter;//选择车牌适配器
+    //    private List<String> mTimeData;
+    private String markData, choosePlate, chooseProID;
+    private UserInfo             mUserinfo;
+    private List                 mBangList;
+    private EditText             et_carno;//填写车牌号
+    private Spinner              mSpinner_pro;
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
-    private List<ProjectMsg>     dataPlateList, dataProList;//车牌数据
+    private List<ProjectMsg>     dataProList;//项目数据
+    //    private Spinner  mSpinner_plate;
+    //    private PlateSpinnerAdapter  mProjAdapter;//选择车牌适配器
+    //    private List<ProjectMsg>     dataPlateList;//车牌数据
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +69,12 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
     private void initView() {
         linear_back = (LinearLayout) findViewById(R.id.linear_back);
         mTv_username = (TextView) findViewById(R.id.tv_username);
-        mSpinner_plate = (Spinner) findViewById(R.id.spinner_plate);
+        //      mSpinner_plate = (Spinner) findViewById(R.id.spinner_plate);
+        et_carno = (EditText) findViewById(R.id.et_carno);
         mSpinner_pro = (Spinner) findViewById(R.id.spinner_pro);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mTv_park_time = (TextView) findViewById(R.id.tv_park_time);
-        mRecv_stop_time = (RecyclerView) findViewById(R.id.recv_stop_time);
+        //        mRecv_stop_time = (RecyclerView) findViewById(R.id.recv_stop_time);
         mBt_order = (Button) findViewById(R.id.bt_order);
     }
 
@@ -111,27 +108,27 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
             }
         });
         //设置车牌选择器
-        dataPlateList = new ArrayList();
-        ProjectMsg projectInfo = new ProjectMsg();
-        projectInfo.setProject_name("请选择车牌");
-        dataPlateList.add(projectInfo);
-        mProjAdapter = new PlateSpinnerAdapter(ReservatParkingActivity.this, dataPlateList);
-        mSpinner_plate.setAdapter(mProjAdapter);
-        mSpinner_plate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ProjectMsg msg = dataPlateList.get(i);
-                String project_name = msg.getProject_name();
-                if (!"请选择车牌".equals(project_name)) {
-                    choosePlate = project_name;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        //        dataPlateList = new ArrayList();
+        //        ProjectMsg projectInfo = new ProjectMsg();
+        //        projectInfo.setProject_name("请选择车牌");
+        //        dataPlateList.add(projectInfo);
+        //        mProjAdapter = new PlateSpinnerAdapter(ReservatParkingActivity.this, dataPlateList);
+        //        mSpinner_plate.setAdapter(mProjAdapter);
+        //        mSpinner_plate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //            @Override
+        //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        //                ProjectMsg msg = dataPlateList.get(i);
+        //                String project_name = msg.getProject_name();
+        //                if (!"请选择车牌".equals(project_name)) {
+        //                    choosePlate = project_name;
+        //                }
+        //            }
+        //
+        //            @Override
+        //            public void onNothingSelected(AdapterView<?> adapterView) {
+        //
+        //            }
+        //        });
         //获取当前日期
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String data = simpleDateFormat.format(new Date());
@@ -139,24 +136,24 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         //选择停车时间
         mTv_park_time.setOnClickListener(this);
         //设置选择停车时长数据
-        mTimeData = new ArrayList();
-        mTimeData.add("30分钟");
-        mTimeData.add("1小时");
-        mTimeData.add("2小时");
-        mTimeData.add("2.5小时");
-        mTimeData.add("3小时");
-        mTimeData.add("3.5小时");
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mRecv_stop_time.setLayoutManager(layoutManager);
-        TimePiontAdapter timePiontAdapter = new TimePiontAdapter(this, mTimeData, mSelected);
-        mRecv_stop_time.setAdapter(timePiontAdapter);
+        //        mTimeData = new ArrayList();
+        //        mTimeData.add("30分钟");
+        //        mTimeData.add("1小时");
+        //        mTimeData.add("2小时");
+        //        mTimeData.add("2.5小时");
+        //        mTimeData.add("3小时");
+        //        mTimeData.add("3.5小时");
+        //        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        //        mRecv_stop_time.setLayoutManager(layoutManager);
+        //        TimePiontAdapter timePiontAdapter = new TimePiontAdapter(this, mTimeData, mSelected);
+        //        mRecv_stop_time.setAdapter(timePiontAdapter);
         //提交预约
         mBt_order.setOnClickListener(this);
         String userid = mUserinfo.getUserid();
         //从网络获取个人绑定的小区
         getBDProjectID(userid);
         //从网络获取个人车牌
-        choosePlate(userid);
+        //        choosePlate(userid);
     }
 
     private void getBDProjectID(String userid) {
@@ -222,30 +219,32 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 dpk.show(mTv_park_time.getText().toString());
                 break;
             case R.id.bt_order:
+                String carno = String.valueOf(et_carno.getText()).trim();
                 if (null == chooseProID || "".equals(chooseProID)) {
                     ToastUtils.showToast(this, "请选择小区");
                     return;
                 }
-                if (null == choosePlate || "".equals(choosePlate)) {
-                    ToastUtils.showToast(this, "请选择车牌");
+                if (null == carno || "".equals(carno)) {
+                    ToastUtils.showToast(this, "请填写车牌");
                     return;
                 }
+                choosePlate = carno;
                 String time = String.valueOf(mTv_park_time.getText()).trim();
-                String timeLong = mTimeData.get(mSelected);
+                //                String timeLong = mTimeData.get(mSelected);
                 //提交信息
-                sendToInt(time, timeLong);
+                sendToInt(time);
                 break;
         }
     }
 
-    private void sendToInt(String time, String timeData) {
+    private void sendToInt(String time) {
         String userid = mUserinfo.getUserid();
         String reserveUrl = NetConfig.PARKRESERVE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", userid);
         params.put("no", choosePlate);
         params.put("time", time);
-        params.put("length", timeData);
+        //params.put("length", timeData);
         params.put("project_detail_id", chooseProID);
         params.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPost(reserveUrl, params, new HttpOkhUtils.HttpCallBack() {
@@ -266,48 +265,48 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
 
     }
 
-    private void choosePlate(String userid) {
-        //访问网络获取个人车牌
-        String userPlateUrl = NetConfig.GETPLATE;
-        RequestParamsFM params = new RequestParamsFM();
-        params.put("userid", userid);
-        HttpOkhUtils.getInstance().doGetWithParams(userPlateUrl, params, new HttpOkhUtils.HttpCallBack() {
-            @Override
-            public void onError(Request request, IOException e) {
-                ToastUtils.showToast(ReservatParkingActivity.this, "网络错误");
-            }
-
-            @Override
-            public void onSuccess(int code, String resbody) {
-                if (code != 200) {
-                    ToastUtils.showToast(ReservatParkingActivity.this, "网络请求失败，错误码" + code);
-                    return;
-                }
-                if (null == dataPlateList) {
-                    dataPlateList = new ArrayList();
-                } else {
-                    dataPlateList.clear();
-                }
-                ProjectMsg projectInfo = new ProjectMsg();
-                projectInfo.setProject_name("请选择车牌");
-                dataPlateList.add(projectInfo);
-                Gson gson = new Gson();
-                try {
-                    JSONArray jsonArray = new JSONArray(resbody);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        PersonalPlateInfo info = gson.fromJson(jsonArray.get(i).toString(), PersonalPlateInfo.class);
-                        String fplateno = info.getFplateno();
-                        ProjectMsg plateInfo = new ProjectMsg();
-                        plateInfo.setProject_name(fplateno);
-                        dataPlateList.add(plateInfo);
-                    }
-                    mProjAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+    //    private void choosePlate(String userid) {
+    //        //访问网络获取个人车牌
+    //        String userPlateUrl = NetConfig.GETPLATE;
+    //        RequestParamsFM params = new RequestParamsFM();
+    //        params.put("userid", userid);
+    //        HttpOkhUtils.getInstance().doGetWithParams(userPlateUrl, params, new HttpOkhUtils.HttpCallBack() {
+    //            @Override
+    //            public void onError(Request request, IOException e) {
+    //                ToastUtils.showToast(ReservatParkingActivity.this, "网络错误");
+    //            }
+    //
+    //            @Override
+    //            public void onSuccess(int code, String resbody) {
+    //                if (code != 200) {
+    //                    ToastUtils.showToast(ReservatParkingActivity.this, "网络请求失败，错误码" + code);
+    //                    return;
+    //                }
+    //                if (null == dataPlateList) {
+    //                    dataPlateList = new ArrayList();
+    //                } else {
+    //                    dataPlateList.clear();
+    //                }
+    //                ProjectMsg projectInfo = new ProjectMsg();
+    //                projectInfo.setProject_name("请选择车牌");
+    //                dataPlateList.add(projectInfo);
+    //                Gson gson = new Gson();
+    //                try {
+    //                    JSONArray jsonArray = new JSONArray(resbody);
+    //                    for (int i = 0; i < jsonArray.length(); i++) {
+    //                        PersonalPlateInfo info = gson.fromJson(jsonArray.get(i).toString(), PersonalPlateInfo.class);
+    //                        String fplateno = info.getFplateno();
+    //                        ProjectMsg plateInfo = new ProjectMsg();
+    //                        plateInfo.setProject_name(fplateno);
+    //                        dataPlateList.add(plateInfo);
+    //                    }
+    //                    mProjAdapter.notifyDataSetChanged();
+    //                } catch (JSONException e) {
+    //                    e.printStackTrace();
+    //                }
+    //            }
+    //        });
+    //    }
 
     public void setSelected(int num) {
         this.mSelected = num;

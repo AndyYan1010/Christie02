@@ -149,10 +149,13 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
                         mListProId.add(projectInfo);
                     }
                     mProjAdapter.notifyDataSetChanged();
-                    if (projectlist.size() > 0) {
+                    if (projectlist.size() > 0) {//默认选中第一个项目
                         ProjectByTelInfo.ProjectlistBean bean = projectlist.get(0);
                         String project_id = bean.getId();
                         menuId = project_id;
+                        if (projectlist.size()==1){
+                            mSpinner_id.setSelection(1);
+                        }
                     }
                 } else {
                     ToastUtils.showToast(MenuIntroduceActivity.this, "获取个人项目id失败");

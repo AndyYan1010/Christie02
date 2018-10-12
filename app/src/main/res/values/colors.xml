@@ -12,6 +12,7 @@
     <color name="light_grey">#f0f0f0</color>
     <color name="super_light_grey">#f6f6f6</color>
     <color name="red">#FF0000</color>
+    <color name="red_50">#E0564F</color>
     <color name="blue_06">#86C6EB</color>
     <color name="vm_blue_38">#612384fe</color>
     <!-- 钢兰色 -->
@@ -26,6 +27,7 @@
     <color name="title_bar_bg">#d4d4d4</color>
     <color name="orange">#FF4500</color>
     <color name="blue_kind">#28ACE4</color>
+    <color name="blue_sky">#6ECDFA</color>
     <color name="yellow_kind">#E4A43E</color>
     <color name="gray_0">#EFEFEF</color>
     <color name="green">#84D574</color>

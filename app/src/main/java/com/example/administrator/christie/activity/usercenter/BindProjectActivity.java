@@ -93,7 +93,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         mTv_title.setText("绑定项目");
         dataProList = new ArrayList<>();
         ProjectMsg projectInfo = new ProjectMsg();
-        projectInfo.setProject_name("请选择公司");
+        projectInfo.setProject_name("请选择项目");
         dataProList.add(projectInfo);
         mProjAdapter = new ProSpinnerAdapter(BindProjectActivity.this, dataProList);
         mSpinner_village.setAdapter(mProjAdapter);
@@ -105,7 +105,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                 //获取点击条目ID，给spinner2设置数据
                 ProjectMsg projectInfo = dataProList.get(i);
                 String project_name = projectInfo.getProject_name();
-                if (!project_name.equals("请选择公司")) {
+                if (!project_name.equals("请选择项目")) {
                     mProjectID = projectInfo.getId();
                     //to intnet
                     getDetailFromInt(mProjectID);
@@ -126,7 +126,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ProjectMsg projectInfo = dataInfoList.get(i);
                 String project_name = projectInfo.getProject_name();
-                if (!project_name.equals("请选择公司")) {
+                if (!project_name.equals("请选择项目")) {
                     mDetailID = projectInfo.getId();
                 }
             }
@@ -160,7 +160,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                     dataInfoList.clear();
                 }
                 ProjectMsg projectMsg = new ProjectMsg();
-                projectMsg.setProject_name("请选择公司");
+                projectMsg.setProject_name("请选择项目");
                 dataInfoList.add(projectMsg);
                 Gson gson = new Gson();
                 ProjectInfo info = gson.fromJson(resbody, ProjectInfo.class);
@@ -197,7 +197,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                     dataProList.clear();
                 }
                 ProjectMsg projectMsg = new ProjectMsg();
-                projectMsg.setProject_name("请选择公司");
+                projectMsg.setProject_name("请选择项目");
                 dataProList.add(projectMsg);
                 Gson gson = new Gson();
                 ProjectInfo info = gson.fromJson(resbody, ProjectInfo.class);
@@ -232,11 +232,11 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
                     return;
                 }
                 if (null == mProjectID || "".equals(mProjectID)) {
-                    ToastUtils.showToast(BindProjectActivity.this, "请选择公司");
+                    ToastUtils.showToast(BindProjectActivity.this, "请选择项目");
                     return;
                 }
                 if (null == mDetailID || "".equals(mDetailID)) {
-                    ToastUtils.showToast(BindProjectActivity.this, "请选择公司详细信息");
+                    ToastUtils.showToast(BindProjectActivity.this, "请选择项目详细信息");
                     return;
                 }
                 if (null == mImg_onSer || "".equals(mImg_onSer)) {

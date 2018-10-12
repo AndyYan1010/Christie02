@@ -93,7 +93,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mLv_blt = (ListView) findViewById(R.id.listview_bluetooth);
         // spinner_proj = (Spinner) findViewById(R.id.spinner_proj);
         mSpinner_village = (Spinner) findViewById(R.id.spinner_village);
-        mTv_title.setText("搜索蓝牙设备");
+        mTv_title.setText("搜索门禁设备");
         linear_back.setOnClickListener(this);
         mTv_search.setOnClickListener(this);
     }

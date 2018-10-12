@@ -16,11 +16,11 @@ import android.widget.Toast;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.TApplication;
-import com.example.administrator.christie.activity.usercenter.CardActivity;
-import com.example.administrator.christie.activity.usercenter.PersonalActivity;
-import com.example.administrator.christie.activity.usercenter.PlateActivity;
-import com.example.administrator.christie.activity.usercenter.SettingsActivity;
 import com.example.administrator.christie.activity.usercenter.AboutUsActivity;
+import com.example.administrator.christie.activity.usercenter.CardActivity;
+import com.example.administrator.christie.activity.usercenter.MineCarActivity;
+import com.example.administrator.christie.activity.usercenter.PersonalActivity;
+import com.example.administrator.christie.activity.usercenter.SettingsActivity;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.Consts;
 import com.example.administrator.christie.util.HttpUtils;
@@ -140,7 +140,8 @@ public class MeFragment extends Fragment {
         ll_chepai.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(mContext, PlateActivity.class));
+//                startActivity(new Intent(mContext, PlateActivity.class));
+                startActivity(new Intent(mContext, MineCarActivity.class));
             }
         });
         ll_about.setOnClickListener(new View.OnClickListener() {

@@ -47,7 +47,7 @@
                     android:drawableLeft="@drawable/username"
                     android:gravity="center"
                     android:text="用户"
-                    android:textSize="20sp"/>
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/tv_username"
@@ -58,7 +58,7 @@
                     android:gravity="center_horizontal"
                     android:text="林强"
                     android:textColor="@color/bottom_button_text_black"
-                    android:textSize="24sp"/>
+                    android:textSize="22sp"/>
             </LinearLayout>
 
             <View
@@ -82,7 +82,7 @@
                     android:drawableLeft="@drawable/address"
                     android:gravity="center"
                     android:text="小区"
-                    android:textSize="20sp"/>
+                    android:textSize="18sp"/>
 
                 <Spinner
                     android:id="@+id/spinner_pro"
@@ -114,6 +114,17 @@
                     android:drawableLeft="@drawable/chepaihao"
                     android:gravity="center"
                     android:text="车牌号"
+                    android:textSize="18sp"/>
+
+                <EditText
+                    android:id="@+id/et_carno"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:hint="请输入车牌"
+                    android:textColor="@color/bottom_button_text_black"
                     android:textSize="20sp"/>
 
                 <Spinner
@@ -122,7 +133,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="2"
-                    android:spinnerMode="dialog"/>
+                    android:spinnerMode="dialog"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <View
@@ -145,8 +157,8 @@
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/yuyueshijian"
                     android:gravity="center"
-                    android:text="停车时间"
-                    android:textSize="20sp"/>
+                    android:text="预计到达时间"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/tv_park_time"
@@ -157,7 +169,7 @@
                     android:gravity="center_horizontal"
                     android:text="2017-05-09 09:00"
                     android:textColor="@color/bottom_button_text_black"
-                    android:textSize="24sp"/>
+                    android:textSize="22sp"/>
             </LinearLayout>
 
             <View
@@ -165,27 +177,27 @@
                 android:layout_height="1dp"
                 android:background="@color/bottom_button_text_gray"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:drawableLeft="@drawable/long_time"
-                android:text="预计停车时长"
-                android:textSize="20sp"/>
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:drawableLeft="@drawable/long_time"-->
+                <!--android:text="预计停车时长"-->
+                <!--android:textSize="20sp"/>-->
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recv_stop_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="8dp">
-            </android.support.v7.widget.RecyclerView>
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/recv_stop_time"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="8dp"-->
+                <!--android:layout_marginLeft="30dp"-->
+                <!--android:layout_marginTop="8dp">-->
+            <!--</android.support.v7.widget.RecyclerView>-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/bottom_button_text_gray"/>
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:background="@color/bottom_button_text_gray"/>-->
 
             <TextView
                 android:layout_width="wrap_content"
