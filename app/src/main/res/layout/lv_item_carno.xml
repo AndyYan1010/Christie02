@@ -25,12 +25,12 @@
 
         <ImageView
             android:id="@+id/img_del"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:src="@drawable/delete"/>
+            android:src="@drawable/delete_carno"/>
 
         <TextView
             android:id="@+id/tv_carnorm"

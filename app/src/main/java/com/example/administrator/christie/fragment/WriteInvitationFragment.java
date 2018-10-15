@@ -88,7 +88,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         //设置小区选择器
         dataProList = new ArrayList<>();
         ProjectMsg detailInfo = new ProjectMsg();
-        detailInfo.setProject_name("请选择小区");
+        detailInfo.setProject_name("请选择项目");
         dataProList.add(detailInfo);
         mDetailAdapter = new BDInfoSpinnerAdapter(getContext(), dataProList);
         mSpinner_area.setAdapter(mDetailAdapter);
@@ -97,7 +97,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ProjectMsg msg = dataProList.get(i);
                 String project_name = msg.getProject_name();
-                if (!"请选择小区".equals(project_name)) {
+                if (!"请选择项目".equals(project_name)) {
                     String detail_id = msg.getId();
                     chooseProID = detail_id;
                 }
@@ -141,7 +141,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     dataProList.clear();
                 }
                 ProjectMsg detailInfo = new ProjectMsg();
-                detailInfo.setProject_name("请选择小区");
+                detailInfo.setProject_name("请选择项目");
                 dataProList.add(detailInfo);
                 List<PersonalDataInfo.ArrBean.ListProjectBean> listProject = arr.getListProject();
                 for (int i = 0; i < listProject.size(); i++) {
@@ -210,8 +210,8 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     ToastUtils.showToast(mContext, "来访事由不能为空");
                     return;
                 }
-                if (null == chooseProID || "请选择小区".equals(chooseProID)) {
-                    ToastUtils.showToast(mContext, "请选择小区");
+                if (null == chooseProID || "请选择项目".equals(chooseProID)) {
+                    ToastUtils.showToast(mContext, "请选择项目");
                     return;
                 }
                 //获取邀请二维码数据

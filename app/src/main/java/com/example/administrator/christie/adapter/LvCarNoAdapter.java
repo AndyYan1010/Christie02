@@ -1,6 +1,7 @@
 package com.example.administrator.christie.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -76,6 +77,7 @@ public class LvCarNoAdapter extends BaseAdapter {
             selectItem = i;
             viewHolder.tv_carnorm.setText("默认车辆");
             viewHolder.tv_carnorm.setBackgroundResource(R.drawable.bg_round_white);
+            viewHolder.tv_carnorm.setTextColor(mContext.getResources().getColor(R.color.blue_sky));
             viewHolder.tv_carnorm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -84,6 +86,7 @@ public class LvCarNoAdapter extends BaseAdapter {
             });
         } else {
             viewHolder.tv_carnorm.setText("设为默认");
+            viewHolder.tv_carnorm.setTextColor(Color.WHITE);
             viewHolder.tv_carnorm.setBackgroundResource(R.drawable.bg_round_white_frame);
             viewHolder.tv_carnorm.setOnClickListener(new View.OnClickListener() {
                 @Override

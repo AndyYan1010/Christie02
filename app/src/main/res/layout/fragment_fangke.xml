@@ -6,11 +6,27 @@
               android:orientation="vertical"
               tools:context="com.example.administrator.christie.fragment.FangkeFragment">
 
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/messege_head"/>
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="消息记录"
+            android:textColor="@color/white"
+            android:textSize="20sp"/>
+    </RelativeLayout>
+    <!--<ImageView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="180dp"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:src="@drawable/messege_head"/>-->
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/smt_refresh"

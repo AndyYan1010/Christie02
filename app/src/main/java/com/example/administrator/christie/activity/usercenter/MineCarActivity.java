@@ -71,6 +71,11 @@ public class MineCarActivity extends BaseActivity implements View.OnClickListene
         mCarNoData = new ArrayList();
         carNoAdapter = new LvCarNoAdapter(this, mCarNoData);
         lv_carno.setAdapter(carNoAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         //获取个人车牌号
         getPersonalCarNo();
     }
@@ -126,6 +131,10 @@ public class MineCarActivity extends BaseActivity implements View.OnClickListene
                 finish();
                 break;
             case R.id.relative_bind:
+                if (mCarNoData.size()>=5){
+                    ToastUtils.showToast(this,"最多只能绑定五个车牌");
+                    return;
+                }
                 //跳转添加车牌界面
                 startActivity(new Intent(this, AddCarNoActivity.class));
                 break;

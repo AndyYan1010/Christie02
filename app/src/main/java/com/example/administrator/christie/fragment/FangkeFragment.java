@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.activity.msgAct.MsgDetailActivity;
 import com.example.administrator.christie.adapter.LvMsgAdapter;
 import com.example.administrator.christie.modelInfo.MeetingDataInfo;
@@ -34,9 +33,8 @@ import java.util.List;
 import okhttp3.Request;
 
 public class FangkeFragment extends Fragment {
-    private Context mContext = null;
-    private View view;
-    private List<String> functionlist = TApplication.user.getFunctionlist();
+    private Context                       mContext;
+    private View                          view;
     private ListView                      mLv_messege;
     private List<MeetingDataInfo.ArrBean> mData;
     private LvMsgAdapter                  mLvMsgAdapter;
@@ -47,14 +45,14 @@ public class FangkeFragment extends Fragment {
         mContext = getContext();
         view = inflater.inflate(R.layout.fragment_fangke, container, false);
         setViews();
+        setData();
+        setListeners();
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setData();
-        setListeners();
+    protected void setViews() {
+        mSmt_refresh = (SmartRefreshLayout) this.view.findViewById(R.id.smt_refresh);
+        mLv_messege = (ListView) this.view.findViewById(R.id.lv_messege);
     }
 
     private void setData() {
@@ -121,11 +119,6 @@ public class FangkeFragment extends Fragment {
                 }
             }
         });
-    }
-
-    protected void setViews() {
-        mSmt_refresh = (SmartRefreshLayout) this.view.findViewById(R.id.smt_refresh);
-        mLv_messege = (ListView) this.view.findViewById(R.id.lv_messege);
     }
 
     protected void setListeners() {

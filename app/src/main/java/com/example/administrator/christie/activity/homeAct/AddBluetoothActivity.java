@@ -59,7 +59,8 @@ import okhttp3.Request;
 
 public class AddBluetoothActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout linear_back, linear_selc_pro;
-    private TextView mTv_title, mTv_search;
+    private LinearLayout linear_search;//点击搜索蓝牙
+    private TextView     mTv_title, mTv_search;
     private ListView mLv_blt;
     public static        boolean isSearchBT                      = false;
     private static       int     REQUEST_ENABLE                  = 400;
@@ -87,6 +88,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private void initView() {
         linear_back = (LinearLayout) findViewById(R.id.linear_back);
         linear_selc_pro = (LinearLayout) findViewById(R.id.linear_selc_pro);//选择项目UI条目
+        linear_search = (LinearLayout) findViewById(R.id.linear_search);//搜索蓝牙
         mTv_title = (TextView) findViewById(R.id.tv_title);
         mTv_search = (TextView) findViewById(R.id.tv_search);
         img_loading = (ImageView) findViewById(R.id.img_loading);
@@ -95,7 +97,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mSpinner_village = (Spinner) findViewById(R.id.spinner_village);
         mTv_title.setText("搜索门禁设备");
         linear_back.setOnClickListener(this);
-        mTv_search.setOnClickListener(this);
+//        mTv_search.setOnClickListener(this);
+        linear_search.setOnClickListener(this);
     }
 
     private void initData() {
@@ -370,7 +373,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             case R.id.linear_back:
                 finish();
                 break;
-            case R.id.tv_search:
+//            case R.id.tv_search:
+            case R.id.linear_search:
                 if (null == mBlueOpenInfo || "".equals(mBlueOpenInfo)) {
                     ToastUtils.showToast(AddBluetoothActivity.this, "未获取到刷卡信息");
                     return;

@@ -18,7 +18,8 @@
         <ImageView
             android:id="@+id/img_add_carno"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/add_carno_icon"/>
 
         <EditText
@@ -42,7 +43,7 @@
             android:layout_below="@+id/et_carno"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/bg_round_blue_30"
             android:gravity="center"
             android:text="确认"

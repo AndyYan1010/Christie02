@@ -157,19 +157,38 @@
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/yuyueshijian"
                     android:gravity="center"
-                    android:text="预计到达时间"
+                    android:text="预计\n到达时间"
                     android:textSize="16sp"/>
 
-                <TextView
-                    android:id="@+id/tv_park_time"
+                <LinearLayout
+                    android:id="@+id/linear_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:text="2017-05-09 09:00"
-                    android:textColor="@color/bottom_button_text_black"
-                    android:textSize="22sp"/>
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_pData"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_horizontal"
+                        android:text="2017-05-09"
+                        android:textColor="@color/bottom_button_text_black"
+                        android:textSize="22sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_pTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_horizontal"
+                        android:text="09:00 -- 9:30"
+                        android:textColor="@color/bottom_button_text_black"
+                        android:textSize="20sp"/>
+                </LinearLayout>
             </LinearLayout>
 
             <View
@@ -178,26 +197,26 @@
                 android:background="@color/bottom_button_text_gray"/>
 
             <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginLeft="10dp"-->
-                <!--android:drawableLeft="@drawable/long_time"-->
-                <!--android:text="预计停车时长"-->
-                <!--android:textSize="20sp"/>-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:drawableLeft="@drawable/long_time"-->
+            <!--android:text="预计停车时长"-->
+            <!--android:textSize="20sp"/>-->
 
             <!--<android.support.v7.widget.RecyclerView-->
-                <!--android:id="@+id/recv_stop_time"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginBottom="8dp"-->
-                <!--android:layout_marginLeft="30dp"-->
-                <!--android:layout_marginTop="8dp">-->
+            <!--android:id="@+id/recv_stop_time"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="8dp"-->
+            <!--android:layout_marginLeft="30dp"-->
+            <!--android:layout_marginTop="8dp">-->
             <!--</android.support.v7.widget.RecyclerView>-->
 
             <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:background="@color/bottom_button_text_gray"/>-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/bottom_button_text_gray"/>-->
 
             <TextView
                 android:layout_width="wrap_content"

@@ -15,9 +15,7 @@ import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.IconListInfo;
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.TApplication;
 import com.example.administrator.christie.activity.LoginActivity;
-import com.example.administrator.christie.adapter.GridViewAdapter;
 import com.example.administrator.christie.adapter.IconAdapter;
 import com.example.administrator.christie.entity.MainMenuEntity;
 import com.example.administrator.christie.modelInfo.BannerListInfo;
@@ -46,16 +44,13 @@ import java.util.List;
 import okhttp3.Request;
 
 public class MenjinFragment extends Fragment implements View.OnClickListener {
-    private Context mContext = null;
-    private View view;
-    //    private GridView gv_menjin, more_icon;
-    private int[]    resArr       = new int[]{R.drawable.code, R.drawable.bluetooth, R.drawable.menjin, R.drawable.addmore};
+    private Context mContext;
+    private View    view;
+    private int[]    resArr       = new int[]{R.drawable.code, R.drawable.lanyamen, R.drawable.menjin, R.drawable.addmore};
     private String[] textArr      = new String[]{"二维码开门", "蓝牙开门", "门禁数据", "添加"};
-    private int[]    resArrTotal  = new int[]{R.drawable.code, R.drawable.bluetooth, R.drawable.menjin, R.drawable.addmore, R.drawable.fangkeyaoqing, R.drawable.fangkejilu, R.drawable.cheweiyuyue, R.drawable.tingchejiaofei, R.drawable.jiaofeijilu, R.drawable.cheweisuoding, R.drawable.caidan};
+    private int[]    resArrTotal  = new int[]{R.drawable.code, R.drawable.lanyamen, R.drawable.menjin, R.drawable.addmore, R.drawable.fangkeyaoqing, R.drawable.fangkejilu, R.drawable.cheweiyuyue, R.drawable.tingchejiaofei, R.drawable.jiaofeijilu, R.drawable.cheweisuoding, R.drawable.caidan};
     private String[] textArrTotal = new String[]{"二维码开门", "蓝牙开门", "门禁数据", "添加", "访客邀请", "邀请记录", "车位预约", "停车缴费", "缴费记录", "车位锁定", "菜单"};
     private List<MainMenuEntity> list, listMore;
-    private GridViewAdapter adapter, more_iconAdapter;
-    private List<String> functionlist = TApplication.user.getFunctionlist();
     private RecyclerView      mRecyclerView_icon01;
     private IconAdapter       mIconAdapter;
     private AbSlidingPlayView mVp_banner;

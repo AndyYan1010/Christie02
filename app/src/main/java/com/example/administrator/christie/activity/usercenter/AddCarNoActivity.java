@@ -94,7 +94,7 @@ public class AddCarNoActivity extends BaseActivity implements View.OnClickListen
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (keyboardUtil.isShow()) {
+            if (null != keyboardUtil && keyboardUtil.isShow()) {
                 keyboardUtil.hideKeyboard();
             } else {
                 finish();

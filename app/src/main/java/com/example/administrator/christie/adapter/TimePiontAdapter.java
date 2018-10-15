@@ -60,7 +60,7 @@ public class TimePiontAdapter extends RecyclerView.Adapter<TimePiontAdapter.View
             @Override
             public void onClick(View view) {
                 ReservatParkingActivity activity = (ReservatParkingActivity) mContext;
-                activity.setSelected(position);
+//                activity.setSelected(position);
                 mSelected = position;
                 notifyDataSetChanged();
             }
