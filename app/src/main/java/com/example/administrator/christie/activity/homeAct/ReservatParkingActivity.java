@@ -248,7 +248,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 CustomDatePicker dpk = new CustomDatePicker(ReservatParkingActivity.this, new CustomDatePicker.ResultHandler() {
                     @Override
                     public void handle(String time) { // 回调接口，获得选中的时间
-                        tv_pData.setText(time);
+                        tv_pData.setText(time.substring(0, 10));
                     }
                 }, data, "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
                 dpk.showSpecificTime(false); // 显示时和分
@@ -380,9 +380,9 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         String userid = mUserinfo.getUserid();
         String reserveUrl = NetConfig.PARKRESERVE;
         RequestParamsFM params = new RequestParamsFM();
-        params.put("userid", fdata + " " + userid);
+        params.put("userid", userid);
         params.put("no", choosePlate);
-        params.put("time", time);
+        params.put("time", fdata + " " + time);
         params.put("project_detail_id", chooseProID);
         params.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPost(reserveUrl, params, new HttpOkhUtils.HttpCallBack() {
@@ -399,9 +399,10 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 }
                 Gson gson = new Gson();
                 ResultInfo resultInfo = gson.fromJson(resbody, ResultInfo.class);
-                if ("1".equals(resultInfo.getResult())){
+                if ("1".equals(resultInfo.getResult())) {
                     ToastUtils.showToast(ReservatParkingActivity.this, resultInfo.getMessage());
-                }else {
+                    finish();
+                } else {
                     ToastUtils.showToast(ReservatParkingActivity.this, "预约失败");
                 }
             }
