@@ -87,7 +87,7 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
             mListProId.clear();
         }
         ProjectMsg projectInfo = new ProjectMsg();
-        projectInfo.setProject_name("请选择公司");
+        projectInfo.setProject_name("请选择项目");
         mListProId.add(projectInfo);
         mProjAdapter = new ProSpinnerAdapter(mContext, mListProId);
         mSpinner_id.setAdapter(mProjAdapter);
@@ -96,7 +96,7 @@ public class MenuIntroduceActivity extends BaseActivity implements View.OnClickL
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ProjectMsg msg = mListProId.get(i);
                 String project_name = msg.getProject_name();
-                if (!project_name.equals("请选择公司")) {
+                if (!project_name.equals("请选择项目")) {
                     String id = msg.getId();
                     //访问网络获取菜品
                     getMenuFromIntnet(id);

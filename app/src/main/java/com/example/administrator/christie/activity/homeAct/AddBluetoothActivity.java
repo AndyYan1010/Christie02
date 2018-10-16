@@ -164,7 +164,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         //详细地址填充
         dataDetList = new ArrayList<>();
         ProjectMsg projectInfo = new ProjectMsg();
-        projectInfo.setProject_name("请选择地址");
+        projectInfo.setProject_name("请选择项目");
         dataDetList.add(projectInfo);
         mSpDetAdapter = new ProSpinnerAdapter(AddBluetoothActivity.this, dataDetList);
         mSpinner_village.setAdapter(mSpDetAdapter);
@@ -174,7 +174,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 //获取点击条目ID
                 ProjectMsg projectInfo = dataDetList.get(i);
                 String project_name = projectInfo.getProject_name();
-                if (!project_name.equals("请选择公司")) {
+                if (!project_name.equals("请选择项目")) {
                     mUpperID = projectInfo.getUpperID();
                     mBlueOpenInfo = projectInfo.getDetail_name();//信息包
                 }

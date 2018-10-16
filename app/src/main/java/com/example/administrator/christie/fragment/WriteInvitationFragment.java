@@ -1,22 +1,30 @@
 package com.example.administrator.christie.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.adapter.BDInfoSpinnerAdapter;
+import com.example.administrator.christie.adapter.LvOneStringAdapter;
 import com.example.administrator.christie.modelInfo.InvoteFkResultInfo;
 import com.example.administrator.christie.modelInfo.PersonalDataInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
@@ -49,9 +57,12 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     private Context      mContext;
     private View         view;
     private LinearLayout linear_back;
-    private TextView     mTv_title, mTv_date;
-    private Button   mBt_create;
-    private EditText mEdit_name, mEdit_phone, mEdit_longtime, mEdit_reason;
+    private TextView     mTv_title;
+    private TextView     tv_pData;
+    private TextView     tv_time1;
+    private TextView     tv_time2;
+    private Button       mBt_create;
+    private EditText     mEdit_name, mEdit_phone, mEdit_longtime, mEdit_reason;
     private Spinner              mSpinner_area;
     private List<ProjectMsg>     dataProList;
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
@@ -75,7 +86,9 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         mTv_title = (TextView) view.findViewById(R.id.tv_title);
         mEdit_name = (EditText) view.findViewById(R.id.edit_name);
         mEdit_phone = (EditText) view.findViewById(R.id.edit_phone);
-        mTv_date = view.findViewById(R.id.tv_date);
+        tv_pData = (TextView) view.findViewById(R.id.tv_pData);
+        tv_time1 = (TextView) view.findViewById(R.id.tv_time1);
+        tv_time2 = (TextView) view.findViewById(R.id.tv_time2);
         mEdit_longtime = (EditText) view.findViewById(R.id.edit_longtime);
         mEdit_reason = (EditText) view.findViewById(R.id.edit_reason);
         mSpinner_area = view.findViewById(R.id.spinner_area);
@@ -112,8 +125,64 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         mUserid = userinfo.getUserid();
         //从网络获取个人绑定的小区
         getBDProjectID(mUserid);
-        mTv_date.setOnClickListener(this);
+        //选择时间数据设置
+        setTimeList();
+        tv_pData.setOnClickListener(this);
+        tv_time1.setOnClickListener(this);
+        tv_time2.setOnClickListener(this);
         mBt_create.setOnClickListener(this);
+    }
+
+    private void setTimeList() {
+        mTimeData = new ArrayList();
+        mTimeData.add("00:00");
+        mTimeData.add("00:30");
+        mTimeData.add("01:00");
+        mTimeData.add("01:30");
+        mTimeData.add("02:00");
+        mTimeData.add("02:30");
+        mTimeData.add("03:00");
+        mTimeData.add("03:30");
+        mTimeData.add("04:00");
+        mTimeData.add("04:30");
+        mTimeData.add("05:00");
+        mTimeData.add("05:30");
+        mTimeData.add("06:00");
+        mTimeData.add("06:30");
+        mTimeData.add("07:00");
+        mTimeData.add("07:30");
+        mTimeData.add("08:00");
+        mTimeData.add("08:30");
+        mTimeData.add("09:00");
+        mTimeData.add("09:30");
+        mTimeData.add("10:00");
+        mTimeData.add("10:30");
+        mTimeData.add("11:00");
+        mTimeData.add("11:30");
+        mTimeData.add("12:00");
+        mTimeData.add("12:30");
+        mTimeData.add("13:00");
+        mTimeData.add("13:30");
+        mTimeData.add("14:00");
+        mTimeData.add("14:30");
+        mTimeData.add("15:00");
+        mTimeData.add("15:30");
+        mTimeData.add("16:00");
+        mTimeData.add("16:30");
+        mTimeData.add("17:00");
+        mTimeData.add("17:30");
+        mTimeData.add("18:00");
+        mTimeData.add("18:30");
+        mTimeData.add("19:00");
+        mTimeData.add("19:30");
+        mTimeData.add("20:00");
+        mTimeData.add("20:30");
+        mTimeData.add("21:00");
+        mTimeData.add("21:30");
+        mTimeData.add("22:00");
+        mTimeData.add("22:30");
+        mTimeData.add("23:00");
+        mTimeData.add("23:30");
     }
 
     private void getBDProjectID(String userid) {
@@ -166,25 +235,35 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
             case R.id.linear_back:
                 getActivity().finish();
                 break;
-            case R.id.tv_date:
+            case R.id.tv_pData:
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                String data = simpleDateFormat.format(new Date());
                 //打开时间选择器
                 CustomDatePicker dpk = new CustomDatePicker(getContext(), new CustomDatePicker.ResultHandler() {
                     @Override
                     public void handle(String time) { // 回调接口，获得选中的时间
-                        mTv_date.setText(time);
+                        tv_pData.setText(time.substring(0, 10));
                     }
-                }, "2010-01-01 00:00", "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
-                dpk.showSpecificTime(true); // 显示时和分
+                }, data, "2090-12-31 00:00"); // 初始化日期格式请用：yyyy-MM-dd HH:mm，否则不能正常运行
+                dpk.showSpecificTime(false); // 显示时和分
                 dpk.setIsLoop(true); // 允许循环滚动
-                //获取当前日期
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                String data = simpleDateFormat.format(new Date());
                 dpk.show(data);
+                break;
+            case R.id.tv_time1:
+                //从底部弹出popupwindow选择时间段
+                openPopupWindow(tv_time1);
+                break;
+            case R.id.tv_time2:
+                //从底部弹出popupwindow选择时间段
+                openPopupWindow(tv_time2);
                 break;
             case R.id.bt_create:
                 String name = String.valueOf(mEdit_name.getText()).trim();
                 String phone = String.valueOf(mEdit_phone.getText()).trim();
-                String date = String.valueOf(mTv_date.getText()).trim();
+                String date = String.valueOf(tv_pData.getText()).trim();
+                String stime1 = String.valueOf(tv_time1.getText()).trim();
+                String stime2 = String.valueOf(tv_time2.getText()).trim();
+
                 String longtime = String.valueOf(mEdit_longtime.getText()).trim();
                 String reason = String.valueOf(mEdit_reason.getText()).trim();
                 if (name.equals("") || name.equals("请输入来访人姓名")) {
@@ -202,6 +281,10 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     ToastUtils.showToast(mContext, "来访日期不能为空");
                     return;
                 }
+                if ("0:0".equals(stime1) || "0:0".equals(stime1)) {
+                    ToastUtils.showToast(mContext, "请选择预计到达时间");
+                    return;
+                }
                 if (longtime.equals("") || longtime.equals("请输入来访时长")) {
                     ToastUtils.showToast(mContext, "来访时长不能为空");
                     return;
@@ -215,9 +298,64 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     return;
                 }
                 //获取邀请二维码数据
-                getInvitationQc(name, phone, date, longtime, reason, chooseProID);
+                getInvitationQc(name, phone, date + " " + stime1 + " -- " + stime2, longtime, reason, chooseProID);
                 break;
         }
+    }
+
+    private PopupWindow  popupWindow;
+    private List<String> mTimeData;//时间段数据
+
+    private void openPopupWindow(TextView tv) {
+        //防止重复按按钮
+        if (popupWindow != null && popupWindow.isShowing()) {
+            return;
+        }
+        //设置PopupWindow的View
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.view_popupwindow, null);
+        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        //设置背景,这个没什么效果，不添加会报错
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        //设置点击弹窗外隐藏自身
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        //设置动画
+        popupWindow.setAnimationStyle(R.style.PopupWindow);
+        //设置位置
+        popupWindow.showAtLocation(tv, Gravity.BOTTOM, 0, 0);
+        //设置消失监听
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                //设置背景色
+                setBackgroundAlpha(1.0f);
+            }
+        });
+        //设置PopupWindow的View点击事件
+        setOnPopupViewClick(view, tv);
+        //设置背景色
+        setBackgroundAlpha(0.5f);
+    }
+
+    private void setOnPopupViewClick(View view, final TextView tv) {
+        ListView lv_time = view.findViewById(R.id.lv_time);
+        LvOneStringAdapter oneStringAdapter = new LvOneStringAdapter(getContext(), mTimeData);
+        lv_time.setAdapter(oneStringAdapter);
+        lv_time.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                tv.setText(mTimeData.get(i));
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    //设置屏幕背景透明效果
+    public void setBackgroundAlpha(float alpha) {
+        WindowManager.LayoutParams lp = ((Activity) getContext()).getWindow().getAttributes();
+        lp.alpha = alpha;
+        ((Activity) getContext()).getWindow().setAttributes(lp);
     }
 
     private void getInvitationQc(String name, String phone, String date, String longtime, String reason, String detail_id) {

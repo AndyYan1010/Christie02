@@ -54,9 +54,11 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
     private TextView     mTv_title, mTv_username;
     private Button       mBt_order;
     private LinearLayout linear_time;//选择停车时间
-    private TextView     tv_pTime;
     private TextView     tv_pData;
-    private String       markData, choosePlate, chooseProID;
+    private String       sTime1, sTime2;
+    private TextView tv_time1;
+    private TextView tv_time2;
+    private String   markData, choosePlate, chooseProID;
     private UserInfo             mUserinfo;
     private List                 mBangList;
     private EditText             et_carno;//填写车牌号
@@ -64,10 +66,6 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
     private List<ProjectMsg>     dataProList;//项目数据
     private List<String>         mTimeData;//时间段数据
-    //    private RecyclerView mRecv_stop_time;
-    //    private Spinner  mSpinner_plate;
-    //    private PlateSpinnerAdapter  mProjAdapter;//选择车牌适配器
-    //    private List<ProjectMsg>     dataPlateList;//车牌数据
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +82,11 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         mSpinner_pro = (Spinner) findViewById(R.id.spinner_pro);
         mTv_title = (TextView) findViewById(R.id.tv_title);
         linear_time = (LinearLayout) findViewById(R.id.linear_time);
-        tv_pTime = (TextView) findViewById(R.id.tv_pTime);
         tv_pData = (TextView) findViewById(R.id.tv_pData);
+        tv_time1 = (TextView) findViewById(R.id.tv_time1);
+        tv_time2 = (TextView) findViewById(R.id.tv_time2);
         mBt_order = (Button) findViewById(R.id.bt_order);
-        //      mRecv_stop_time = (RecyclerView) findViewById(R.id.recv_stop_time);
-        //      mSpinner_plate = (Spinner) findViewById(R.id.spinner_plate);
+        //tv_pTime = (TextView) findViewById(R.id.tv_pTime);
     }
 
     private void initData() {
@@ -101,7 +99,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         //设置小区选择器
         dataProList = new ArrayList<>();
         ProjectMsg detailInfo = new ProjectMsg();
-        detailInfo.setProject_name("请选择小区");
+        detailInfo.setProject_name("请选择项目");
         dataProList.add(detailInfo);
         mDetailAdapter = new BDInfoSpinnerAdapter(ReservatParkingActivity.this, dataProList);
         mSpinner_pro.setAdapter(mDetailAdapter);
@@ -110,7 +108,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 ProjectMsg msg = dataProList.get(i);
                 String project_name = msg.getProject_name();
-                if (!"请选择小区".equals(project_name)) {
+                if (!"请选择项目".equals(project_name)) {
                     String detail_id = msg.getId();
                     chooseProID = detail_id;
                 }
@@ -147,93 +145,83 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String data = simpleDateFormat.format(new Date());
         tv_pData.setText(data.substring(0, 10));
-        //        tv_pTime.setText("请选择时间段");
 
-        int subMtime = Integer.parseInt(data.substring(14, 15));
-        if (subMtime < 3) {
-            tv_pTime.setText(data.substring(11, 13) + ":00 -- " + data.substring(11, 13) + ":30");
-        } else {
-            int subHTime = Integer.parseInt(data.substring(11, 13));
-            if (subHTime == 23) {
-                tv_pTime.setText(data.substring(11, 13) + ":30 -- " + "00:00");
-            } else {
-                if (subHTime >= 9) {
-                    tv_pTime.setText(data.substring(11, 13) + ":30 -- " + (subHTime + 1) + ":00");
-                } else {
-                    tv_pTime.setText(data.substring(11, 13) + ":30 -- 0" + (subHTime + 1) + ":00");
-                }
-            }
-        }
-
+        //        int subMtime = Integer.parseInt(data.substring(14, 15));
+        //        if (subMtime < 3) {
+        //            tv_pTime.setText(data.substring(11, 13) + ":00 -- " + data.substring(11, 13) + ":30");
+        //        } else {
+        //            int subHTime = Integer.parseInt(data.substring(11, 13));
+        //            if (subHTime == 23) {
+        //                tv_pTime.setText(data.substring(11, 13) + ":30 -- " + "00:00");
+        //            } else {
+        //                if (subHTime >= 9) {
+        //                    tv_pTime.setText(data.substring(11, 13) + ":30 -- " + (subHTime + 1) + ":00");
+        //                } else {
+        //                    tv_pTime.setText(data.substring(11, 13) + ":30 -- 0" + (subHTime + 1) + ":00");
+        //                }
+        //            }
+        //        }
         //选择停车时间
         tv_pData.setOnClickListener(this);
-        tv_pTime.setOnClickListener(this);
         //设置选择停车时段数据
         mTimeData = new ArrayList();
-        mTimeData.add("00:00 -- 00:30");
-        mTimeData.add("00:30 -- 01:00");
-        mTimeData.add("01:00 -- 01:30");
-        mTimeData.add("01:30 -- 02:00");
-        mTimeData.add("02:00 -- 02:30");
-        mTimeData.add("02:30 -- 03:00");
-        mTimeData.add("03:00 -- 03:30");
-        mTimeData.add("03:30 -- 04:00");
-        mTimeData.add("04:00 -- 04:30");
-        mTimeData.add("04:30 -- 05:00");
-        mTimeData.add("05:00 -- 05:30");
-        mTimeData.add("05:30 -- 06:00");
-        mTimeData.add("06:00 -- 06:30");
-        mTimeData.add("06:30 -- 07:00");
-        mTimeData.add("07:00 -- 07:30");
-        mTimeData.add("07:30 -- 08:00");
-        mTimeData.add("08:00 -- 08:30");
-        mTimeData.add("08:30 -- 09:00");
-        mTimeData.add("09:00 -- 09:30");
-        mTimeData.add("09:30 -- 10:00");
-        mTimeData.add("10:00 -- 10:30");
-        mTimeData.add("10:30 -- 11:00");
-        mTimeData.add("11:00 -- 11:30");
-        mTimeData.add("11:30 -- 12:00");
-        mTimeData.add("12:00 -- 12:30");
-        mTimeData.add("12:30 -- 13:00");
-        mTimeData.add("13:00 -- 13:30");
-        mTimeData.add("13:30 -- 14:00");
-        mTimeData.add("14:00 -- 14:30");
-        mTimeData.add("14:30 -- 15:00");
-        mTimeData.add("15:00 -- 15:30");
-        mTimeData.add("15:30 -- 16:00");
-        mTimeData.add("16:00 -- 16:30");
-        mTimeData.add("16:30 -- 17:00");
-        mTimeData.add("17:00 -- 17:30");
-        mTimeData.add("17:30 -- 18:00");
-        mTimeData.add("18:00 -- 18:30");
-        mTimeData.add("18:30 -- 19:00");
-        mTimeData.add("19:00 -- 19:30");
-        mTimeData.add("19:30 -- 20:00");
-        mTimeData.add("20:00 -- 20:30");
-        mTimeData.add("20:30 -- 21:00");
-        mTimeData.add("21:00 -- 21:30");
-        mTimeData.add("21:30 -- 22:00");
-        mTimeData.add("22:00 -- 22:30");
-        mTimeData.add("22:30 -- 23:00");
-        mTimeData.add("23:00 -- 23:30");
-        mTimeData.add("23:30 -- 00:00");
-
-
-        //        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        //        mRecv_stop_time.setLayoutManager(layoutManager);
-        //        TimePiontAdapter timePiontAdapter = new TimePiontAdapter(this, mTimeData, mSelected);
-        //        mRecv_stop_time.setAdapter(timePiontAdapter);
+        mTimeData.add("00:00");
+        mTimeData.add("00:30");
+        mTimeData.add("01:00");
+        mTimeData.add("01:30");
+        mTimeData.add("02:00");
+        mTimeData.add("02:30");
+        mTimeData.add("03:00");
+        mTimeData.add("03:30");
+        mTimeData.add("04:00");
+        mTimeData.add("04:30");
+        mTimeData.add("05:00");
+        mTimeData.add("05:30");
+        mTimeData.add("06:00");
+        mTimeData.add("06:30");
+        mTimeData.add("07:00");
+        mTimeData.add("07:30");
+        mTimeData.add("08:00");
+        mTimeData.add("08:30");
+        mTimeData.add("09:00");
+        mTimeData.add("09:30");
+        mTimeData.add("10:00");
+        mTimeData.add("10:30");
+        mTimeData.add("11:00");
+        mTimeData.add("11:30");
+        mTimeData.add("12:00");
+        mTimeData.add("12:30");
+        mTimeData.add("13:00");
+        mTimeData.add("13:30");
+        mTimeData.add("14:00");
+        mTimeData.add("14:30");
+        mTimeData.add("15:00");
+        mTimeData.add("15:30");
+        mTimeData.add("16:00");
+        mTimeData.add("16:30");
+        mTimeData.add("17:00");
+        mTimeData.add("17:30");
+        mTimeData.add("18:00");
+        mTimeData.add("18:30");
+        mTimeData.add("19:00");
+        mTimeData.add("19:30");
+        mTimeData.add("20:00");
+        mTimeData.add("20:30");
+        mTimeData.add("21:00");
+        mTimeData.add("21:30");
+        mTimeData.add("22:00");
+        mTimeData.add("22:30");
+        mTimeData.add("23:00");
+        mTimeData.add("23:30");
+        //设置下拉选择时间time
+        tv_time1.setOnClickListener(this);
+        tv_time2.setOnClickListener(this);
         //提交预约
         mBt_order.setOnClickListener(this);
         String userid = mUserinfo.getUserid();
         //从网络获取个人绑定的小区
         getBDProjectID(userid);
-        //从网络获取个人车牌
-        //        choosePlate(userid);
     }
-
-    private PopupWindow popupWindow;
 
     @Override
     public void onClick(View view) {
@@ -256,14 +244,18 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 dpk.show(data);
                 //dpk.show(mTv_park_time.getText().toString());
                 break;
-            case R.id.tv_pTime://选择时间段
+            case R.id.tv_time1://选择时间段
                 //从底部弹出popupwindow选择时间段
-                openPopupWindow(tv_pTime);
+                openPopupWindow(tv_time1);
+                break;
+            case R.id.tv_time2://选择时间段
+                //从底部弹出popupwindow选择时间段
+                openPopupWindow(tv_time2);
                 break;
             case R.id.bt_order:
                 String carno = String.valueOf(et_carno.getText()).trim();
                 if (null == chooseProID || "".equals(chooseProID)) {
-                    ToastUtils.showToast(this, "请选择小区");
+                    ToastUtils.showToast(this, "请选择项目");
                     return;
                 }
                 if (null == carno || "".equals(carno)) {
@@ -272,13 +264,20 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 }
                 choosePlate = carno;
                 String fdata = String.valueOf(tv_pData.getText()).trim();
-                String ftime = String.valueOf(tv_pTime.getText()).trim();
-                //String timeLong = mTimeData.get(mSelected);
+                String sTime1 = String.valueOf(tv_time1.getText()).trim();
+                String sTime2 = String.valueOf(tv_time2.getText()).trim();
+
+                if (sTime1 == null || sTime2 == null || "0:0".equals(sTime1) || "0:0".equals(sTime2)) {
+                    ToastUtils.showToast(this, "请选择预计到达时间");
+                    return;
+                }
                 //提交信息
-                sendToInt(fdata, ftime);
+                sendToInt(fdata, sTime1 + " -- " + sTime2);
                 break;
         }
     }
+
+    private PopupWindow popupWindow;
 
     private void openPopupWindow(TextView tv) {
         //防止重复按按钮
@@ -357,7 +356,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                     dataProList.clear();
                 }
                 ProjectMsg detailInfo = new ProjectMsg();
-                detailInfo.setProject_name("请选择小区");
+                detailInfo.setProject_name("请选择项目");
                 dataProList.add(detailInfo);
                 List<PersonalDataInfo.ArrBean.ListProjectBean> listProject = arr.getListProject();
                 for (int i = 0; i < listProject.size(); i++) {
