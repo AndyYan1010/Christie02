@@ -2,8 +2,12 @@ package com.example.administrator.christie.activity.homeAct;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -26,6 +30,7 @@ import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.ResultInfo;
 import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
+import com.example.administrator.christie.util.KeyboardUtil;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
 import com.example.administrator.christie.view.CustomDatePicker;
@@ -52,20 +57,18 @@ import okhttp3.Request;
 public class ReservatParkingActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout linear_back;
     private TextView     mTv_title, mTv_username;
-    private Button       mBt_order;
-    private LinearLayout linear_time;//选择停车时间
-    private TextView     tv_pData;
-    private String       sTime1, sTime2;
+    private Button   mBt_order;
+    private TextView tv_pData;
     private TextView tv_time1;
     private TextView tv_time2;
-    private String   markData, choosePlate, chooseProID;
+    private String   choosePlate, chooseProID;
     private UserInfo             mUserinfo;
-    private List                 mBangList;
     private EditText             et_carno;//填写车牌号
     private Spinner              mSpinner_pro;
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
     private List<ProjectMsg>     dataProList;//项目数据
     private List<String>         mTimeData;//时间段数据
+    private KeyboardUtil         keyboardUtil;//车牌输入法
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +84,6 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         et_carno = (EditText) findViewById(R.id.et_carno);
         mSpinner_pro = (Spinner) findViewById(R.id.spinner_pro);
         mTv_title = (TextView) findViewById(R.id.tv_title);
-        linear_time = (LinearLayout) findViewById(R.id.linear_time);
         tv_pData = (TextView) findViewById(R.id.tv_pData);
         tv_time1 = (TextView) findViewById(R.id.tv_time1);
         tv_time2 = (TextView) findViewById(R.id.tv_time2);
@@ -119,28 +121,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
 
             }
         });
-        //设置车牌选择器
-        //        dataPlateList = new ArrayList();
-        //        ProjectMsg projectInfo = new ProjectMsg();
-        //        projectInfo.setProject_name("请选择车牌");
-        //        dataPlateList.add(projectInfo);
-        //        mProjAdapter = new PlateSpinnerAdapter(ReservatParkingActivity.this, dataPlateList);
-        //        mSpinner_plate.setAdapter(mProjAdapter);
-        //        mSpinner_plate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        //            @Override
-        //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        //                ProjectMsg msg = dataPlateList.get(i);
-        //                String project_name = msg.getProject_name();
-        //                if (!"请选择车牌".equals(project_name)) {
-        //                    choosePlate = project_name;
-        //                }
-        //            }
-        //
-        //            @Override
-        //            public void onNothingSelected(AdapterView<?> adapterView) {
-        //
-        //            }
-        //        });
+
         //获取当前日期
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         String data = simpleDateFormat.format(new Date());
@@ -221,6 +202,50 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         String userid = mUserinfo.getUserid();
         //从网络获取个人绑定的小区
         getBDProjectID(userid);
+        et_carno.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if (keyboardUtil == null) {
+                    keyboardUtil = new KeyboardUtil(ReservatParkingActivity.this, et_carno);
+                    keyboardUtil.hideSoftInputMethod();
+                    keyboardUtil.showKeyboard();
+                } else {
+                    keyboardUtil.showKeyboard();
+                }
+                return false;
+            }
+        });
+        et_carno.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b){
+                    if (null!=keyboardUtil){
+                        keyboardUtil.showKeyboard();
+                    }
+                }else {
+                    if (null!=keyboardUtil){
+                        keyboardUtil.hideKeyboard();
+                    }
+                }
+            }
+        });
+        et_carno.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //                Log.i("字符变换后", "afterTextChanged");
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //                Log.i("字符变换前", s + "-" + start + "-" + count + "-" + after);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //                Log.i("字符变换中", s + "-" + "-" + start + "-" + before + "-" + count);
+            }
+        });
     }
 
     @Override
@@ -275,6 +300,18 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 sendToInt(fdata, sTime1 + " -- " + sTime2);
                 break;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (null != keyboardUtil && keyboardUtil.isShow()) {
+                keyboardUtil.hideKeyboard();
+            } else {
+                finish();
+            }
+        }
+        return false;
     }
 
     private PopupWindow popupWindow;

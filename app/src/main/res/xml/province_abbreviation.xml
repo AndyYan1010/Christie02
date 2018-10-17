@@ -161,7 +161,7 @@
 
     <Row>
         <Key
-            android:codes="-1"
+            android:codes="-2"
             android:horizontalGap="4%p"
             android:isModifier="true"
             android:isSticky="true"

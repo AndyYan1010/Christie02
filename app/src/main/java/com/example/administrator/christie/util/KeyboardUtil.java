@@ -86,9 +86,10 @@ public class KeyboardUtil {
             //判定是否是中文的正则表达式 [\\u4e00-\\u9fa5]判断一个中文 [\\u4e00-\\u9fa5]+多个中文
             String reg = "[\\u4e00-\\u9fa5]";
             if (primaryCode == -1) {// 省份简称与数字键盘切换
-                if (mEdit.getText().toString().matches(reg)) {
-                    changeKeyboard(true);
-                }
+                hideKeyboard();
+//                if (mEdit.getText().toString().matches(reg)) {
+//                    changeKeyboard(true);
+//                }
             } else if (primaryCode == -3) {
                 if (editable != null && editable.length() > 0) {
                     //没有输入内容时软键盘重置为省份简称软键盘
