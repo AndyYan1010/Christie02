@@ -76,7 +76,7 @@ public class AccesscontrolInfoFragment extends Fragment implements View.OnClickL
 
     private void initData() {
         //获取当前日期
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String data = simpleDateFormat.format(new Date());
         mTv_start_time.setText(data);
         mTv_end_time.setText(data);

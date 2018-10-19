@@ -69,6 +69,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     private String               chooseProID;//小区id
     private String               markData;
     private String               mUserid;
+    private String               stime2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -236,7 +237,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 getActivity().finish();
                 break;
             case R.id.tv_pData:
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String data = simpleDateFormat.format(new Date());
                 //打开时间选择器
                 CustomDatePicker dpk = new CustomDatePicker(getContext(), new CustomDatePicker.ResultHandler() {
@@ -262,7 +263,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 String phone = String.valueOf(mEdit_phone.getText()).trim();
                 String date = String.valueOf(tv_pData.getText()).trim();
                 String stime1 = String.valueOf(tv_time1.getText()).trim();
-                String stime2 = String.valueOf(tv_time2.getText()).trim();
+                stime2 = String.valueOf(tv_time2.getText()).trim();
 
                 String longtime = String.valueOf(mEdit_longtime.getText()).trim();
                 String reason = String.valueOf(mEdit_reason.getText()).trim();
@@ -298,7 +299,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     return;
                 }
                 //获取邀请二维码数据
-                getInvitationQc(name, phone, date + " " + stime1 + " -- " + stime2, longtime, reason, chooseProID);
+                getInvitationQc(name, phone, date + " " + stime1, longtime, reason, chooseProID);
                 break;
         }
     }
@@ -359,13 +360,13 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     }
 
     private void getInvitationQc(String name, String phone, String date, String longtime, String reason, String detail_id) {
-        //date = date + " 00:00:00";
         String InvitationQcUrl = NetConfig.INVITE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", mUserid);
         params.put("fname", name);
         params.put("fmobile", phone);
         params.put("fdate", date);
+        params.put("fdate2", stime2);
         params.put("flength", longtime);
         params.put("freason", reason);
         params.put("project_detail_id", detail_id);

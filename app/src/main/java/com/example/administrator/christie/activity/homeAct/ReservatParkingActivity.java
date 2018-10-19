@@ -123,7 +123,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         });
 
         //获取当前日期
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String data = simpleDateFormat.format(new Date());
         tv_pData.setText(data.substring(0, 10));
 
@@ -255,7 +255,7 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 finish();
                 break;
             case R.id.tv_pData://选择日期
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String data = simpleDateFormat.format(new Date());
                 //打开时间选择器
                 CustomDatePicker dpk = new CustomDatePicker(ReservatParkingActivity.this, new CustomDatePicker.ResultHandler() {
