@@ -268,7 +268,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                             }
                         });
                     } else {
-                        mLinear_detail.setVisibility(View.GONE);
+                        mLinear_detail.setVisibility(View.GONE);//
                         ToastUtils.showToast(getContext(), "未查到需交费车辆");
                     }
                 }
