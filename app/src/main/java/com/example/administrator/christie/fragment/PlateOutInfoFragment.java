@@ -92,7 +92,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         mTv_title.setText("停车缴费");
 
         //测试 缴费。
-        //        testPay();
+        //testPay();
 
         //设置车牌选择器
         dataPlateList = new ArrayList();
@@ -268,6 +268,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                             }
                         });
                     } else {
+                        mLinear_detail.setVisibility(View.GONE);
                         ToastUtils.showToast(getContext(), "未查到需交费车辆");
                     }
                 }

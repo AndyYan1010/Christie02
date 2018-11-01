@@ -84,7 +84,7 @@
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/address"
                     android:gravity="center"
-                    android:text="小区"
+                    android:text="项目"
                     android:textSize="18sp"/>
 
                 <Spinner
@@ -326,6 +326,7 @@
                 android:background="@color/bottom_button_text_gray"/>
         </LinearLayout>
     </ScrollView>
+
     <android.inputmethodservice.KeyboardView
         android:id="@+id/keyboard_view"
         android:layout_width="match_parent"
