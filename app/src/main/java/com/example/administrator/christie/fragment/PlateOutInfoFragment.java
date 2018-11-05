@@ -49,10 +49,9 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     private LinearLayout linear_back;
     private ImageView    mImg_nonet;
     private TextView     mTv_title;
-    //    private ListView          mLv_plate;
     private List         mDatalist;
     private Spinner      mSpinner;
-    private TextView     mTv_nodata, mTv_plate, mTv_enter_time, mTv_out_time, mTv_state, mTv_explain, mTv_price, mTv_submit;
+    private TextView     mTv_nodata, tv_plateno, mTv_plate, tv_place, tv_freetime, mTv_enter_time, mTv_out_time, mTv_state, mTv_explain, mTv_price, mTv_submit;
     private ProSpinnerAdapter mProjAdapter;//选择车牌适配器
     private List<ProjectMsg>  dataPlateList;//车牌数据
     private LinearLayout      mLinear_detail;
@@ -73,10 +72,13 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mImg_nonet = mRootView.findViewById(R.id.img_nonet);
         mTv_title = mRootView.findViewById(R.id.tv_title);
+        tv_plateno = mRootView.findViewById(R.id.tv_plateno);
         mTv_nodata = mRootView.findViewById(R.id.tv_nodata);
         mSpinner = mRootView.findViewById(R.id.spinner);//车牌选择器
         mLinear_detail = mRootView.findViewById(R.id.linear_detail);//收费详细信息
         mTv_plate = mRootView.findViewById(R.id.tv_plate);
+        tv_place = mRootView.findViewById(R.id.tv_place);//停车场
+        tv_freetime = mRootView.findViewById(R.id.tv_freetime);//剩余免费离场时长
         mTv_enter_time = mRootView.findViewById(R.id.tv_enter_time);
         mTv_out_time = mRootView.findViewById(R.id.tv_out_time);
         mLinear_lock = mRootView.findViewById(R.id.linear_lock);//车位锁定信息
@@ -109,6 +111,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                 if (!"请选择车牌".equals(project_name)) {
                     //获取停车缴费数据
                     mPlateNo = project_name;
+                    tv_plateno.setText(project_name);
                     getParkingPayInfo(project_name);
                 }
             }
@@ -136,33 +139,9 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                     ftt.addToBackStack(null);
                     ftt.commit();
                 }
-                //                int fstatus = mParkPayInfo.getParklist().getFstatus();
-                //                if (fstatus == 0) {
-                //                    //跳转付费界面
-                //                    FragmentTransaction ftt = getFragmentManager().beginTransaction();
-                //                    PayForPackingFragment payPackFragment = new PayForPackingFragment();
-                //                    payPackFragment.setParkPayInfo(mParkPayInfo);
-                //                    ftt.add(R.id.frame_pay, payPackFragment, "payPackFragment");
-                //                    ftt.addToBackStack(null);
-                //                    ftt.commit();
-                //                }
             }
         });
-        //        mDatalist = new ArrayList();
-        //        mDatalist.add("");
-        //        OutPlateInfoAdapter adapter = new OutPlateInfoAdapter(getContext(), mDatalist);
-        //        mLv_plate.setAdapter(adapter);
-        //        mLv_plate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        //            @Override
-        //            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //                mDatalist.get(i);
-        //                FragmentTransaction ftt = getFragmentManager().beginTransaction();
-        //                PayForPackingFragment payPackFragment = new PayForPackingFragment();
-        //                ftt.add(R.id.frame_pay, payPackFragment, "payPackFragment");
-        //                ftt.addToBackStack(null);
-        //                ftt.commit();
-        //            }
-        //        });
+
     }
 
     private void testPay() {
@@ -258,6 +237,8 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                             mTv_submit.setText("请先解锁");
                         }
                         mTv_price.setText("¥" + amount);
+                        tv_place.setText(mParkPayInfo.getParkname());
+                        tv_freetime.setText(mParkPayInfo.getFresstime()+"分钟");
                         mLinear_lock.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

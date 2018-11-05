@@ -211,8 +211,8 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                             String message = downOrderResultInfo.getMessage();
                             if (result == 2) {
                                 orderStr = String.valueOf(downOrderResultInfo.getId());
-                                //                                DecimalFormat df = new DecimalFormat("######0.00");
-                                //                                double resultPrice = Double.parseDouble(df.format(orderPrice));
+                                // DecimalFormat df = new DecimalFormat("######0.00");
+                                // double resultPrice = Double.parseDouble(df.format(orderPrice));
                                 orderPrice = 0.01;
                                 if (orderPrice < 0.01) {
                                     // orderOverOK(orderStr, "", "zhifubao");
@@ -257,28 +257,6 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
         Thread payThread = new Thread(payRunnable);
         payThread.start();
     }
-
-    //    private void orderOverOK(String order_num, String pay_no, String pay_type) {
-    //        RequestParamsFM params = new RequestParamsFM();
-    //        params.put("", "");
-    //        HttpOkhUtils.getInstance().doPost("", params, new HttpOkhUtils.HttpCallBack() {
-    //            @Override
-    //            public void onError(Request request, IOException e) {
-    //
-    //            }
-    //
-    //            @Override
-    //            public void onSuccess(int code, String resbody) {
-    //                if (code != 200) {
-    //
-    //                }
-    //                if (code == 200) {
-    //                    ToastUtils.showToast(mContext, "下单成功");
-    //                    getActivity().finish();
-    //                }
-    //            }
-    //        });
-    //    }
 
     private static final int    SDK_ALPAY_FLAG = 1001;
     private static final int    SDK_WXPAY_FLAG = 1000;
@@ -336,7 +314,6 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                         // orderOverOK(orderStr, tradeNo, "zhifubao");
                     } else {
                         Toast.makeText(mContext, "支付失败", Toast.LENGTH_SHORT).show();
-                        //                        sendDataToIntnet();
                     }
                     break;
                 case SDK_WXPAY_FLAG:

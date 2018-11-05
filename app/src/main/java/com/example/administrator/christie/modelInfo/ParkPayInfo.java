@@ -26,6 +26,13 @@ public class ParkPayInfo {
     private int    resCode;
     private String resMsg;
     private String outTime;
+    /**
+     * parkname : 杭州湾小区停车场
+     * fresstime : 60
+     */
+
+    private String parkname;
+    private String fresstime;
 
     public String getInTime() {
         return inTime;
@@ -73,5 +80,21 @@ public class ParkPayInfo {
 
     public void setOutTime(String outTime) {
         this.outTime = outTime;
+    }
+
+    public String getParkname() {
+        return parkname;
+    }
+
+    public void setParkname(String parkname) {
+        this.parkname = parkname;
+    }
+
+    public String getFresstime() {
+        return fresstime;
+    }
+
+    public void setFresstime(String fresstime) {
+        this.fresstime = fresstime;
     }
 }
