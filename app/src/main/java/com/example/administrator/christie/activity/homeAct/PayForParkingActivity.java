@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.activity.BaseActivity;
-import com.example.administrator.christie.fragment.PlateOutInfoFragment;
+import com.example.administrator.christie.fragment.PayParkDefaltFragment;
 
 /**
  * @创建者 AndyYan
@@ -31,9 +31,14 @@ public class PayForParkingActivity extends BaseActivity {
     }
 
     private void initData() {
-        PlateOutInfoFragment outInfoFragment = new PlateOutInfoFragment();
+//        PlateOutInfoFragment outInfoFragment = new PlateOutInfoFragment();
+//        FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+//        ftt.add(R.id.frame_pay, outInfoFragment, "OutInfoFragment");
+//        ftt.commit();
+
+        PayParkDefaltFragment payParkDefaltFragment = new PayParkDefaltFragment();
         FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
-        ftt.add(R.id.frame_pay, outInfoFragment, "OutInfoFragment");
+        ftt.add(R.id.frame_pay, payParkDefaltFragment, "payParkDefaltFragment");
         ftt.commit();
     }
 }

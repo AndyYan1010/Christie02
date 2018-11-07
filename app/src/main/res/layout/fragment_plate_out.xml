@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray_ef"
+                android:clickable="true">
 
     <include
         android:id="@+id/include"
@@ -15,7 +16,8 @@
         android:layout_below="@+id/include"
         android:layout_marginLeft="10dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="0dp"
@@ -39,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear"
+        android:layout_marginTop="30dp"
         android:orientation="vertical">
 
         <TextView
@@ -61,20 +64,35 @@
             android:textColor="@color/bottom_button_text_black"
             android:textSize="18sp"
             android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/tv_pay4others"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_round_red"
+            android:paddingBottom="8dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="8dp"
+            android:text="为其他车辆缴费"
+            android:textColor="@color/white"/>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linear_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/linear_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:background="@drawable/frame_black_line"
+            android:background="@color/white"
             android:orientation="vertical"
             android:padding="10dp"
             android:visibility="visible">
@@ -279,7 +297,7 @@
                     android:text="剩余免费离场时长"
                     android:textSize="18sp"/>
 
-                <TextView
+                <com.example.administrator.christie.view.TimeTextView
                     android:id="@+id/tv_freetime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

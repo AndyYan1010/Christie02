@@ -7,15 +7,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
 import com.example.administrator.christie.R;
-import com.example.administrator.christie.adapter.ProSpinnerAdapter;
 import com.example.administrator.christie.modelInfo.ParkPayInfo;
 import com.example.administrator.christie.modelInfo.PersonalPlateInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
@@ -23,6 +20,7 @@ import com.example.administrator.christie.modelInfo.UserInfo;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.SPref;
 import com.example.administrator.christie.util.ToastUtils;
+import com.example.administrator.christie.view.TimeTextView;
 import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
@@ -49,16 +47,18 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     private LinearLayout linear_back;
     private ImageView    mImg_nonet;
     private TextView     mTv_title;
-    private List         mDatalist;
-    private Spinner      mSpinner;
-    private TextView     mTv_nodata, tv_plateno, mTv_plate, tv_place, tv_freetime, mTv_enter_time, mTv_out_time, mTv_state, mTv_explain, mTv_price, mTv_submit;
-    private ProSpinnerAdapter mProjAdapter;//选择车牌适配器
-    private List<ProjectMsg>  dataPlateList;//车牌数据
-    private LinearLayout      mLinear_detail;
-    private LinearLayout      mLinear_lock;
-    private String            mUserid;
-    private ParkPayInfo       mParkPayInfo;
-    private String            mPlateNo;
+    private TextView     tv_pay4others;
+    //    private List         mDatalist;
+    //    private Spinner      mSpinner;
+    //    private ProSpinnerAdapter mProjAdapter;//选择车牌适配器
+    private TextView     mTv_nodata, tv_plateno, mTv_plate, tv_place, mTv_enter_time, mTv_out_time, mTv_state, mTv_explain, mTv_price, mTv_submit;
+    private TimeTextView     tv_freetime;
+    private List<ProjectMsg> dataPlateList;//车牌数据
+    private LinearLayout     mLinear_detail;
+    private LinearLayout     mLinear_lock;
+    private String           mUserid;
+    private ParkPayInfo      mParkPayInfo;
+    private String           mPlateNo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,8 +73,9 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         mImg_nonet = mRootView.findViewById(R.id.img_nonet);
         mTv_title = mRootView.findViewById(R.id.tv_title);
         tv_plateno = mRootView.findViewById(R.id.tv_plateno);
+        tv_pay4others = mRootView.findViewById(R.id.tv_pay4others);
         mTv_nodata = mRootView.findViewById(R.id.tv_nodata);
-        mSpinner = mRootView.findViewById(R.id.spinner);//车牌选择器
+        //        mSpinner = mRootView.findViewById(R.id.spinner);//车牌选择器
         mLinear_detail = mRootView.findViewById(R.id.linear_detail);//收费详细信息
         mTv_plate = mRootView.findViewById(R.id.tv_plate);
         tv_place = mRootView.findViewById(R.id.tv_place);//停车场
@@ -92,39 +93,39 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     private void initData() {
         linear_back.setOnClickListener(this);
         mTv_title.setText("停车缴费");
-
+        tv_plateno.setText(mPlateNo);
         //测试 缴费。
         //testPay();
 
         //设置车牌选择器
-        dataPlateList = new ArrayList();
-        ProjectMsg projectInfo = new ProjectMsg();
-        projectInfo.setProject_name("请选择车牌");
-        dataPlateList.add(projectInfo);
-        mProjAdapter = new ProSpinnerAdapter(getContext(), dataPlateList);
-        mSpinner.setAdapter(mProjAdapter);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ProjectMsg msg = dataPlateList.get(i);
-                String project_name = msg.getProject_name();
-                if (!"请选择车牌".equals(project_name)) {
-                    //获取停车缴费数据
-                    mPlateNo = project_name;
-                    tv_plateno.setText(project_name);
-                    getParkingPayInfo(project_name);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        //        dataPlateList = new ArrayList();
+        //        ProjectMsg projectInfo = new ProjectMsg();
+        //        projectInfo.setProject_name("请选择车牌");
+        //        dataPlateList.add(projectInfo);
+        //        mProjAdapter = new ProSpinnerAdapter(getContext(), dataPlateList);
+        //        mSpinner.setAdapter(mProjAdapter);
+        //        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //            @Override
+        //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        //                ProjectMsg msg = dataPlateList.get(i);
+        //                String project_name = msg.getProject_name();
+        //                if (!"请选择车牌".equals(project_name)) {
+        //                    //获取停车缴费数据
+        //                    mPlateNo = project_name;
+        //                    tv_plateno.setText(project_name);
+        //                    getParkingPayInfo(project_name);
+        //                }
+        //            }
+        //
+        //            @Override
+        //            public void onNothingSelected(AdapterView<?> adapterView) {
+        //
+        //            }
+        //        });
         UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
         mUserid = userinfo.getUserid();
         //从网络获取个人车牌
-        choosePlate(mUserid);
+        //        choosePlate(mUserid);
         mTv_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,7 +142,9 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                 }
             }
         });
-
+        tv_pay4others.setOnClickListener(this);
+        //获取停车缴费信息
+        getParkingPayInfo(mPlateNo);
     }
 
     private void testPay() {
@@ -191,7 +194,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                         plateInfo.setProject_name(fplateno);
                         dataPlateList.add(plateInfo);
                     }
-                    mProjAdapter.notifyDataSetChanged();
+                    //                    mProjAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -214,8 +217,8 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                 if (code == 200) {
                     Gson gson = new Gson();
                     mParkPayInfo = gson.fromJson(resbody, ParkPayInfo.class);
-                    int resCode = mParkPayInfo.getResCode();
-                    if (resCode == 0) {
+                    String resCode = mParkPayInfo.getResCode();
+                    if ("0".equals(resCode)) {
                         mLinear_detail.setVisibility(View.VISIBLE);
                         final String plateNo = plateno;
                         double amount = mParkPayInfo.getAmount();
@@ -238,7 +241,6 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                         }
                         mTv_price.setText("¥" + amount);
                         tv_place.setText(mParkPayInfo.getParkname());
-                        tv_freetime.setText(mParkPayInfo.getFresstime()+"分钟");
                         mLinear_lock.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -248,6 +250,13 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                                 }
                             }
                         });
+                        try {
+                            int times = Integer.parseInt(mParkPayInfo.getFresstime());
+                            long milltimes = times * 60 * 1000;
+                            tv_freetime.setTimes(milltimes);
+                        } catch (Exception e) {
+                            tv_freetime.setText("获取失败");
+                        }
                     } else {
                         mLinear_detail.setVisibility(View.GONE);//
                         ToastUtils.showToast(getContext(), "未查到需交费车辆");
@@ -303,8 +312,28 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.linear_back:
-                getActivity().finish();
+                getFragmentManager().popBackStackImmediate(null, 0);
+                break;
+            case R.id.tv_pay4others://为其他车辆付费
+                //跳转查询其他车辆界面
+                FragmentTransaction ftt = getFragmentManager().beginTransaction();
+                SearchPay4OtherCarsFragment pay4otherFragment = new SearchPay4OtherCarsFragment();
+                pay4otherFragment.setUpFragment(this);
+                ftt.add(R.id.frame_pay, pay4otherFragment, "pay4otherFragment");
+                ftt.addToBackStack(null);
+                ftt.commit();
                 break;
         }
+    }
+
+    public void setPlateno(String plateNo) {
+        mPlateNo = plateNo;
+    }
+
+    public void setPlatenoAndSearch(String plateNo) {
+        mPlateNo = plateNo;
+        //更新界面
+        tv_plateno.setText(mPlateNo);
+        getParkingPayInfo(plateNo);
     }
 }

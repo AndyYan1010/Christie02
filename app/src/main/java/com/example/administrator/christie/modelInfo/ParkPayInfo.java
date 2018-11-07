@@ -23,7 +23,7 @@ public class ParkPayInfo {
     private String inTime;
     private String fstatus;
     private double amount;
-    private int    resCode;
+    private String resCode;
     private String resMsg;
     private String outTime;
     /**
@@ -58,11 +58,11 @@ public class ParkPayInfo {
         this.amount = amount;
     }
 
-    public int getResCode() {
+    public String getResCode() {
         return resCode;
     }
 
-    public void setResCode(int resCode) {
+    public void setResCode(String resCode) {
         this.resCode = resCode;
     }
 

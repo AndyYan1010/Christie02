@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray_ef"
+                android:clickable="true">
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/title_view"/>
+
+    <LinearLayout
+        android:id="@+id/lin_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/plateno"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="查询停车费"
+            android:textColor="@color/vm_black_87"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_carno"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/lin_title"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_round_white"
+        android:gravity="center"
+        android:hint="请输入车牌号码"
+        android:textColor="@color/vm_black_100"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/tv_submit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/et_carno"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_round_blue_30"
+        android:gravity="center"
+        android:text="查询"
+        android:textColor="@color/white"
+        android:textSize="20sp"/>
+
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/keyboard_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#DCDCDC"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:keyBackground="@drawable/selector_key"
+        android:keyTextColor="#000"
+        android:keyTextSize="18sp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:shadowColor="#FFFFFF"
+        android:shadowRadius="0.0"
+        android:visibility="visible"/>
+</RelativeLayout>
