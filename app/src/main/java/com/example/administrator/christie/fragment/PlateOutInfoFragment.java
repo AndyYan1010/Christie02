@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.modelInfo.ParkPayInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
@@ -40,10 +41,12 @@ import okhttp3.Request;
 
 public class PlateOutInfoFragment extends Fragment implements View.OnClickListener {
     private View         mRootView;
+    private ImageView    img_loading;
     private LinearLayout linear_back;
+    private LinearLayout lin_nonet;
+    private LinearLayout lin_nomsg;
     private LinearLayout lin_left_time;
     private LinearLayout lin_pay_time;
-    private ImageView    mImg_nonet;
     private TextView     mTv_title;
     private TextView     tv_pay_time;
     private TextView     tv_pay4others;
@@ -64,10 +67,12 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     }
 
     private void initView() {
+        img_loading = (ImageView) mRootView.findViewById(R.id.img_loading);
+        lin_nonet = (LinearLayout) mRootView.findViewById(R.id.lin_nonet);
+        lin_nomsg = (LinearLayout) mRootView.findViewById(R.id.lin_nomsg);
         linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         lin_left_time = (LinearLayout) mRootView.findViewById(R.id.lin_left_time);
         lin_pay_time = (LinearLayout) mRootView.findViewById(R.id.lin_pay_time);
-        mImg_nonet = mRootView.findViewById(R.id.img_nonet);
         mTv_title = mRootView.findViewById(R.id.tv_title);
         tv_pay_time = mRootView.findViewById(R.id.tv_pay_time);
         tv_plateno = mRootView.findViewById(R.id.tv_plateno);
@@ -89,10 +94,11 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         linear_back.setOnClickListener(this);
         mTv_title.setText("停车缴费");
         tv_plateno.setText(mPlateNo);
+        Glide.with(getContext()).load(R.drawable.loadgif).into(img_loading);
+
         UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
         mUserid = userinfo.getUserid();
-        //从网络获取个人车牌
-        //choosePlate(mUserid);
+        lin_nomsg.setVisibility(View.GONE);
         mTv_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,7 +123,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
 
     private void getParkingPayInfo(final String plateno) {
         mLinear_detail.setVisibility(View.GONE);
-        ProgressDialogUtil.startShow(getContext(), "正在查询...");
+//        ProgressDialogUtil.startShow(getContext(), "正在查询...");
         String payInfoUrl = NetConfig.PARKINGSEARCH;
         RequestParamsFM params = new RequestParamsFM();
         params.put("plateNo", plateno);
@@ -125,6 +131,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
             @Override
             public void onError(Request request, IOException e) {
                 ProgressDialogUtil.hideDialog();
+                lin_nonet.setVisibility(View.VISIBLE);
                 ToastUtils.showToast(getContext(), "网络错误");
             }
 
@@ -135,6 +142,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                     Gson gson = new Gson();
                     mParkPayInfo = gson.fromJson(resbody, ParkPayInfo.class);
                     if ("0".equals(mParkPayInfo.getResCode())) {
+                        lin_nonet.setVisibility(View.GONE);
                         mLinear_detail.setVisibility(View.VISIBLE);
                         lin_left_time.setVisibility(View.GONE);
                         final String plateNo = plateno;
@@ -190,9 +198,13 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                             }
                         });
                     } else {
+                        lin_nonet.setVisibility(View.GONE);
+                        lin_nomsg.setVisibility(View.VISIBLE);
                         mLinear_detail.setVisibility(View.GONE);//
                         ToastUtils.showToast(getContext(), "未查到需交费车辆");
                     }
+                } else {
+                    lin_nonet.setVisibility(View.VISIBLE);
                 }
             }
         });
