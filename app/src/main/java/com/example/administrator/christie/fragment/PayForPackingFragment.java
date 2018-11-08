@@ -59,11 +59,13 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     private Button   mBt_pay;
     private CheckBox mCb_weixin, mCb_zfb;
     private int payKind = 0;
-    private Context     mContext;
-    private ParkPayInfo payInfo;//车牌付费信息
-    private String      mPlateNo;
-    private double      orderPrice;//订单价格
-    private String      mUserid;
+    private Context              mContext;
+    private ParkPayInfo          payInfo;//车牌付费信息
+    private String               mPlateNo;
+    private String               upOrderPrice;
+    private double               orderPrice;//订单价格
+    private String               mUserid;
+    private PlateOutInfoFragment mPlateOutInfoFragment;//上级fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,9 +93,12 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
         UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
         mUserid = userinfo.getUserid();
         mTv_username.setText(userinfo.getUsername());
-        //        ParkPayInfo.ParklistBean parklist = payInfo.getParklist();
-        //        String plateNo = parklist.getPlateNo();
-        orderPrice = payInfo.getAmount();
+        upOrderPrice = payInfo.getAmount();
+        try {
+            orderPrice = Double.parseDouble(upOrderPrice);
+        } catch (Exception e) {
+            ToastUtils.showToast(getContext(), "价格查询失败，请联系管理人员");
+        }
         mTv_plate.setText(mPlateNo);
         mTv_price.setText("¥" + orderPrice);
         mCb_weixin.setOnClickListener(this);
@@ -142,7 +147,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //获取返回参数后，调用微信app支付
                     RequestParamsFM params = new RequestParamsFM();
                     params.put("userid", mUserid);
-                    params.put("device_id", "");
+                    params.put("device_id", payInfo.getParkid());
                     params.put("paycode", "2");
                     params.put("ip", "205.168.1.102");
                     params.put("fee", "0.01");
@@ -186,7 +191,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //支付成功，再在服务器上下单，确认订单已支付.该订单支付完成
                     RequestParamsFM params = new RequestParamsFM();
                     params.put("userid", mUserid);
-                    params.put("device_id", "");
+                    params.put("device_id", payInfo.getParkid());
                     params.put("paycode", "1");
                     params.put("ip", "205.168.1.102");
                     params.put("fee", "0.01");
@@ -308,7 +313,9 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
                         Toast.makeText(mContext, "支付成功", Toast.LENGTH_SHORT).show();
-                        getActivity().finish();
+                        //支付成功后，关闭当前界面，修改前面的UI，显示剩余离场时间 paySuccessResult
+                        changeUpFragmentUI();
+                        //getActivity().finish();
                         // String tradeNo = resultInfo.split("trade_no\":\"")[1];
                         // tradeNo = tradeNo.substring(0, tradeNo.indexOf("\""));
                         // orderOverOK(orderStr, tradeNo, "zhifubao");
@@ -320,7 +327,8 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     String result = String.valueOf(msg.obj);
                     if ("支付成功".equals(result)) {
                         ToastUtils.showToast(getContext(), "支付成功");
-                        getActivity().finish();
+                        changeUpFragmentUI();
+                        //getActivity().finish();
                     } else {
                         ToastUtils.showToast(getContext(), "支付失败");
                     }
@@ -328,6 +336,12 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
             }
         }
     };
+
+    private void changeUpFragmentUI() {//关闭当前界面，修改前面的UI，显示剩余离场时间 paySuccessResult
+        mPlateOutInfoFragment.paySuccessResult();
+        //弹出回退栈最上面的fragment
+        getFragmentManager().popBackStackImmediate(null, 0);
+    }
 
     public static boolean checkAliPayInstalled(Context context) {
         Uri uri = Uri.parse("alipays://platformapi/startApp");
@@ -342,5 +356,9 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
 
     public void setPlateNo(String plateNo) {
         this.mPlateNo = plateNo;
+    }
+
+    public void setUpFragment(PlateOutInfoFragment plateOutInfoFragment) {
+        mPlateOutInfoFragment = plateOutInfoFragment;
     }
 }

@@ -100,7 +100,8 @@ public class TimeTextView extends android.support.v7.widget.AppCompatTextView {
         // 标示已经启动
         Date date = new Date();
         long t2 = date.getTime();
-        Time = mT - t2;
+        //        Time = mT - t2;
+        Time = mT;
         date = null;
 
         if (Time > 0) {

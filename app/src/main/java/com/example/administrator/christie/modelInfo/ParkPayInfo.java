@@ -12,35 +12,36 @@ package com.example.administrator.christie.modelInfo;
 public class ParkPayInfo {
 
     /**
-     * inTime : 2018-08-27 10:00:00
-     * fstatus :
-     * amount : 4
-     * resCode : 0
-     * resMsg : 正常
-     * outTime : 2018-08-27 11:00:00
+     * fstatus : 0
+     * amount : 1
+     * intime : 2018-11-07 09:20:00
+     * freetime : 30
+     * plateNo : 浙B123456
+     * resMsg  : 正常
+     * outtime : 2018-11-07 17:09:29
+     * parkname : 南山小区停车场
+     * resCode  : 0
      */
 
-    private String inTime;
     private String fstatus;
-    private double amount;
-    private String resCode;
+    private String amount;
+    private String intime;
+    private String freetime;
+    private String plateNo;
     private String resMsg;
-    private String outTime;
+    private String outtime;
+    private String parkname;
+    private String resCode;
     /**
-     * parkname : 杭州湾小区停车场
-     * fresstime : 60
+     * ispay : 1
      */
 
-    private String parkname;
-    private String fresstime;
+    private String ispay;
+    /**
+     * parkid : 26
+     */
 
-    public String getInTime() {
-        return inTime;
-    }
-
-    public void setInTime(String inTime) {
-        this.inTime = inTime;
-    }
+    private String parkid;
 
     public String getFstatus() {
         return fstatus;
@@ -50,20 +51,36 @@ public class ParkPayInfo {
         this.fstatus = fstatus;
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
-    public String getResCode() {
-        return resCode;
+    public String getIntime() {
+        return intime;
     }
 
-    public void setResCode(String resCode) {
-        this.resCode = resCode;
+    public void setIntime(String intime) {
+        this.intime = intime;
+    }
+
+    public String getFreetime() {
+        return freetime;
+    }
+
+    public void setFreetime(String freetime) {
+        this.freetime = freetime;
+    }
+
+    public String getPlateNo() {
+        return plateNo;
+    }
+
+    public void setPlateNo(String plateNo) {
+        this.plateNo = plateNo;
     }
 
     public String getResMsg() {
@@ -74,12 +91,12 @@ public class ParkPayInfo {
         this.resMsg = resMsg;
     }
 
-    public String getOutTime() {
-        return outTime;
+    public String getOuttime() {
+        return outtime;
     }
 
-    public void setOutTime(String outTime) {
-        this.outTime = outTime;
+    public void setOuttime(String outtime) {
+        this.outtime = outtime;
     }
 
     public String getParkname() {
@@ -90,11 +107,27 @@ public class ParkPayInfo {
         this.parkname = parkname;
     }
 
-    public String getFresstime() {
-        return fresstime;
+    public String getResCode() {
+        return resCode;
     }
 
-    public void setFresstime(String fresstime) {
-        this.fresstime = fresstime;
+    public void setResCode(String resCode) {
+        this.resCode = resCode;
+    }
+
+    public String getIspay() {
+        return ispay;
+    }
+
+    public void setIspay(String ispay) {
+        this.ispay = ispay;
+    }
+
+    public String getParkid() {
+        return parkid;
+    }
+
+    public void setParkid(String parkid) {
+        this.parkid = parkid;
     }
 }
