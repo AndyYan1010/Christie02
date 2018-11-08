@@ -132,6 +132,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
             public void onError(Request request, IOException e) {
                 ProgressDialogUtil.hideDialog();
                 lin_nonet.setVisibility(View.VISIBLE);
+                img_loading.setVisibility(View.GONE);
                 ToastUtils.showToast(getContext(), "网络错误");
             }
 
@@ -205,6 +206,7 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                     }
                 } else {
                     lin_nonet.setVisibility(View.VISIBLE);
+                    img_loading.setVisibility(View.GONE);
                 }
             }
         });
