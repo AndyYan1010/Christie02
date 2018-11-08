@@ -24,6 +24,8 @@ import com.example.administrator.christie.websiteUrl.NetConfig;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import okhttp3.Request;
 
@@ -40,10 +42,12 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     private View         mRootView;
     private LinearLayout linear_back;
     private LinearLayout lin_left_time;
+    private LinearLayout lin_pay_time;
     private ImageView    mImg_nonet;
     private TextView     mTv_title;
+    private TextView     tv_pay_time;
     private TextView     tv_pay4others;
-    private TextView     mTv_nodata, tv_plateno, mTv_plate, tv_place, mTv_enter_time, mTv_out_time, mTv_state, mTv_explain, mTv_price, mTv_submit;
+    private TextView     mTv_nodata, tv_plateno, mTv_plate, tv_place, mTv_enter_time, mTv_state, mTv_explain, mTv_price, mTv_submit;
     private TimeTextView tv_freetime;
     private LinearLayout mLinear_detail;
     private LinearLayout mLinear_lock;
@@ -62,8 +66,10 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
     private void initView() {
         linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         lin_left_time = (LinearLayout) mRootView.findViewById(R.id.lin_left_time);
+        lin_pay_time = (LinearLayout) mRootView.findViewById(R.id.lin_pay_time);
         mImg_nonet = mRootView.findViewById(R.id.img_nonet);
         mTv_title = mRootView.findViewById(R.id.tv_title);
+        tv_pay_time = mRootView.findViewById(R.id.tv_pay_time);
         tv_plateno = mRootView.findViewById(R.id.tv_plateno);
         tv_pay4others = mRootView.findViewById(R.id.tv_pay4others);
         mTv_nodata = mRootView.findViewById(R.id.tv_nodata);
@@ -72,7 +78,6 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         tv_place = mRootView.findViewById(R.id.tv_place);//停车场
         tv_freetime = mRootView.findViewById(R.id.tv_freetime);//剩余免费离场时长
         mTv_enter_time = mRootView.findViewById(R.id.tv_enter_time);
-        mTv_out_time = mRootView.findViewById(R.id.tv_out_time);
         mLinear_lock = mRootView.findViewById(R.id.linear_lock);//车位锁定信息
         mTv_state = mRootView.findViewById(R.id.tv_state);
         mTv_explain = mRootView.findViewById(R.id.tv_explain);
@@ -136,18 +141,36 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                         double amount = Double.parseDouble(mParkPayInfo.getAmount());
                         final String fstatus = mParkPayInfo.getFstatus();
                         String inTime = mParkPayInfo.getIntime();
-                        String outTime = mParkPayInfo.getOuttime();
                         mTv_plate.setText(plateNo);
                         mTv_enter_time.setText(inTime);
-                        mTv_out_time.setText(outTime);
                         if ("0".equals(fstatus)) {
                             mTv_state.setText("未锁定");
                             mTv_state.setTextColor(Color.BLACK);
                             mTv_explain.setVisibility(View.GONE);
-                            if ("0".equals(mParkPayInfo.getIspay())){
+                            if ("0".equals(mParkPayInfo.getIspay())) {
                                 mTv_submit.setText("付费");
-                            }else {
+                            } else {
                                 mTv_submit.setText("已付费");
+                                //显示剩余离场时间
+                                lin_left_time.setVisibility(View.VISIBLE);
+                                lin_pay_time.setVisibility(View.VISIBLE);
+                                tv_pay_time.setText(mParkPayInfo.getPaytime());
+                                try {
+                                    //获取支付时间
+                                    String paytime = mParkPayInfo.getPaytime();
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    Date date = simpleDateFormat.parse(paytime);
+                                    long payTime = date.getTime();//支付时间戳
+                                    //离场时间长
+                                    int times = Integer.parseInt(mParkPayInfo.getFreetime());
+                                    long beteewnTimes = times * 60 * 1000;
+                                    //当前时间
+                                    Date nowDate = new Date();
+                                    long nowTime = nowDate.getTime();
+                                    tv_freetime.setTimes(payTime + beteewnTimes - nowTime);
+                                } catch (Exception e) {
+                                    tv_freetime.setText("获取失败");
+                                }
                             }
                         } else {
                             mTv_state.setText("已锁定");
@@ -195,9 +218,9 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
                     mTv_state.setText("未锁定");
                     mTv_state.setTextColor(Color.BLACK);
                     mTv_explain.setVisibility(View.GONE);
-                    if ("0".equals(mParkPayInfo.getIspay())){
+                    if ("0".equals(mParkPayInfo.getIspay())) {
                         mTv_submit.setText("付费");
-                    }else {
+                    } else {
                         mTv_submit.setText("已付费");
                     }
                     mTv_submit.setOnClickListener(new View.OnClickListener() {
@@ -254,6 +277,10 @@ public class PlateOutInfoFragment extends Fragment implements View.OnClickListen
         mTv_submit.setText("已支付");
         mTv_submit.setClickable(false);
         lin_left_time.setVisibility(View.VISIBLE);
+        lin_pay_time.setVisibility(View.VISIBLE);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String format = df.format(new Date());
+        tv_pay_time.setText(format);
         try {
             int times = Integer.parseInt(mParkPayInfo.getFreetime());
             long milltimes = times * 60 * 1000;

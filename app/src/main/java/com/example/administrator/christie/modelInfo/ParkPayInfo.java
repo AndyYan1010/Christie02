@@ -42,6 +42,11 @@ public class ParkPayInfo {
      */
 
     private String parkid;
+    /**
+     * paytime : 2018-11-08 08:59:51
+     */
+
+    private String paytime;
 
     public String getFstatus() {
         return fstatus;
@@ -129,5 +134,13 @@ public class ParkPayInfo {
 
     public void setParkid(String parkid) {
         this.parkid = parkid;
+    }
+
+    public String getPaytime() {
+        return paytime;
+    }
+
+    public void setPaytime(String paytime) {
+        this.paytime = paytime;
     }
 }

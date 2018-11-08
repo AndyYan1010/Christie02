@@ -129,20 +129,22 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lin_pay_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="出场时间"
+                    android:text="支付时间"
                     android:textSize="18sp"/>
 
                 <TextView
-                    android:id="@+id/tv_out_time"
+                    android:id="@+id/tv_pay_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
