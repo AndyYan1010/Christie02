@@ -52,7 +52,7 @@ public class SearchPay4OtherCarsFragment extends Fragment implements View.OnClic
     }
 
     private void initData() {
-        tv_title.setText("绑定车牌");
+        tv_title.setText("停车收费");
         linear_back.setOnClickListener(this);
         tv_submit.setOnClickListener(this);
         et_carno.setOnTouchListener(new View.OnTouchListener() {
