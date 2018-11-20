@@ -1,14 +1,14 @@
 package com.example.administrator.christie.wxapi;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.example.administrator.christie.InformationMessege.MessageEvent;
+import com.example.administrator.christie.activity.BaseActivity;
 import com.example.administrator.christie.global.AppConstants;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
@@ -17,11 +17,12 @@ import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
-public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
+import org.greenrobot.eventbus.EventBus;
 
+public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandler {
     private static final String TAG = "MicroMsg.SDKSample.WXPayEntryActivity";
-
-    private IWXAPI api;
+    private IWXAPI       api;
+    private MessageEvent messageEvent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,22 +49,25 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     @SuppressLint("LongLogTag")
     @Override
     public void onResp(BaseResp resp) {
-        Log.d(TAG, "onPayFinish, errCode = " + resp.errCode);
+        //        Log.d(TAG, "onPayFinish, errCode = " + resp.errCode);
         Message msg = new Message();
         msg.what = SDK_WXPAY_FLAG;
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
             if (resp.errCode == 0) {
-                // Toast.makeText(this, "支付成功", Toast.LENGTH_LONG).show();
                 msg.obj = "支付成功";
+                Toast.makeText(this, "支付成功", Toast.LENGTH_LONG).show();
+                messageEvent = new MessageEvent("WX支付成功");
+                EventBus.getDefault().post(messageEvent);
             } else if (resp.errCode == -1) {
+                msg.obj = "支付失败";
                 Toast.makeText(this, "支付失败", Toast.LENGTH_LONG).show();
+            } else {
                 msg.obj = "支付失败";
-            }else {
                 Toast.makeText(this, "用户取消支付", Toast.LENGTH_LONG).show();
-                msg.obj = "支付失败";
             }
             mHandler.sendMessage(msg);
             finish();
         }
     }
+
 }

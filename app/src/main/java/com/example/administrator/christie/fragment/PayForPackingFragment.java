@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+import com.example.administrator.christie.InformationMessege.MessageEvent;
 import com.example.administrator.christie.R;
 import com.example.administrator.christie.global.PayResult;
 import com.example.administrator.christie.modelInfo.DownOrderResultInfo;
@@ -37,6 +38,10 @@ import com.google.gson.Gson;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.Map;
@@ -73,6 +78,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
         mContext = getContext();
         initView();
         initData();
+        EventBus.getDefault().register(this);
         return mRootView;
     }
 
@@ -324,13 +330,14 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     }
                     break;
                 case SDK_WXPAY_FLAG:
-                    String result = String.valueOf(msg.obj);
+                    //                  String result = String.valueOf(msg.obj);
+                    String result = msg.obj.toString();
                     if ("支付成功".equals(result)) {
-                        ToastUtils.showToast(getContext(), "支付成功");
+                        ToastUtils.showToast(getContext(), "支付成功babala");
                         changeUpFragmentUI();
                         //getActivity().finish();
                     } else {
-                        ToastUtils.showToast(getContext(), "支付失败");
+                        ToastUtils.showToast(getContext(), "支付失败balabla");
                     }
                     break;
             }
@@ -360,5 +367,18 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
 
     public void setUpFragment(PlateOutInfoFragment plateOutInfoFragment) {
         mPlateOutInfoFragment = plateOutInfoFragment;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void wxPaySuccess(MessageEvent messageEvent) {
+        if ("WX支付成功".equals(messageEvent.getMessage())) {
+            changeUpFragmentUI();
+        }
     }
 }

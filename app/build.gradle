@@ -42,4 +42,5 @@ dependencies {
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'//微信支付
     implementation 'com.skyfishjy.ripplebackground:library:1.0.1'//脉冲
     implementation 'org.jsoup:jsoup:1.10.2'//web解析器
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }
