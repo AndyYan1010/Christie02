@@ -75,10 +75,10 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_payfor_plate, container, false);
+        EventBus.getDefault().register(this);
         mContext = getContext();
         initView();
         initData();
-        EventBus.getDefault().register(this);
         return mRootView;
     }
 
@@ -138,6 +138,11 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                 }
                 break;
             case R.id.bt_pay:
+                String payState = String.valueOf(mBt_pay.getText()).trim();
+                if ("已支付".equals(payState)) {
+                    ToastUtils.showToast(getContext(), "您已成功支付。");
+                    return;
+                }
                 if (payKind == 0) {
                     ToastUtils.showToast(getContext(), "请选择支付方式");
                     return;
@@ -333,11 +338,11 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
                     //                  String result = String.valueOf(msg.obj);
                     String result = msg.obj.toString();
                     if ("支付成功".equals(result)) {
-                        ToastUtils.showToast(getContext(), "支付成功babala");
+                        ToastUtils.showToast(getContext(), "WX支付成功");
                         changeUpFragmentUI();
                         //getActivity().finish();
                     } else {
-                        ToastUtils.showToast(getContext(), "支付失败balabla");
+                        ToastUtils.showToast(getContext(), "WX支付失败");
                     }
                     break;
             }
@@ -345,6 +350,7 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     };
 
     private void changeUpFragmentUI() {//关闭当前界面，修改前面的UI，显示剩余离场时间 paySuccessResult
+        mBt_pay.setText("已支付");
         mPlateOutInfoFragment.paySuccessResult();
         //弹出回退栈最上面的fragment
         getFragmentManager().popBackStackImmediate(null, 0);
@@ -370,8 +376,8 @@ public class PayForPackingFragment extends Fragment implements View.OnClickListe
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
 
