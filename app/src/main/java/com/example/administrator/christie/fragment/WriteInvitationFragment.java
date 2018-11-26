@@ -62,7 +62,8 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     private TextView     tv_time1;
     private TextView     tv_time2;
     private Button       mBt_create;
-    private EditText     mEdit_name, mEdit_phone, mEdit_longtime, mEdit_reason;
+    private EditText     mEdit_name, mEdit_phone, mEdit_reason;
+    private EditText             et_arrTime;//到达时间
     private Spinner              mSpinner_area;
     private List<ProjectMsg>     dataProList;
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
@@ -90,7 +91,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         tv_pData = (TextView) view.findViewById(R.id.tv_pData);
         tv_time1 = (TextView) view.findViewById(R.id.tv_time1);
         tv_time2 = (TextView) view.findViewById(R.id.tv_time2);
-        mEdit_longtime = (EditText) view.findViewById(R.id.edit_longtime);
+//        et_arrTime = (EditText) view.findViewById(R.id.et_arrTime);
         mEdit_reason = (EditText) view.findViewById(R.id.edit_reason);
         mSpinner_area = view.findViewById(R.id.spinner_area);
         mBt_create = (Button) view.findViewById(R.id.bt_create);
@@ -265,7 +266,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 String stime1 = String.valueOf(tv_time1.getText()).trim();
                 stime2 = String.valueOf(tv_time2.getText()).trim();
 
-                String longtime = String.valueOf(mEdit_longtime.getText()).trim();
+                //                String longtime = String.valueOf(mEdit_longtime.getText()).trim();
                 String reason = String.valueOf(mEdit_reason.getText()).trim();
                 if (name.equals("") || name.equals("请输入来访人姓名")) {
                     ToastUtils.showToast(mContext, "来访人姓名不能为空");
@@ -286,10 +287,10 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     ToastUtils.showToast(mContext, "请选择预计到达时间");
                     return;
                 }
-                if (longtime.equals("") || longtime.equals("请输入来访时长")) {
-                    ToastUtils.showToast(mContext, "来访时长不能为空");
-                    return;
-                }
+                //                if (longtime.equals("") || longtime.equals("请输入来访时长")) {
+                //                    ToastUtils.showToast(mContext, "来访时长不能为空");
+                //                    return;
+                //                }
                 if (reason.equals("") || reason.equals("请输入来访事由")) {
                     ToastUtils.showToast(mContext, "来访事由不能为空");
                     return;
@@ -299,7 +300,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     return;
                 }
                 //获取邀请二维码数据
-                getInvitationQc(name, phone, date + " " + stime1, longtime, reason, chooseProID);
+                getInvitationQc(name, phone, date + " " + stime1, reason, chooseProID);
                 break;
         }
     }
@@ -359,7 +360,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         ((Activity) getContext()).getWindow().setAttributes(lp);
     }
 
-    private void getInvitationQc(String name, String phone, String date, String longtime, String reason, String detail_id) {
+    private void getInvitationQc(String name, String phone, String date, String reason, String detail_id) {
         String InvitationQcUrl = NetConfig.INVITE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", mUserid);
@@ -367,7 +368,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         params.put("fmobile", phone);
         params.put("fdate", date);
         params.put("fdate2", stime2);
-        params.put("flength", longtime);
+        params.put("flength", "");
         params.put("freason", reason);
         params.put("project_detail_id", detail_id);
         params.setUseJsonStreamer(true);
