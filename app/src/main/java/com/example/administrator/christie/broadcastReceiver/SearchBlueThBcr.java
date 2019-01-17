@@ -81,7 +81,7 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                 }
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                ToastUtils.showToast(context, "搜索结束");
+                ToastUtils.showToast(context, "连接结束");
                 boolean isHave;
                 for (ProjectMsg msg : mSumList) {
                     String project_name = msg.getProject_name();
@@ -108,7 +108,7 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                 }
                 mAdapter.notifyDataSetChanged();
                 AddBluetoothActivity.isSearchBT = false;
-                tv_title.setText("开始搜索");
+                tv_title.setText("开始连接");
                 img_load.setVisibility(View.INVISIBLE);
                 break;
         }

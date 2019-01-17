@@ -129,8 +129,8 @@ public class BluetoothLeService extends Service {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.i(TAG, "--onCharacteristicRead called--");
                 //从特征值读取数据
-                byte[] sucString = characteristic.getValue();
-                String string = new String(sucString);
+                //                byte[] sucString = characteristic.getValue();
+                //                String string = new String(sucString);
                 //将数据通过广播到Ble_Activity
                 broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
             }
@@ -168,12 +168,11 @@ public class BluetoothLeService extends Service {
                                      BluetoothGattDescriptor descriptor, int status) {
             // TODO Auto-generated method stub
             // super.onDescriptorRead(gatt, descriptor, status);
-            Log.w(TAG, "----onDescriptorRead status: " + status);
-            byte[] desc = descriptor.getValue();
-            if (desc != null) {
-                Log.w(TAG, "----onDescriptorRead value: " + new String(desc));
-            }
-
+            //            Log.w(TAG, "----onDescriptorRead status: " + status);
+            //            byte[] desc = descriptor.getValue();
+            //            if (desc != null) {
+            ////                Log.w(TAG, "----onDescriptorRead value: " + new String(desc));
+            //            }
         }
 
         /*
@@ -184,7 +183,7 @@ public class BluetoothLeService extends Service {
                                       BluetoothGattDescriptor descriptor, int status) {
             // TODO Auto-generated method stub
             // super.onDescriptorWrite(gatt, descriptor, status);
-            Log.w(TAG, "--onDescriptorWrite--: " + status);
+            //            Log.w(TAG, "--onDescriptorWrite--: " + status);
         }
 
         /*
@@ -194,7 +193,7 @@ public class BluetoothLeService extends Service {
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
             // TODO Auto-generated method stub
             // super.onReadRemoteRssi(gatt, rssi, status);
-            Log.w(TAG, "--onReadRemoteRssi--: " + status);
+            //            Log.w(TAG, "--onReadRemoteRssi--: " + status);
             broadcastUpdate(ACTION_DATA_AVAILABLE, rssi);
         }
 
@@ -202,7 +201,7 @@ public class BluetoothLeService extends Service {
         public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
             // TODO Auto-generated method stub
             // super.onReliableWriteCompleted(gatt, status);
-            Log.w(TAG, "--onReliableWriteCompleted--: " + status);
+            //            Log.w(TAG, "--onReliableWriteCompleted--: " + status);
         }
 
     };
@@ -231,12 +230,12 @@ public class BluetoothLeService extends Service {
             for (byte byteChar : data) {
                 stringBuilder.append(String.format("%02X ", byteChar));
 
-                Log.i(TAG, "***broadcastUpdate: byteChar = " + byteChar);
+                //                Log.i(TAG, "***broadcastUpdate: byteChar = " + byteChar);
 
             }
             intent.putExtra(EXTRA_DATA, new String(data));
-            System.out.println("broadcastUpdate for  read data:"
-                    + new String(data));
+            //            System.out.println("broadcastUpdate for  read data:"
+            //                    + new String(data));
         }
         sendBroadcast(intent);
     }
@@ -329,7 +328,7 @@ public class BluetoothLeService extends Service {
         // We want to directly connect to the device, so we are setting the
         // autoConnect
         // parameter to false.
-		/* 调用device中的connectGatt连接到远程设备 */
+        /* 调用device中的connectGatt连接到远程设备 */
         mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
         Log.d(TAG, "Trying to create a new connection.");
         mBluetoothDeviceAddress = address;
@@ -344,8 +343,8 @@ public class BluetoothLeService extends Service {
      * {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
      * callback.
      */
-	/*
-	 * 取消连接
+    /*
+     * 取消连接
 	 *
 	 * */
 
