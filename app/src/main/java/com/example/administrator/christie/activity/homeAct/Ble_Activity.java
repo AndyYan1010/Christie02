@@ -113,7 +113,7 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
         rippleBackground.startRippleAnimation();
         centerImage.setOnClickListener(this);
         //分包发送蓝牙信息
-        setSplitSendMsg();
+//        setSplitSendMsg();
     }
 
     /* 发送按键的响应事件，主要发送文本框的数据*/
@@ -251,12 +251,7 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
         });
     }
 
-    private boolean canFenBaoSendMsg02;
-    private boolean canFenBaoSendMsg03;
-
     private void SetSendBlueInfo() {
-        canFenBaoSendMsg02 = true;
-        canFenBaoSendMsg03 = true;
         mSendMsgHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -270,35 +265,30 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
                             sendMsg("<010000>");
                         }
                     } else if (times == 2) {
-                        if (canFenBaoSendMsg02) {
-                            //NO.2发送外指令，部认证
-                            //sendMsg("<02007F6098536D70BAC000>");7F6098536D70BAC0
-                            String cont2 = "<0200" + needSend + "00>";
-                            sendMsg(cont2);
-                            canFenBaoSendMsg02 = false;
-                        }
+                        //NO.2发送外指令，部认证
+                        //sendMsg("<02007F6098536D70BAC000>");7F6098536D70BAC0
+                        String cont2 = "<0200" + needSend + "00>";
+                        sendMsg(cont2);
                     } else if (times == 3) {
-                        if (canFenBaoSendMsg03) {
-                            //Tip:发送模拟刷卡信息包时，蓝牙控制器对APP的外部认证必须已经成功，外部认证有效期持续3分钟，超出时间后需要重新执行外部认证。
-                            //NO.3发送模拟刷卡信息包
-                            // String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
-                            //测试，不需加密
-                            String encryStr = "<05F1" + mBlueOpenInfo + "00>";
-                            //正式使用
-                            //  String key = "71C5A4430AC94865C94A9B8710ECDD29";
-                            //  String cont3 = TDESDoubleUtils.encryptECB3Des(key, testPackInfo);
-                            //  String encryStr = "<05F2" + cont3 + "00>";
-                            sendMsg(encryStr);
-                            // sendMsg("<05F238DA815997A8C0B37779486399D5AFED00>");
-                            canFenBaoSendMsg03 = false;
-                        }
+                        //Tip:发送模拟刷卡信息包时，蓝牙控制器对APP的外部认证必须已经成功，外部认证有效期持续3分钟，超出时间后需要重新执行外部认证。
+                        //NO.3发送模拟刷卡信息包
+                        // String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
+                        //测试，不需加密
+                        String encryStr = "<05F1" + mBlueOpenInfo + "00>";
+                        //正式使用
+                        //  String key = "71C5A4430AC94865C94A9B8710ECDD29";
+                        //  String cont3 = TDESDoubleUtils.encryptECB3Des(key, testPackInfo);
+                        //  String encryStr = "<05F2" + cont3 + "00>";
+                        sendMsg(encryStr);
+                        // sendMsg("<05F238DA815997A8C0B37779486399D5AFED00>");
+                        // canFenBaoSendMsg03 = false;
                     }
                 } else {
                     ToastUtils.showToast(Ble_Activity.this, "蓝牙连接中断，请退出重新连接");
                 }
-                mSendMsgHandler.postDelayed(this, 100);
+                mSendMsgHandler.postDelayed(this, 200);
             }
-        }, 100);
+        }, 200);
     }
 
     private void setSplitSendMsg() {
@@ -340,25 +330,55 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
                 String str = new String(buff, 20 * lens[0], lens[1]);
                 target_chara.setValue(str);
                 //调用蓝牙服务的写特征值方法实现发送数据
-                mBluetoothLeService.writeCharacteristic(target_chara);
+                boolean sendSuc = mBluetoothLeService.writeCharacteristic(target_chara);
+                if (sendSuc) {//分包的最后一个包发送成功//TODO:
+
+                }
             }
         } else {
-            //final byte[] buff = msg.getBytes();
-            bufferStr = msg.getBytes();
-            int len = bufferStr.length;
+            byte[] buff = msg.getBytes();
+            int len = buff.length;
             int[] lens = dataSeparate(len);
-            bufferLeng = lens[0];
-            bufferLeveLeng = lens[1];
-            //            for (int i = 0; i < lens[0]; i++) {
-            //                String str = new String(buff, 20 * i, 20);
-            //                doSleepTimes(i, str);
-            //            }
-            //            if (lens[1] != 0) {
-            //                String str = new String(buff, 20 * lens[0], lens[1]);
-            //                doSleepTimes(lens[0], str);
-            //            }
-            canSend = true;
-            whichTimes = 0;
+            for (int i = 0; i < lens[0]; i++) {
+                String str = new String(buff, 20 * i, 20);
+                target_chara.setValue(str);//只能一次发送20字节，所以这里要分包发送
+                //调用蓝牙服务的写特征值方法实现发送数据
+                boolean sendSuc = mBluetoothLeService.writeCharacteristic(target_chara);
+                if (sendSuc) {
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            if (lens[1] != 0) {
+                String str = new String(buff, 20 * lens[0], lens[1]);
+                target_chara.setValue(str);
+                //调用蓝牙服务的写特征值方法实现发送数据
+                boolean sendSuc = mBluetoothLeService.writeCharacteristic(target_chara);
+                if (sendSuc) {//分包的最后一个包发送成功//TODO:
+
+                }
+            }
+
+
+            //            //final byte[] buff = msg.getBytes();
+            //            bufferStr = msg.getBytes();
+            //            int len = bufferStr.length;
+            //            int[] lens = dataSeparate(len);
+            //            bufferLeng = lens[0];
+            //            bufferLeveLeng = lens[1];
+            //            //            for (int i = 0; i < lens[0]; i++) {
+            //            //                String str = new String(buff, 20 * i, 20);
+            //            //                doSleepTimes(i, str);
+            //            //            }
+            //            //            if (lens[1] != 0) {
+            //            //                String str = new String(buff, 20 * lens[0], lens[1]);
+            //            //                doSleepTimes(lens[0], str);
+            //            //            }
+            //            canSend = true;
+            //            whichTimes = 0;
         }
     }
 

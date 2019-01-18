@@ -1,11 +1,6 @@
 package com.example.administrator.christie.service;
 
 import android.app.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -21,6 +16,10 @@ import android.hardware.Sensor;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 特别说明：HC_BLE助手是广州汇承信息科技有限公司独自研发的手机APP，方便用户调试08蓝牙模块。
@@ -349,7 +348,7 @@ public class BluetoothLeService extends Service {
 	 * */
 
     /**
-     * @param 无
+     * @param
      * @return void
      * @throws
      * @Title: disconnect
@@ -369,7 +368,7 @@ public class BluetoothLeService extends Service {
      * resources are released properly.
      */
     /**
-     * @param 无
+     * @param
      * @return void
      * @throws
      * @Title: close
@@ -409,13 +408,13 @@ public class BluetoothLeService extends Service {
     }
 
     // 写入特征值
-    public void writeCharacteristic(BluetoothGattCharacteristic characteristic) {
+    public boolean writeCharacteristic(BluetoothGattCharacteristic characteristic) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
-            return;
+            return false;
         }
-        mBluetoothGatt.writeCharacteristic(characteristic);
-
+        boolean b = mBluetoothGatt.writeCharacteristic(characteristic);
+        return b;
     }
 
     // 读取RSSi

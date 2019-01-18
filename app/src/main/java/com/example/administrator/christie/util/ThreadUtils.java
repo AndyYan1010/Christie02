@@ -21,16 +21,19 @@ public class ThreadUtils {
 
     private static Executor sExecutor = Executors.newSingleThreadExecutor();
 
-    public static void runOnSubThread(Runnable runnable){
+    public static void runOnSubThread(Runnable runnable) {
         sExecutor.execute(runnable);
     }
 
-    public static void runOnMainThread(Runnable runnable){
+    public static void runOnMainThread(Runnable runnable) {
         sHandler.post(runnable);
-
     }
 
-
-
-
+    public static void sleepThread(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
