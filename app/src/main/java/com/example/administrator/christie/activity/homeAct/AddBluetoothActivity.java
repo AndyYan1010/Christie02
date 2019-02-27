@@ -76,6 +76,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private String             mBlueOpenInfo;
     private String mUpperID = "";//选择的小区id
     private List<ProjectMsg> sumDataList;//存放所有的授权蓝牙信息
+    private int REQUEST_BLE_CODE = 10998;//开门界面响应码
+    private int RESULT_BLE_CODE  = 10999;//开门成功后，关闭前面的界面
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,6 +283,15 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     break;
             }
         }
+        if (requestCode == REQUEST_BLE_CODE) {
+            if (resultCode == RESULT_BLE_CODE) {
+                boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+                if (bluetoothEnabled) {
+                    BluetoothManagerUtils.disabled();
+                }
+                finish();
+            }
+        }
     }
 
     //获取刷卡信息包
@@ -380,10 +391,11 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
         intent.putExtra("blueOpenInfo", mBlueOpenInfo);
         // 启动Ble_Activity
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_BLE_CODE);
+        //        startActivity(intent);
     }
 
-    private void autoConnectBT(){
+    private void autoConnectBT() {
         //蓝牙是否打开
         boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
         if (!bluetoothEnabled) {

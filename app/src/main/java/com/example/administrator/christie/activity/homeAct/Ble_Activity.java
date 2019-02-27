@@ -68,6 +68,7 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
     private RippleBackground rippleBackground;//脉冲图像
     private ImageView        centerImage;
     private String           mBlueOpenInfo;
+    private int RESULT_BLE_CODE = 10999;//开门成功后，关闭前面的界面
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,6 +249,8 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
                     //                    if (mConnected && times == 3) {
                     //                        sendMsg("<0F0000>");
                     //                    }
+
+                    setResult(RESULT_BLE_CODE);
                     //解除占用并退出
                     exitBlueTooth();
                 }
