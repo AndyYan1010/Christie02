@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -83,6 +84,10 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         initView();
         initData();
     }
+
+    private Handler mProhandler;
+    private int count = 180;//搜索时间、单位秒
+    private boolean autoOpen;
 
     private void initView() {
         linear_back = (LinearLayout) findViewById(R.id.linear_back);
@@ -160,86 +165,121 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             getLocalBlueInfo();
         }
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            ToastUtils.showToast(this,"您的手机不支持BLE设备");
+            ToastUtils.showToast(this, "您的手机不支持BLE设备");
             finish();
+        }
+        //自动开门
+        mProhandler = new Handler();
+        mProhandler.postDelayed(new Runnable() {
+            public void run() {
+                mProhandler.postDelayed(this, 1000);//递归执行，一秒执行一次
+                count--;
+                if (count == 0) {
+                    //连接时间超过*分钟，可关闭界面
+                    ToastUtils.showToast(AddBluetoothActivity.this, "超出连接时间，请退出重新连接");
+                    mProhandler.removeCallbacks(this);
+                    finish();
+                } else {
+                    if (autoOpen && mBtData.size() == 1) {
+                        connectBT(0);
+                        autoOpen = false;
+                    }
+                }
+            }
+        }, 1000);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.linear_back:
+                finish();
+                break;
+            case R.id.linear_search:
+                if (null == mBlueOpenInfo || "".equals(mBlueOpenInfo)) {
+                    ToastUtils.showToast(AddBluetoothActivity.this, "未获取到刷卡信息");
+                    return;
+                }
+                if (!isSearchBT) {
+                    mBtData.clear();
+                    mBlueTInfoAdapter.notifyDataSetChanged();
+                    boolean bluetoothSupported = BluetoothManagerUtils.isBluetoothSupported();
+                    if (bluetoothSupported) {
+                        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+                        if (!bluetoothEnabled) {
+                            //弹出对话框提示用户是否打开
+                            Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                            // 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
+                            enabler.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                            // 设置 Bluetooth 设备可见时间
+                            enabler.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, BLUETOOTH_DISCOVERABLE_DURATION);
+                            startActivityForResult(enabler, REQUEST_ENABLE);
+                        } else {
+                            needLoactionRight();
+                            //开始搜索
+                            //startSearchBluetooth();
+                        }
+                    } else {
+                        ToastUtils.showToast(this, "当前设备不支持蓝牙功能");
+                    }
+                } else {
+                    isSearchBT = false;
+                    mTv_search.setText("开始连接");
+                    img_loading.setVisibility(View.INVISIBLE);
+                    ToastUtils.showToast(this, "已停止连接");
+                    stopSearchBT();
+                }
+                break;
         }
     }
 
-    //发送开门信息给服务器
-    private void sendOpenMsgToService(String deviceID, String type) {
-        UserInfo userinfo = SPref.getObject(this, UserInfo.class, "userinfo");
-        String id = userinfo.getUserid();
-        String insertMJUrl = NetConfig.INSERTMENJIN;
-        RequestParamsFM params = new RequestParamsFM();
-        params.put("userid", id);
-        params.put("lanyaid", deviceID);
-        params.put("type", type);
-        params.setUseJsonStreamer(true);
-        HttpOkhUtils.getInstance().doPost(insertMJUrl, params, new HttpOkhUtils.HttpCallBack() {
-            @Override
-            public void onError(Request request, IOException e) {
-                ToastUtils.showToast(AddBluetoothActivity.this, "网络连接错误");
-            }
-
-            @Override
-            public void onSuccess(int code, String resbody) {
-                if (code == 200) {
-                    Gson gson = new Gson();
-                    LoginInfo loginInfo = gson.fromJson(resbody, LoginInfo.class);
-                    String result = loginInfo.getResult();
-                    if ("1".equals(result)) {
-                        ToastUtils.showToast(AddBluetoothActivity.this, "提交成功");
-                    }
-                } else {
-                    ToastUtils.showToast(AddBluetoothActivity.this, "网络连接错误");
-                }
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != mReceiver) {
+            //解除广播接收器
+            unregisterReceiver(mReceiver);
+        }
+        stopSearchBT();
+        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+        if (bluetoothEnabled) {
+            BluetoothManagerUtils.disabled();
+        }
+        mProhandler.removeCallbacksAndMessages(null);
     }
 
-    private void getLocalBlueInfo() {
-        String blueRightInfo = SpUtils.getString(this, "BlueRight", "");
-        if (null == blueRightInfo || "".equals(blueRightInfo)) {
-            ToastUtils.showToast(this, "未获取到本地设备信息");
-        } else {
-            Gson gson = new Gson();
-            BlueOpenInfo info = gson.fromJson(blueRightInfo, BlueOpenInfo.class);
-            List<BlueOpenInfo.ArrBean> arr = info.getArr();
-            for (BlueOpenInfo.ArrBean bean : arr) {
-                ProjectMsg proInfo = new ProjectMsg();
-                proInfo.setProject_name(bean.getProjectname());
-                proInfo.setDetail_name(bean.getXinxi());
-                proInfo.setUpperID(bean.getProjectdetail_id());//小区id
-                dataDetList.add(proInfo);
-                List<BlueOpenInfo.ArrBean.LanyaBean> lanya = bean.getLanya();
-                for (BlueOpenInfo.ArrBean.LanyaBean lanyaBean : lanya) {
-                    String fangxiang = lanyaBean.getFangxiang();
-                    if ("0".equals(fangxiang)) {
-                        ProjectMsg lanyaInfo = new ProjectMsg();
-                        lanyaInfo.setProject_name(lanyaBean.getName1());
-                        lanyaInfo.setDetail_name(lanyaBean.getAddress1());
-                        sumDataList.add(lanyaInfo);
-                    } else {
-                        ProjectMsg lanyaInfo1 = new ProjectMsg();
-                        lanyaInfo1.setProject_name(lanyaBean.getName1());
-                        lanyaInfo1.setDetail_name(lanyaBean.getAddress1());
-                        ProjectMsg lanyaInfo2 = new ProjectMsg();
-                        lanyaInfo2.setProject_name(lanyaBean.getName2());
-                        lanyaInfo2.setDetail_name(lanyaBean.getAddress2());
-                        sumDataList.add(lanyaInfo1);
-                        sumDataList.add(lanyaInfo2);
-                    }
-                }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                //用户选择开启 Bluetooth，Bluetooth 会被开启
+                ToastUtils.showToast(this, "蓝牙开启了");
+                //开始搜索
+                startSearchBluetooth();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ENABLE) {
+            switch (resultCode) {
+                // 点击确认按钮
+                case Activity.RESULT_OK:
+                    needLoactionRight();
+                    break;
+                // 点击取消按钮或点击返回键
+                case Activity.RESULT_CANCELED:
+                    //用户拒绝打开 Bluetooth, Bluetooth 不会被开启
+                    ToastUtils.showToast(this, "开启蓝牙功能，才能连接设备");
+                    break;
+                default:
+                    break;
             }
-            if (dataDetList.size() == 1) {
-                linear_selc_pro.setVisibility(View.GONE);
-                ToastUtils.showToast(AddBluetoothActivity.this, "您未绑定任何项目，无法使用设备连接功能");
-            } else if (dataDetList.size() == 2) {
-                mSpinner_village.setSelection(1);
-                mBlueOpenInfo = dataDetList.get(1).getDetail_name();
-                linear_selc_pro.setVisibility(View.GONE);
-            }
-            isSearchBT = false;
         }
     }
 
@@ -312,6 +352,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     mSpinner_village.setSelection(1);
                     mBlueOpenInfo = dataDetList.get(1).getDetail_name();
                     linear_selc_pro.setVisibility(View.GONE);
+                    //只绑定一个蓝牙设备、、自动开门
+                    autoOpen = true;
                 }
                 //本地保存授权蓝牙信息
                 SpUtils.putString(AddBluetoothActivity.this, "BlueRight", resbody);
@@ -325,6 +367,11 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         mTv_search.setText("开始搜索");
         img_loading.setVisibility(View.INVISIBLE);
         stopSearchBT();
+        //蓝牙是否打开
+        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+        if (!bluetoothEnabled) {
+            BluetoothManagerUtils.turnOnBluetooth();
+        }
         //获取对应条目的蓝牙设备信息
         //final BluetoothDevice btDevice = mBtData.get(position);
         final ProjectMsg btDevice = mBtData.get(position);
@@ -336,91 +383,27 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         startActivity(intent);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.linear_back:
-                finish();
-                break;
-            case R.id.linear_search:
-                if (null == mBlueOpenInfo || "".equals(mBlueOpenInfo)) {
-                    ToastUtils.showToast(AddBluetoothActivity.this, "未获取到刷卡信息");
-                    return;
-                }
-                if (!isSearchBT) {
-                    mBtData.clear();
-                    mBlueTInfoAdapter.notifyDataSetChanged();
-                    boolean bluetoothSupported = BluetoothManagerUtils.isBluetoothSupported();
-                    if (bluetoothSupported) {
-                        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
-                        if (!bluetoothEnabled) {
-                            //弹出对话框提示用户是否打开
-                            Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                            // 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
-                            enabler.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                            // 设置 Bluetooth 设备可见时间
-                            enabler.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, BLUETOOTH_DISCOVERABLE_DURATION);
-                            startActivityForResult(enabler, REQUEST_ENABLE);
-                        } else {
-                            needLoactionRight();
-                            //开始搜索
-                            //startSearchBluetooth();
-                        }
-                    } else {
-                        ToastUtils.showToast(this, "当前设备不支持蓝牙功能");
-                    }
-                } else {
-                    isSearchBT = false;
-                    mTv_search.setText("开始连接");
-                    img_loading.setVisibility(View.INVISIBLE);
-                    ToastUtils.showToast(this, "已停止连接");
-                    stopSearchBT();
-                }
-                break;
+    private void autoConnectBT(){
+        //蓝牙是否打开
+        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+        if (!bluetoothEnabled) {
+            BluetoothManagerUtils.turnOnBluetooth();
         }
+        //获取对应条目的蓝牙设备信息
+        //final BluetoothDevice btDevice = mBtData.get(position);
+        final ProjectMsg btDevice = dataDetList.get(1);
+        Intent intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
+        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getProject_name());
+        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
+        intent.putExtra("blueOpenInfo", mBlueOpenInfo);
+        // 启动Ble_Activity
+        startActivity(intent);
     }
 
     private void stopSearchBT() {
         if (mBtmAdapter != null && mBtmAdapter.isDiscovering()) {
             mBtmAdapter.cancelDiscovery();
             mBtmAdapter.stopLeScan(leScanCallback);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ENABLE) {
-            switch (resultCode) {
-                // 点击确认按钮
-                case Activity.RESULT_OK: {
-                    needLoactionRight();
-                }
-                break;
-                // 点击取消按钮或点击返回键
-                case Activity.RESULT_CANCELED: {
-                    //用户拒绝打开 Bluetooth, Bluetooth 不会被开启
-                    ToastUtils.showToast(this, "开启蓝牙功能，才能连接设备");
-                }
-                break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1:
-                //用户选择开启 Bluetooth，Bluetooth 会被开启
-                ToastUtils.showToast(this, "蓝牙开启了");
-                //开始搜索
-                startSearchBluetooth();
-                break;
-            default:
-                break;
         }
     }
 
@@ -436,20 +419,16 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         registerRec();
         ToastUtils.showToast(this, "正在连接。。。");
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-
         //TODO:扫描获取蓝牙强度
         leScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
-                //                ToastUtils.showToast(AddBluetoothActivity.this, bluetoothDevice.getName() + "&&&" + i);
+                //ToastUtils.showToast(AddBluetoothActivity.this, bluetoothDevice.getName() + "&&&" + i);
                 String blAddress = bluetoothDevice.getAddress();
                 for (ProjectMsg msg : mBtData) {
-                    //                    int rssi = msg.getRssi();
                     String detail_name = msg.getDetail_name();
                     if (detail_name.equals(blAddress)) {
                         msg.setRssi(i);
-                        //                        if (rssi == 0) {
-                        //                        }
                     }
                 }
                 //排序,信号强的在前面
@@ -474,9 +453,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 mBtmAdapter.startDiscovery();
                 mBtmAdapter.startLeScan(leScanCallback);
             }
-            //            if (null != mBtmAdapter) {
-            //                mBtmAdapter.startLeScan(leScanCallback);
-            //            }
         } else {
             ToastUtils.showToast(AddBluetoothActivity.this, "未获取到手机自带的蓝牙设备");
         }
@@ -494,20 +470,82 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         registerReceiver(mReceiver, filter);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
+    private void getLocalBlueInfo() {
+        String blueRightInfo = SpUtils.getString(this, "BlueRight", "");
+        if (null == blueRightInfo || "".equals(blueRightInfo)) {
+            ToastUtils.showToast(this, "未获取到本地设备信息");
+        } else {
+            Gson gson = new Gson();
+            BlueOpenInfo info = gson.fromJson(blueRightInfo, BlueOpenInfo.class);
+            List<BlueOpenInfo.ArrBean> arr = info.getArr();
+            for (BlueOpenInfo.ArrBean bean : arr) {
+                ProjectMsg proInfo = new ProjectMsg();
+                proInfo.setProject_name(bean.getProjectname());
+                proInfo.setDetail_name(bean.getXinxi());
+                proInfo.setUpperID(bean.getProjectdetail_id());//小区id
+                dataDetList.add(proInfo);
+                List<BlueOpenInfo.ArrBean.LanyaBean> lanya = bean.getLanya();
+                for (BlueOpenInfo.ArrBean.LanyaBean lanyaBean : lanya) {
+                    String fangxiang = lanyaBean.getFangxiang();
+                    if ("0".equals(fangxiang)) {
+                        ProjectMsg lanyaInfo = new ProjectMsg();
+                        lanyaInfo.setProject_name(lanyaBean.getName1());
+                        lanyaInfo.setDetail_name(lanyaBean.getAddress1());
+                        sumDataList.add(lanyaInfo);
+                    } else {
+                        ProjectMsg lanyaInfo1 = new ProjectMsg();
+                        lanyaInfo1.setProject_name(lanyaBean.getName1());
+                        lanyaInfo1.setDetail_name(lanyaBean.getAddress1());
+                        ProjectMsg lanyaInfo2 = new ProjectMsg();
+                        lanyaInfo2.setProject_name(lanyaBean.getName2());
+                        lanyaInfo2.setDetail_name(lanyaBean.getAddress2());
+                        sumDataList.add(lanyaInfo1);
+                        sumDataList.add(lanyaInfo2);
+                    }
+                }
+            }
+            if (dataDetList.size() == 1) {
+                linear_selc_pro.setVisibility(View.GONE);
+                ToastUtils.showToast(AddBluetoothActivity.this, "您未绑定任何项目，无法使用设备连接功能");
+            } else if (dataDetList.size() == 2) {
+                mSpinner_village.setSelection(1);
+                mBlueOpenInfo = dataDetList.get(1).getDetail_name();
+                linear_selc_pro.setVisibility(View.GONE);
+            }
+            isSearchBT = false;
+        }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (null != mReceiver) {
-            //解除广播接收器
-            unregisterReceiver(mReceiver);
-        }
-        stopSearchBT();
+    //发送开门信息给服务器
+    private void sendOpenMsgToService(String deviceID, String type) {
+        UserInfo userinfo = SPref.getObject(this, UserInfo.class, "userinfo");
+        String id = userinfo.getUserid();
+        String insertMJUrl = NetConfig.INSERTMENJIN;
+        RequestParamsFM params = new RequestParamsFM();
+        params.put("userid", id);
+        params.put("lanyaid", deviceID);
+        params.put("type", type);
+        params.setUseJsonStreamer(true);
+        HttpOkhUtils.getInstance().doPost(insertMJUrl, params, new HttpOkhUtils.HttpCallBack() {
+            @Override
+            public void onError(Request request, IOException e) {
+                ToastUtils.showToast(AddBluetoothActivity.this, "网络连接错误");
+            }
+
+            @Override
+            public void onSuccess(int code, String resbody) {
+                if (code == 200) {
+                    Gson gson = new Gson();
+                    LoginInfo loginInfo = gson.fromJson(resbody, LoginInfo.class);
+                    String result = loginInfo.getResult();
+                    if ("1".equals(result)) {
+                        ToastUtils.showToast(AddBluetoothActivity.this, "提交成功");
+                    }
+                } else {
+                    ToastUtils.showToast(AddBluetoothActivity.this, "网络连接错误");
+                }
+            }
+        });
     }
 
     //申请定位权限

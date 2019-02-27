@@ -318,8 +318,7 @@ public class BluetoothLeService extends Service {
             }
         }
         /* 获取远端的蓝牙设备 */
-        final BluetoothDevice device = mBluetoothAdapter
-                .getRemoteDevice(address);
+        final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         if (device == null) {
             Log.w(TAG, "Device not found.  Unable to connect.");
             return false;

@@ -53,4 +53,11 @@ public class BluetoothManagerUtils {
         }
         return false;
     }
+
+    public static void disabled() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+            bluetoothAdapter.disable();
+        }
+    }
 }

@@ -1,23 +1,31 @@
 package com.example.administrator.christie.activity.usercenter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -65,8 +73,12 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
     private String mProjectID, mDetailID;
     private EditText mEt_place, mEt_relation;
     private String mPlace, mRelation;
-    private static final int IMAGE = 1; //调用系统相册-选择图片
-    private String mImg_onSer;
+    private String      mImg_onSer;//记录图片上传的地址
+    private PopupWindow popupWindow;
+    private              int MY_PERMISSIONS_REQUEST_CALL_PHONE2 = 1001;//相册权限申请码
+    private              int IMAGE                              = 10086;//调用相册requestcode
+    private static final int SHOT_CODE                          = 20;//调用系统相册-选择图片
+    private String mRote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +150,187 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         });
         mBt_insert_pic.setOnClickListener(this);
         mBt_submit.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.linear_back:
+                finish();
+                break;
+            case R.id.bt_submit:
+                mPlace = String.valueOf(mEt_place.getText()).trim();
+                mRelation = String.valueOf(mEt_relation.getText()).trim();
+                if ("".equals(mPlace) || "请输入房屋具体地址".equals(mPlace)) {
+                    ToastUtils.showToast(BindProjectActivity.this, "请输入地址");
+                    return;
+                }
+                if ("".equals(mRelation) || "请输入和房屋的关系".equals(mRelation)) {
+                    ToastUtils.showToast(BindProjectActivity.this, "请输入关系");
+                    return;
+                }
+                if (null == mProjectID || "".equals(mProjectID)) {
+                    ToastUtils.showToast(BindProjectActivity.this, "请选择项目");
+                    return;
+                }
+                if (null == mDetailID || "".equals(mDetailID)) {
+                    ToastUtils.showToast(BindProjectActivity.this, "请选择项目详细信息");
+                    return;
+                }
+                if (null == mImg_onSer || "".equals(mImg_onSer)) {
+                    ToastUtils.showToast(BindProjectActivity.this, "图片上传失败，请重新选择图片");
+                    return;
+                }
+                //提交网络
+                sendToIntnet();
+                break;
+            case R.id.bt_insert_pic:
+                Boolean aBoolean = existsSdcard();
+                if (!aBoolean) {
+                    ToastUtils.showToast(BindProjectActivity.this, "手机SD卡不可用");
+                    return;
+                }
+                verifyStoragePermissions(BindProjectActivity.this);
+                //选择调用相册还是拍照
+                //弹出窗体，让用户选择相册还是拍照
+                showChoose(mBt_insert_pic);
+                //调用相册
+                //                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                //                startActivityForResult(intent, IMAGE);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //相册返回，获取图片路径
+        if (requestCode == IMAGE && resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumns = {MediaStore.Images.Media.DATA};
+            Cursor c = getContentResolver().query(selectedImage, filePathColumns, null, null, null);
+            c.moveToFirst();
+            int columnIndex = c.getColumnIndex(filePathColumns[0]);
+            String imagePath = c.getString(columnIndex);
+            try {
+                showImage(imagePath);
+            } catch (Exception e) {
+                ToastUtils.showToast(this, "文件上传失败，请查看原图片是否存在");
+            }
+            c.close();
+        }
+        if (requestCode == SHOT_CODE && resultCode == Activity.RESULT_OK) {
+            if (null == mRote || "".equals(mRote)) {
+                ToastUtils.showToast(this, "未获取到照片,请重新拍摄");
+                return;
+            }
+            try {
+                showImage(mRote);
+            } catch (Exception e) {
+                ToastUtils.showToast(this, "文件上传失败，请查看原图片是否存在");
+            }
+        }
+    }
+
+    private void showChoose(View v) {
+        //防止重复按按钮
+        if (popupWindow != null && popupWindow.isShowing()) {
+            return;
+        }
+        //设置PopupWindow的View
+        View view = LayoutInflater.from(this).inflate(R.layout.view_camera_pic_popup, null);
+        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        //设置背景,这个没什么效果，不添加会报错
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        //设置点击弹窗外隐藏自身
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        //设置动画
+        popupWindow.setAnimationStyle(R.style.PopupWindow);
+        //设置位置
+        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+        //设置消失监听
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                //设置背景色
+                setBackgroundAlpha(1.0f);
+            }
+        });
+        //设置PopupWindow的View点击事件
+        setOnPopupViewClick(view);
+        //设置背景色
+        setBackgroundAlpha(0.5f);
+    }
+
+    //设置PopupWindow的View点击事件
+    private void setOnPopupViewClick(View view) {
+        TextView tv_xc, tv_pz, tv_cancel;
+        tv_xc = (TextView) view.findViewById(R.id.tv_xc);//相册
+        tv_pz = (TextView) view.findViewById(R.id.tv_pz);//拍照
+        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);//取消
+        tv_xc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //第二个参数是需要申请的权限
+                if (ContextCompat.checkSelfPermission(BindProjectActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    //权限还没有授予，需要在这里写申请权限的代码
+                    ActivityCompat.requestPermissions(BindProjectActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_CALL_PHONE2);
+                } else {
+                    //权限已经被授予，在这里直接写要执行的相应方法即可
+                    //调用相册
+                    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, IMAGE);
+                    popupWindow.dismiss();
+                }
+            }
+        });
+        tv_pz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //第二个参数是需要申请的权限
+                if (ContextCompat.checkSelfPermission(BindProjectActivity.this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    //权限还没有授予，需要在这里写申请权限的代码
+                    ActivityCompat.requestPermissions(BindProjectActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                            MY_PERMISSIONS_REQUEST_CALL_PHONE2);
+                } else {
+                    String mFilePath = Environment.getExternalStorageDirectory().getPath();//获取SD卡路径
+                    long photoTime = System.currentTimeMillis();
+                    mFilePath = mFilePath + "/temp" + photoTime + ".jpg";//指定路径
+                    //权限已经被授予，在这里直接写要执行的相应方法即可
+                    //调用相机
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    Uri photoUri = Uri.fromFile(new File(mFilePath)); // 传递路径
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);// 更改系统默认存储路径
+                    //把指定路径传递给需保存的字段
+                    mRote = mFilePath;
+                    startActivityForResult(intent, SHOT_CODE);
+                    popupWindow.dismiss();
+                }
+            }
+        });
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (null != popupWindow) {
+                    popupWindow.dismiss();
+                }
+            }
+        });
+    }
+
+    //设置屏幕背景透明效果
+    public void setBackgroundAlpha(float alpha) {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = alpha;
+        getWindow().setAttributes(lp);
     }
 
     private void getDetailFromInt(String id) {
@@ -214,54 +407,6 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.linear_back:
-                finish();
-                break;
-            case R.id.bt_submit:
-                mPlace = String.valueOf(mEt_place.getText()).trim();
-                mRelation = String.valueOf(mEt_relation.getText()).trim();
-                if ("".equals(mPlace) || "请输入房屋具体地址".equals(mPlace)) {
-                    ToastUtils.showToast(BindProjectActivity.this, "请输入地址");
-                    return;
-                }
-                if ("".equals(mRelation) || "请输入和房屋的关系".equals(mRelation)) {
-                    ToastUtils.showToast(BindProjectActivity.this, "请输入关系");
-                    return;
-                }
-                if (null == mProjectID || "".equals(mProjectID)) {
-                    ToastUtils.showToast(BindProjectActivity.this, "请选择项目");
-                    return;
-                }
-                if (null == mDetailID || "".equals(mDetailID)) {
-                    ToastUtils.showToast(BindProjectActivity.this, "请选择项目详细信息");
-                    return;
-                }
-                if (null == mImg_onSer || "".equals(mImg_onSer)) {
-                    ToastUtils.showToast(BindProjectActivity.this, "图片上传失败，请重新选择图片");
-                    return;
-                }
-                //提交网络
-                sendToIntnet();
-                break;
-            case R.id.bt_insert_pic:
-                Boolean aBoolean = existsSdcard();
-                if (!aBoolean) {
-                    ToastUtils.showToast(BindProjectActivity.this, "手机SD卡不可用");
-                    return;
-                }
-                verifyStoragePermissions(BindProjectActivity.this);
-                //调用相册
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, IMAGE);
-                break;
-            default:
-                break;
-        }
-    }
-
     private void sendToIntnet() {
         ProgressDialogUtils.getInstance().show(BindProjectActivity.this, "正在提交，请稍等");
         UserInfo userinfo = SPref.getObject(BindProjectActivity.this, UserInfo.class, "userinfo");
@@ -295,26 +440,6 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //获取图片路径
-        if (requestCode == IMAGE && resultCode == Activity.RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumns = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(selectedImage, filePathColumns, null, null, null);
-            c.moveToFirst();
-            int columnIndex = c.getColumnIndex(filePathColumns[0]);
-            String imagePath = c.getString(columnIndex);
-            try {
-                showImage(imagePath);
-            } catch (Exception e) {
-                ToastUtils.showToast(this, "文件上传失败，请查看原图片是否存在");
-            }
-            c.close();
-        }
-    }
-
     //加载图片
     private void showImage(String imgPath) {
         //Bitmap bm = BitmapFactory.decodeFile(imgPath);
@@ -324,7 +449,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
             File newFile = new CompressHelper.Builder(this)
                     .setMaxWidth(720)  // 默认最大宽度为720
                     .setMaxHeight(960) // 默认最大高度为960
-                    .setQuality(100)    // 默认压缩质量为80
+                    .setQuality(80)    // 默认压缩质量为80
                     .setFileName("sendPic") // 设置你需要修改的文件名
                     .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
                     .setDestinationDirectoryPath(Environment.getExternalStoragePublicDirectory(
@@ -336,7 +461,7 @@ public class BindProjectActivity extends BaseActivity implements View.OnClickLis
             mImg_onSer = "";
             //上传图片
             sendImgToService(bm);
-        }else {
+        } else {
             ToastUtils.showToast(this, "未获取到源文件，请查看原图片是否存在");
         }
     }

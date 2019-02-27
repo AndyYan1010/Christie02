@@ -111,7 +111,9 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
                 count--;
                 if (count == 0) {
                     //连接时间超过*分钟，可关闭界面
+                    ToastUtils.showToast(Ble_Activity.this, "超出连接时间，请退出重新连接");
                     mProhandler.removeCallbacks(this);
+                    rippleBackground.stopRippleAnimation();
                     finish();
                 } else {
                     if (mConnected) {
@@ -135,7 +137,6 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.linear_back:
                 exitBlueTooth();
-                finish();
                 break;
             case R.id.centerImage:
                 rippleBackground.startRippleAnimation();
@@ -173,21 +174,12 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (mConnected && times == 3) {
-            sendMsg("<0F0000>");
-        }
+    protected void onDestroy() {
+        super.onDestroy();
         mConnected = false;
-        rippleBackground.stopRippleAnimation();
         mBluetoothLeService = null;
         mProhandler.removeCallbacksAndMessages(null);
         myHandler.removeCallbacksAndMessages(null);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
         //解除广播接收器
         unregisterReceiver(mGattUpdateReceiver);
         mBluetoothLeService = null;
@@ -252,25 +244,13 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
                 } else if (rev_string.startsWith("<050005>")) {
                     rev_cont = rev_string;
                     ToastUtils.showToast(Ble_Activity.this, "已开门，欢迎您!");
-                    rippleBackground.stopRippleAnimation();
+                    //退出对蓝牙读头的操作命令
+                    //                    if (mConnected && times == 3) {
+                    //                        sendMsg("<0F0000>");
+                    //                    }
+                    //解除占用并退出
+                    exitBlueTooth();
                 }
-
-                //                if (rev_string.startsWith("<0100")) {
-                //                    String substr = rev_string.substring(5, 13);
-                //                    String spliStr = substr + "00000000";
-                //                    String key = "DE7FF98AF2D4CED32BA64F9B4708F980";
-                //                    String content = TDESDoubleUtils.encryptECB3Des(key, spliStr);
-                //                    needSend = content;
-                //                    times = 2;
-                //                    //发送第二次
-                //                }
-                //                if (rev_string.startsWith("<0200")) {
-                //                    times = 3;
-                //                }
-                //                if (rev_string.startsWith("<0500")) {
-                //                    ToastUtils.showToast(Ble_Activity.this, "已开门，欢迎您!");
-                //                    rippleBackground.stopRippleAnimation();
-                //                }
             }
         });
     }
@@ -296,18 +276,24 @@ public class Ble_Activity extends BaseActivity implements View.OnClickListener {
             String str = new String(buff, 20 * lens[0], lens[1]);
             target_chara.setValue(str);
             //调用蓝牙服务的写特征值方法实现发送数据
-            boolean sendSuc = mBluetoothLeService.writeCharacteristic(target_chara);
-            if (sendSuc) {//分包的最后一个包发送成功//TODO:
-
-            }
+            mBluetoothLeService.writeCharacteristic(target_chara);
+            //            if (sendSuc) {//分包的最后一个包发送成功//TODO:
+            //
+            //            }
         }
     }
 
     private void exitBlueTooth() {
-        if (mConnected && times == 3) {
-            sendMsg("<0F0000>");
-        }
+        //        if (mConnected && times == 3) {
+        //            sendMsg("<0F0000>");
+        //            boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+        //            if (bluetoothEnabled) {
+        //                BluetoothManagerUtils.disabled();
+        //            }
+        //        }
+        rippleBackground.stopRippleAnimation();
         mConnected = false;
+        finish();
     }
 
     /* BluetoothLeService绑定的回调函数 */

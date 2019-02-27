@@ -123,25 +123,10 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         });
 
         //获取当前日期
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String data = simpleDateFormat.format(new Date());
-        tv_pData.setText(data.substring(0, 10));
+        //        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        //        String data = simpleDateFormat.format(new Date());
+        //        tv_pData.setText(data.substring(0, 10));
 
-        //        int subMtime = Integer.parseInt(data.substring(14, 15));
-        //        if (subMtime < 3) {
-        //            tv_pTime.setText(data.substring(11, 13) + ":00 -- " + data.substring(11, 13) + ":30");
-        //        } else {
-        //            int subHTime = Integer.parseInt(data.substring(11, 13));
-        //            if (subHTime == 23) {
-        //                tv_pTime.setText(data.substring(11, 13) + ":30 -- " + "00:00");
-        //            } else {
-        //                if (subHTime >= 9) {
-        //                    tv_pTime.setText(data.substring(11, 13) + ":30 -- " + (subHTime + 1) + ":00");
-        //                } else {
-        //                    tv_pTime.setText(data.substring(11, 13) + ":30 -- 0" + (subHTime + 1) + ":00");
-        //                }
-        //            }
-        //        }
         //选择停车时间
         tv_pData.setOnClickListener(this);
         //设置选择停车时段数据
@@ -218,12 +203,12 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
         et_carno.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if (b){
-                    if (null!=keyboardUtil){
+                if (b) {
+                    if (null != keyboardUtil) {
                         keyboardUtil.showKeyboard();
                     }
-                }else {
-                    if (null!=keyboardUtil){
+                } else {
+                    if (null != keyboardUtil) {
                         keyboardUtil.hideKeyboard();
                     }
                 }
@@ -234,6 +219,9 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
             @Override
             public void afterTextChanged(Editable s) {
                 //                Log.i("字符变换后", "afterTextChanged");
+                if (s.length() < 7 || s.length() > 8) {
+                    ToastUtils.showToast(ReservatParkingActivity.this, "请输入7-8位有效车牌");
+                }
             }
 
             @Override
