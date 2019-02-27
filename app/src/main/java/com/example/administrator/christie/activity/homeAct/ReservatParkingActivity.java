@@ -279,7 +279,10 @@ public class ReservatParkingActivity extends BaseActivity implements View.OnClic
                 String fdata = String.valueOf(tv_pData.getText()).trim();
                 String sTime1 = String.valueOf(tv_time1.getText()).trim();
                 String sTime2 = String.valueOf(tv_time2.getText()).trim();
-
+                if ("".equals(fdata) || "请选择日期".equals(fdata)) {
+                    ToastUtils.showToast(this, "请选择预计到达时间");
+                    return;
+                }
                 if (sTime1 == null || sTime2 == null || "0:0".equals(sTime1) || "0:0".equals(sTime2)) {
                     ToastUtils.showToast(this, "请选择预计到达时间");
                     return;
