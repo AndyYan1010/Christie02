@@ -172,7 +172,6 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
             mContext.startActivity(new Intent(mContext, QrcodeActivity.class));
         }
         if ("蓝牙开门".equals(title)) {
-            //Intent intent = new Intent(mContext, BluetoothActivity.class);
             Intent intent = new Intent(mContext, AddBluetoothActivity.class);
             mContext.startActivity(intent);
         }

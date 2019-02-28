@@ -38,7 +38,6 @@
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".activity.homeAct.QrcodeActivity"/>
-        <activity android:name=".activity.homeAct.BluetoothActivity"/>
         <activity android:name=".activity.homeAct.AccessdataActivity"/>
         <activity android:name=".activity.notme.VisitorActivity"/>
         <activity android:name=".activity.notme.InviterecordActivity"/>
@@ -62,6 +61,7 @@
         <activity android:name=".activity.usercenter.AddPlatenoActivity"/>
         <activity android:name=".activity.notme.PlateDetailActivity"/>
         <activity android:name=".activity.homeAct.AddBluetoothActivity"/>
+
         <activity android:name=".activity.homeAct.InvitationRecordActivity"/>
         <activity android:name=".activity.homeAct.ReservatParkingActivity"/>
         <activity android:name=".activity.homeAct.PayForParkingActivity"/>
@@ -126,9 +126,7 @@
         </activity>
         <activity android:name=".activity.homeAct.Ble_Activity"/>
         <!--蓝牙开门使用服务-->
-        <service
-            android:name=".service.BluetoothLeService"
-            android:enabled="true"/>
+        <service android:name=".service.BluetoothLeService"/>
     </application>
 
 </manifest>

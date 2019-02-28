@@ -20,8 +20,6 @@ public class ExceptionUtil {
 			PrintWriter printWriter=new PrintWriter(stringWriter);
 			e.printStackTrace(printWriter);
 			String string=stringWriter.toString();
-			
-		
 		//发邮件，发到服务器
 			LogUtil.i("", string);
 		}else

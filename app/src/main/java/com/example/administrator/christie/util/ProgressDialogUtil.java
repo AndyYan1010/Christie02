@@ -18,14 +18,15 @@ public class ProgressDialogUtil {
         if (context == null) {
             return;
         }
-        if (null==mProgressDialog){
+        if (null == mProgressDialog) {
             mProgressDialog = new ProgressDialog(context);
             mProgressDialog.setInverseBackgroundForced(false);//对话框后面的窗体不获得焦点
             mProgressDialog.setCanceledOnTouchOutside(false);//旁击不消失
             mProgressDialog.setMessage(message);
             mProgressDialog.setCancelable(true);
         }
-        mProgressDialog.show();
+        if (null != mProgressDialog)
+            mProgressDialog.show();
     }
 
     public static void hideDialog() {

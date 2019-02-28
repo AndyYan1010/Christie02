@@ -11,9 +11,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
@@ -33,7 +34,6 @@ import com.example.administrator.christie.modelInfo.BlueOpenInfo;
 import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
-import com.example.administrator.christie.util.BluetoothManagerUtils;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.IsInternetUtil;
 import com.example.administrator.christie.util.ProgressDialogUtil;
@@ -62,22 +62,30 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private LinearLayout linear_back, linear_selc_pro;
     private LinearLayout linear_search;//点击搜索蓝牙
     private TextView     mTv_title, mTv_search;
-    private ListView mLv_blt;
-    public static        boolean isSearchBT                      = false;
-    private static       int     REQUEST_ENABLE                  = 400;
-    private static final int     BLUETOOTH_DISCOVERABLE_DURATION = 120;//Bluetooth 设备可见时间，单位：秒，不设置默认120s。
-    private BluetoothAdapter   mBtmAdapter;
+    private ListView mLv_blt;//蓝牙列表
+    private static int REQUEST_ENABLE = 400;
     private List<ProjectMsg>   mBtData;
     private LvBlueTInfoAdapter mBlueTInfoAdapter;
     private ImageView          img_loading;//等待加载动画
     private Spinner            mSpinner_village;
-    private List<ProjectMsg>   dataDetList;//记录项目地址
+    private List<ProjectMsg>   dataDetList;//记录项目地址小区信息
     private ProSpinnerAdapter  mSpDetAdapter;
-    private String             mBlueOpenInfo;
+    private String             mBlueOpenInfo;//蓝牙信息
     private String mUpperID = "";//选择的小区id
     private List<ProjectMsg> sumDataList;//存放所有的授权蓝牙信息
     private int REQUEST_BLE_CODE = 10998;//开门界面响应码
     private int RESULT_BLE_CODE  = 10999;//开门成功后，关闭前面的界面
+    private Handler mProhandler;
+    private int count = 180;//搜索时间、单位秒
+    private boolean          autoOpen;//是否只绑定了一个蓝牙，是就自动开门
+    // 描述扫描蓝牙的状态
+    private boolean          mScanning;
+    private boolean          scan_flag;
+    private BluetoothAdapter mBluetoothAdapter;// 蓝牙适配器
+    private              int  REQUEST_ENABLE_BT = 1;
+    // 蓝牙扫描时间
+    private static final long SCAN_PERIOD       = 10000;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +94,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         initView();
         initData();
     }
-
-    private Handler mProhandler;
-    private int count = 180;//搜索时间、单位秒
-    private boolean autoOpen;
 
     private void initView() {
         linear_back = (LinearLayout) findViewById(R.id.linear_back);
@@ -110,6 +114,9 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         Glide.with(AddBluetoothActivity.this).load(R.drawable.loadgif).into(img_loading);
         mBtData = new ArrayList();
         sumDataList = new ArrayList<>();
+        mHandler = new Handler();
+
+        //初始化蓝牙列表
         mBlueTInfoAdapter = new LvBlueTInfoAdapter(this, mBtData);
         mLv_blt.setAdapter(mBlueTInfoAdapter);
         mLv_blt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,6 +128,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     ToastUtils.showToast(AddBluetoothActivity.this, "该设备不在附近，不可连接");
                     return;
                 }
+                //连接点击的蓝牙设备
+                connectBT(i);
                 //判断是否联网
                 boolean networkAvalible = IsInternetUtil.isNetworkAvalible(AddBluetoothActivity.this);
                 if (networkAvalible) {//有网,通知服务器开了哪个门
@@ -128,8 +137,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     String type = msg.getType();
                     sendOpenMsgToService(id, type);
                 }
-                //连接点击的蓝牙设备
-                connectBT(i);
             }
         });
 
@@ -154,9 +161,13 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
+
+        // 初始化蓝牙
+        init_ble();
+        scan_flag = true;
+
         //判断是否联网
         boolean networkAvalible = IsInternetUtil.isNetworkAvalible(this);
         if (networkAvalible) {
@@ -180,7 +191,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     //连接时间超过*分钟，可关闭界面
                     ToastUtils.showToast(AddBluetoothActivity.this, "超出连接时间，请退出重新连接");
                     mProhandler.removeCallbacks(this);
-                    finish();
+                    //finish();
                 } else {
                     if (autoOpen && mBtData.size() == 1) {
                         connectBT(0);
@@ -202,35 +213,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     ToastUtils.showToast(AddBluetoothActivity.this, "未获取到刷卡信息");
                     return;
                 }
-                if (!isSearchBT) {
-                    mBtData.clear();
-                    mBlueTInfoAdapter.notifyDataSetChanged();
-                    boolean bluetoothSupported = BluetoothManagerUtils.isBluetoothSupported();
-                    if (bluetoothSupported) {
-                        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
-                        if (!bluetoothEnabled) {
-                            //弹出对话框提示用户是否打开
-                            Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                            // 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
-                            enabler.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                            // 设置 Bluetooth 设备可见时间
-                            enabler.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, BLUETOOTH_DISCOVERABLE_DURATION);
-                            startActivityForResult(enabler, REQUEST_ENABLE);
-                        } else {
-                            needLoactionRight();
-                            //开始搜索
-                            //startSearchBluetooth();
-                        }
-                    } else {
-                        ToastUtils.showToast(this, "当前设备不支持蓝牙功能");
-                    }
-                } else {
-                    isSearchBT = false;
-                    mTv_search.setText("开始连接");
-                    img_loading.setVisibility(View.INVISIBLE);
-                    ToastUtils.showToast(this, "已停止连接");
-                    stopSearchBT();
-                }
+                //判断权限
+                needLoactionRight();
                 break;
         }
     }
@@ -238,31 +222,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (null != mReceiver) {
-            //解除广播接收器
-            unregisterReceiver(mReceiver);
-        }
-        stopSearchBT();
-        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
-        if (bluetoothEnabled) {
-            BluetoothManagerUtils.disabled();
-        }
         mProhandler.removeCallbacksAndMessages(null);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1:
-                //用户选择开启 Bluetooth，Bluetooth 会被开启
-                ToastUtils.showToast(this, "蓝牙开启了");
-                //开始搜索
-                startSearchBluetooth();
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -270,12 +230,10 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ENABLE) {
             switch (resultCode) {
-                // 点击确认按钮
-                case Activity.RESULT_OK:
-                    needLoactionRight();
+                case Activity.RESULT_OK:// 点击确认按钮
+
                     break;
-                // 点击取消按钮或点击返回键
-                case Activity.RESULT_CANCELED:
+                case Activity.RESULT_CANCELED: // 点击取消按钮或点击返回键
                     //用户拒绝打开 Bluetooth, Bluetooth 不会被开启
                     ToastUtils.showToast(this, "开启蓝牙功能，才能连接设备");
                     break;
@@ -285,12 +243,26 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         }
         if (requestCode == REQUEST_BLE_CODE) {
             if (resultCode == RESULT_BLE_CODE) {
-                boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
-                if (bluetoothEnabled) {
-                    BluetoothManagerUtils.disabled();
-                }
                 finish();
             }
+        }
+    }
+
+    private void init_ble() {
+        // 手机硬件支持蓝牙
+        if (!getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, "不支持BLE", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        // Initializes Bluetooth adapter.
+        // 获取手机本地的蓝牙适配器
+        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+        // 打开蓝牙权限
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
     }
 
@@ -335,7 +307,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                             lanyaInfo.setId(id1);//具体门的id
                             lanyaInfo.setUpperID(bean.getProjectdetail_id());//所属小区id
                             lanyaInfo.setType("1");
-                            lanyaInfo.setDetail_name(lanyaBean.getAddress1());
+                            lanyaInfo.setDetail_name(lanyaBean.getAddress1());//蓝牙地址
                             sumDataList.add(lanyaInfo);
                         } else {
                             ProjectMsg lanyaInfo1 = new ProjectMsg();
@@ -373,113 +345,109 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void connectBT(int position) {
-        //连接前先关闭蓝牙搜索功能
-        isSearchBT = false;
-        mTv_search.setText("开始搜索");
-        img_loading.setVisibility(View.INVISIBLE);
-        stopSearchBT();
-        //蓝牙是否打开
-        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
-        if (!bluetoothEnabled) {
-            BluetoothManagerUtils.turnOnBluetooth();
-        }
-        //获取对应条目的蓝牙设备信息
-        //final BluetoothDevice btDevice = mBtData.get(position);
-        final ProjectMsg btDevice = mBtData.get(position);
-        Intent intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
+        ProjectMsg btDevice = mBtData.get(position);
+        final Intent intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
         intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getProject_name());
         intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
         intent.putExtra("blueOpenInfo", mBlueOpenInfo);
-        // 启动Ble_Activity
-        startActivityForResult(intent, REQUEST_BLE_CODE);
-        //        startActivity(intent);
-    }
-
-    private void autoConnectBT() {
-        //蓝牙是否打开
-        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
-        if (!bluetoothEnabled) {
-            BluetoothManagerUtils.turnOnBluetooth();
+        if (mScanning) {
+            /* 停止扫描设备 */
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mScanning = false;
+            mTv_search.setText("开始搜索");
+            img_loading.setVisibility(View.INVISIBLE);
         }
-        //获取对应条目的蓝牙设备信息
-        //final BluetoothDevice btDevice = mBtData.get(position);
-        final ProjectMsg btDevice = dataDetList.get(1);
-        Intent intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
-        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getProject_name());
-        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
-        intent.putExtra("blueOpenInfo", mBlueOpenInfo);
-        // 启动Ble_Activity
-        startActivity(intent);
-    }
-
-    private void stopSearchBT() {
-        if (mBtmAdapter != null && mBtmAdapter.isDiscovering()) {
-            mBtmAdapter.cancelDiscovery();
-            mBtmAdapter.stopLeScan(leScanCallback);
+        try {
+            // 启动Ble_Activity
+            startActivityForResult(intent, REQUEST_BLE_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // TODO: handle exception
         }
     }
 
-    private BluetoothAdapter.LeScanCallback leScanCallback;
-
-    private void startSearchBluetooth() {
-        isSearchBT = true;
-        mTv_search.setText("停止连接");
-        img_loading.setVisibility(View.VISIBLE);
-        mBtData.clear();
-        mBlueTInfoAdapter.notifyDataSetChanged();
-        //注册广播接收器
-        registerRec();
-        ToastUtils.showToast(this, "正在连接。。。");
-        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        //TODO:扫描获取蓝牙强度
-        leScanCallback = new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(BluetoothDevice bluetoothDevice, int i, byte[] bytes) {
-                //ToastUtils.showToast(AddBluetoothActivity.this, bluetoothDevice.getName() + "&&&" + i);
-                String blAddress = bluetoothDevice.getAddress();
-                for (ProjectMsg msg : mBtData) {
-                    String detail_name = msg.getDetail_name();
-                    if (detail_name.equals(blAddress)) {
-                        msg.setRssi(i);
-                    }
-                }
-                //排序,信号强的在前面
-                for (int m = 0; m < mBtData.size(); m++) {
-                    ProjectMsg msg = mBtData.get(m);
-                    for (int n = m + 1; n < mBtData.size(); n++) {
-                        ProjectMsg msg1 = mBtData.get(n);
-                        if ("1".equals(msg.getToNext()) && "1".equals(msg1.getToNext())) {
-                            if (msg.getRssi() < msg1.getRssi()) {
-                                mBtData.set(m, msg1);
-                                mBtData.set(n, msg);
+    /**
+     * 蓝牙扫描回调函数 实现扫描蓝牙设备，回调蓝牙BluetoothDevice，可以获取name MAC等信息
+     **/
+    private boolean isHave;
+    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    /* 讲扫描到设备的信息输出到listview的适配器 */
+                    //先判断扫描到的蓝牙设备是不是已绑定的设备//是就添加到listview//不是的忽略
+                    for (ProjectMsg msg : sumDataList) {
+                        isHave = false;
+                        for (ProjectMsg dev : mBtData) {
+                            if (msg.getDetail_name().equals(dev.getDetail_name()))
+                                isHave = true;
+                        }
+                        if (!isHave) {
+                            if (null != msg.getDetail_name() && !"".equals(msg.getDetail_name())) {
+                                if (msg.getDetail_name().equals(device.getAddress())) {
+                                    ProjectMsg proMsg = new ProjectMsg();
+                                    proMsg.setProject_name(msg.getProject_name());
+                                    proMsg.setDetail_name(msg.getDetail_name());
+                                    proMsg.setToNext("1");
+                                    proMsg.setId(msg.getId());
+                                    proMsg.setType(msg.getType());
+                                    proMsg.setRssi(rssi);
+                                    mBtData.add(proMsg);
+                                }
                             }
                         }
                     }
+                    //给已添加的蓝牙设备按强度排序
+                    //排序,信号强的在前面
+                    for (int m = 0; m < mBtData.size(); m++) {
+                        ProjectMsg msg = mBtData.get(m);
+                        for (int n = m + 1; n < mBtData.size(); n++) {
+                            ProjectMsg msg1 = mBtData.get(n);
+                            if ("1".equals(msg.getToNext()) && "1".equals(msg1.getToNext())) {
+                                if (msg.getRssi() < msg1.getRssi()) {
+                                    mBtData.set(m, msg1);
+                                    mBtData.set(n, msg);
+                                }
+                            }
+                        }
+                    }
+                    mBlueTInfoAdapter.notifyDataSetChanged();
                 }
-            }
-        };
-        //获取BluetoothAdapter
-        if (bluetoothManager != null) {
-            mBtmAdapter = bluetoothManager.getAdapter();
-            if (null != mBtmAdapter && !mBtmAdapter.isDiscovering()) {
-                mBtmAdapter.startDiscovery();
-                mBtmAdapter.startLeScan(leScanCallback);
-            }
-        } else {
-            ToastUtils.showToast(AddBluetoothActivity.this, "未获取到手机自带的蓝牙设备");
+            });
         }
-    }
+    };
 
-    private SearchBlueThBcr mReceiver;
-
-    private void registerRec() {
-        //3.注册蓝牙广播
-        mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter, sumDataList);
-        mReceiver.setUI(mTv_search, img_loading, mUpperID);
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);//搜索结束
-        registerReceiver(mReceiver, filter);
+    private void scanLeDevice(final boolean enable) {
+        if (enable) {
+            // Stops scanning after a pre-defined scan period.
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mScanning = false;
+                    scan_flag = true;
+                    mTv_search.setText("开始连接");
+                    Log.i("SCAN", "stop.....................");
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                }
+            }, SCAN_PERIOD);
+            /* 开始扫描蓝牙设备，带mLeScanCallback 回调函数 */
+            Log.i("SCAN", "begin.....................");
+            mScanning = true;
+            scan_flag = false;
+            mTv_search.setText("停止连接");
+            ToastUtils.showToast(this, "正在连接。。。");
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
+            img_loading.setVisibility(View.VISIBLE);
+            mBtData.clear();
+            mBlueTInfoAdapter.notifyDataSetChanged();
+        } else {
+            Log.i("Stop", "stoping................");
+            mScanning = false;
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            scan_flag = true;
+        }
     }
 
     private void getLocalBlueInfo() {
@@ -524,7 +492,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 mBlueOpenInfo = dataDetList.get(1).getDetail_name();
                 linear_selc_pro.setVisibility(View.GONE);
             }
-            isSearchBT = false;
         }
     }
 
@@ -573,7 +540,59 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,}, 1);
             }
         } else {
-            startSearchBluetooth();
+            if (scan_flag) {
+                scanLeDevice(true);
+            } else {
+                scanLeDevice(false);
+                mTv_search.setText("开始连接");
+            }
         }
     }
+
+    private SearchBlueThBcr mReceiver;
+
+    private void registerRec() {
+        //3.注册蓝牙广播
+        mReceiver = new SearchBlueThBcr(mBtData, mBlueTInfoAdapter, sumDataList);
+        mReceiver.setUI(mTv_search, img_loading, mUpperID);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);//搜索到蓝牙
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);//搜索结束
+        registerReceiver(mReceiver, filter);
+    }
+
+    //    @Override
+    //    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    //        switch (requestCode) {
+    //            case 1:
+    //                //用户选择开启 Bluetooth，Bluetooth 会被开启
+    //                ToastUtils.showToast(this, "蓝牙开启了");
+    //                //开始搜索
+    //                //                startSearchBluetooth();
+    //                break;
+    //            default:
+    //                break;
+    //        }
+    //    }
+
+    //
+    //    boolean bluetoothSupported = BluetoothManagerUtils.isBluetoothSupported();
+    //                    if (bluetoothSupported) {
+    //        boolean bluetoothEnabled = BluetoothManagerUtils.isBluetoothEnabled();
+    //        if (!bluetoothEnabled) {
+    //            //弹出对话框提示用户是否打开
+    //            Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+    //            // 设置 Bluetooth 设备可以被其它 Bluetooth 设备扫描到
+    //            enabler.setAction(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+    //            // 设置 Bluetooth 设备可见时间
+    //            enabler.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, BLUETOOTH_DISCOVERABLE_DURATION);
+    //            startActivityForResult(enabler, REQUEST_ENABLE);
+    //        } else {
+    //            //开始搜索
+    //            needLoactionRight();
+    //        }
+    //    } else {
+    //        ToastUtils.showToast(this, "当前设备不支持蓝牙功能");
+    //    }
 }

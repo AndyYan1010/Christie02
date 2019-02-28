@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.administrator.christie.InformationMessege.ProjectMsg;
-import com.example.administrator.christie.activity.homeAct.AddBluetoothActivity;
 import com.example.administrator.christie.adapter.LvBlueTInfoAdapter;
 import com.example.administrator.christie.util.ToastUtils;
 
@@ -107,7 +106,6 @@ public class SearchBlueThBcr extends BroadcastReceiver {
                     }
                 }
                 mAdapter.notifyDataSetChanged();
-                AddBluetoothActivity.isSearchBT = false;
                 tv_title.setText("开始连接");
                 img_load.setVisibility(View.INVISIBLE);
                 break;
