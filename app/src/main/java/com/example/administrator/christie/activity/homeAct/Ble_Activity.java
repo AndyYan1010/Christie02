@@ -94,9 +94,17 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                         mhandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (!isSended) {
-                                    //发送指令一
-                                    sendMsg("<010000>", 0);
+                                //                                if (!isSended) {
+                                //                                    //发送指令一
+                                //                                    sendMsg("<010000>", 0);
+                                //                                }
+                                if (mConnected) {
+                                    if (null != mBluetoothLeService && null != mBluetoothLeService.getBlueGatt() && null != target_chara) {
+                                        if (!isSended) {
+                                            //发送指令一
+                                            sendMsg("<010000>", 0);
+                                        }
+                                    }
                                 }
                             }
                         }, 1500);
@@ -124,7 +132,9 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                     finish();
                     break;
             }
-            super.handleMessage(msg);
+            super.
+
+                    handleMessage(msg);
         }
     };
 
@@ -395,11 +405,13 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                 if (gattCharacteristic.getUuid().toString().equals(HEART_RATE_MEASUREMENT)) {
                     // 测试读取当前Characteristic数据，会触发mOnDataAvailable.onCharacteristicRead()
                     mhandler.postDelayed(new Runnable() {
-
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
-                            mBluetoothLeService.readCharacteristic(gattCharacteristic);
+                            try {
+                                mBluetoothLeService.readCharacteristic(gattCharacteristic);
+                            } catch (Exception e) {
+                            }
                         }
                     }, 200);
 
