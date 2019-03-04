@@ -94,10 +94,6 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                         mhandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                //                                if (!isSended) {
-                                //                                    //发送指令一
-                                //                                    sendMsg("<010000>", 0);
-                                //                                }
                                 if (mConnected) {
                                     if (null != mBluetoothLeService && null != mBluetoothLeService.getBlueGatt() && null != target_chara) {
                                         if (!isSended) {
@@ -107,7 +103,7 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                                     }
                                 }
                             }
-                        }, 1500);
+                        }, 1000);
                     } else {
                         ToastUtils.showToast(Ble_Activity.this, "蓝牙连接中断，请退出重新连接");
                     }
@@ -132,9 +128,7 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                     finish();
                     break;
             }
-            super.
-
-                    handleMessage(msg);
+            super.handleMessage(msg);
         }
     };
 
@@ -169,6 +163,9 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
         //解除广播接收器
         unregisterReceiver(mGattUpdateReceiver);
         mBluetoothLeService = null;
+        if (null != mProhandler)
+            mProhandler.removeCallbacksAndMessages(null);
+        mProhandler = null;
     }
 
     /*
@@ -204,26 +201,26 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
         //        send_btn.setOnClickListener(this);
         //        send_et.setText("<010000>");
 
-        //        mProhandler = new Handler();
-        //        mProhandler.postDelayed(new Runnable() {
-        //            public void run() {
-        //                mProhandler.postDelayed(this, 2000);//递归执行，一秒执行一次
-        //                count--;
-        //                if (count == 0) {
-        //                    //连接时间超过*分钟，可关闭界面
-        //                    mProhandler.removeCallbacks(this);
-        //                } else {
-        //                    if (mConnected) {
-        //                        if (null != mBluetoothLeService && null != mBluetoothLeService.getBlueGatt() && null != target_chara) {
-        //                            if (!isSended) {
-        //                                //发送指令一
-        //                                sendMsg("<010000>", 0);
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }, 2000);
+        mProhandler = new Handler();
+        mProhandler.postDelayed(new Runnable() {
+            public void run() {
+                mProhandler.postDelayed(this, 1000);//递归执行，一秒执行一次
+                count--;
+                if (count == 0) {
+                    //连接时间超过*分钟，可关闭界面
+                    mProhandler.removeCallbacks(this);
+                } else {
+                    if (mConnected) {
+                        if (null != mBluetoothLeService && null != mBluetoothLeService.getBlueGatt() && null != target_chara) {
+                            if (!isSended) {
+                                //发送指令一
+                                sendMsg("<010000>", 0);
+                            }
+                        }
+                    }
+                }
+            }
+        }, 1000);
     }
 
     /**
@@ -253,7 +250,7 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                         public void run() {
                             myHandler.sendEmptyMessage(1002);
                         }
-                    }, 500);
+                    }, 300);
                 } else if (rev_string.startsWith("<020002>")) {
                     rev_cont = rev_string;
                     mhandler.postDelayed(new Runnable() {
@@ -261,7 +258,7 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                         public void run() {
                             myHandler.sendEmptyMessage(1003);
                         }
-                    }, 500);
+                    }, 300);
                 } else if (rev_string.startsWith("<050005>")) {
                     rev_cont = rev_string;
                     myHandler.sendEmptyMessage(1004);

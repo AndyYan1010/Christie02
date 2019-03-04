@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -34,6 +36,7 @@ import com.example.administrator.christie.modelInfo.BlueOpenInfo;
 import com.example.administrator.christie.modelInfo.LoginInfo;
 import com.example.administrator.christie.modelInfo.RequestParamsFM;
 import com.example.administrator.christie.modelInfo.UserInfo;
+import com.example.administrator.christie.util.BluetoothManagerUtils;
 import com.example.administrator.christie.util.HttpOkhUtils;
 import com.example.administrator.christie.util.IsInternetUtil;
 import com.example.administrator.christie.util.ProgressDialogUtil;
@@ -61,7 +64,7 @@ import okhttp3.Request;
 public class AddBluetoothActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout linear_back, linear_selc_pro;
     private LinearLayout linear_search;//点击搜索蓝牙
-    private TextView     mTv_title, mTv_search;
+    private TextView     mTv_title, mTv_search, tv_proName;
     private ListView mLv_blt;//蓝牙列表
     private static int REQUEST_ENABLE = 400;
     private List<ProjectMsg>   mBtData;
@@ -75,9 +78,9 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private List<ProjectMsg> sumDataList;//存放所有的授权蓝牙信息
     private int REQUEST_BLE_CODE = 10998;//开门界面响应码
     private int RESULT_BLE_CODE  = 10999;//开门成功后，关闭前面的界面
-    private Handler mProhandler;
-    private int count = 180;//搜索时间、单位秒
-    private boolean          autoOpen;//是否只绑定了一个蓝牙，是就自动开门
+    //    private Handler mProhandler;
+    //    private int count            = 180;//搜索时间、单位秒
+    //    private boolean          autoOpen;//是否只绑定了一个蓝牙，是就自动开门
     // 描述扫描蓝牙的状态
     private boolean          mScanning;
     private boolean          scan_flag;
@@ -100,6 +103,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         linear_selc_pro = (LinearLayout) findViewById(R.id.linear_selc_pro);//选择项目UI条目
         linear_search = (LinearLayout) findViewById(R.id.linear_search);//搜索蓝牙
         mTv_title = (TextView) findViewById(R.id.tv_title);
+        tv_proName = (TextView) findViewById(R.id.tv_proName);
         mTv_search = (TextView) findViewById(R.id.tv_search);
         img_loading = (ImageView) findViewById(R.id.img_loading);
         mLv_blt = (ListView) findViewById(R.id.listview_bluetooth);
@@ -181,25 +185,30 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             ToastUtils.showToast(this, "您的手机不支持BLE设备");
             finish();
         }
-        //自动开门
-        mProhandler = new Handler();
-        mProhandler.postDelayed(new Runnable() {
-            public void run() {
-                mProhandler.postDelayed(this, 1000);//递归执行，一秒执行一次
-                count--;
-                if (count == 0) {
-                    //连接时间超过*分钟，可关闭界面
-                    ToastUtils.showToast(AddBluetoothActivity.this, "超出连接时间，请退出重新连接");
-                    mProhandler.removeCallbacks(this);
-                    //finish();
-                } else {
-                    if (autoOpen && mBtData.size() == 1) {
-                        connectBT(0);
-                        autoOpen = false;
-                    }
-                }
-            }
-        }, 1000);
+        //自动搜索
+        //        mProhandler = new Handler();
+        //        mProhandler.postDelayed(new Runnable() {
+        //            public void run() {
+        //                mProhandler.postDelayed(this, 1000);//递归执行，一秒执行一次
+        //                count--;
+        //                if (count == 0) {
+        //                    //连接时间超过*分钟，可关闭界面
+        //                    ToastUtils.showToast(AddBluetoothActivity.this, "超出连接时间，请退出重新连接");
+        //                    mProhandler.removeCallbacks(this);
+        //                    //finish();
+        //                } else {
+        //                    if (autoOpen && mBtData.size() == 1) {
+        //                        connectBT(0);
+        //                        autoOpen = false;
+        //                    }
+        //                }
+        //            }
+        //        }, 1000);
+
+        //        if (BluetoothManagerUtils.isBluetoothEnabled()) {
+        //            //蓝牙是打开的情况下自动搜索
+        //            scanLeDevice(true);
+        //        }
     }
 
     @Override
@@ -220,9 +229,19 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (BluetoothManagerUtils.isBluetoothEnabled()) {
+            //蓝牙是打开的情况下自动搜索
+            scanLeDevice(true);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        mProhandler.removeCallbacksAndMessages(null);
+        //        mProhandler.removeCallbacksAndMessages(null);
+        //        mProhandler = null;
     }
 
     @Override
@@ -231,7 +250,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         if (requestCode == REQUEST_ENABLE) {
             switch (resultCode) {
                 case Activity.RESULT_OK:// 点击确认按钮
-
+                    scanLeDevice(true);
                     break;
                 case Activity.RESULT_CANCELED: // 点击取消按钮或点击返回键
                     //用户拒绝打开 Bluetooth, Bluetooth 不会被开启
@@ -336,7 +355,8 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     mBlueOpenInfo = dataDetList.get(1).getDetail_name();
                     linear_selc_pro.setVisibility(View.GONE);
                     //只绑定一个蓝牙设备、、自动开门
-                    autoOpen = true;
+                    //autoOpen = true;
+                    tv_proName.setText(dataDetList.get(1).getProject_name());
                 }
                 //本地保存授权蓝牙信息
                 SpUtils.putString(AddBluetoothActivity.this, "BlueRight", resbody);
@@ -346,9 +366,17 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
 
     private void connectBT(int position) {
         ProjectMsg btDevice = mBtData.get(position);
-        final Intent intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
-        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getProject_name());
-        intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
+        final Intent intent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            intent = new Intent(AddBluetoothActivity.this, Ble_Activityblewo8.class);
+            intent.putExtra(Ble_Activityblewo8.EXTRAS_DEVICE_NAME, btDevice.getProject_name());
+            intent.putExtra(Ble_Activityblewo8.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
+            intent.putExtra("blueOpenInfo", mBlueOpenInfo);
+        } else {
+            intent = new Intent(AddBluetoothActivity.this, Ble_Activity.class);
+            intent.putExtra(Ble_Activity.EXTRAS_DEVICE_NAME, btDevice.getProject_name());
+            intent.putExtra(Ble_Activity.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
+        }
         intent.putExtra("blueOpenInfo", mBlueOpenInfo);
         if (mScanning) {
             /* 停止扫描设备 */
@@ -446,6 +474,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             Log.i("Stop", "stoping................");
             mScanning = false;
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            img_loading.setVisibility(View.INVISIBLE);
             scan_flag = true;
         }
     }
@@ -546,6 +575,48 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                 scanLeDevice(false);
                 mTv_search.setText("开始连接");
             }
+        }
+    }
+
+
+    //    {
+    //        BluetoothListenerReceiver receiver = new BluetoothListenerReceiver();
+    //        registerReceiver(receiver, makeFilter());
+    //    }
+    //
+    //    private IntentFilter makeFilter() {
+    //        IntentFilter filter = new IntentFilter();
+    //        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+    //        return filter;
+    //    }
+
+    public class BluetoothListenerReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case BluetoothAdapter.ACTION_STATE_CHANGED:
+                    int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
+                    switch (blueState) {
+                        case BluetoothAdapter.STATE_TURNING_ON:
+                            //                            Log.e("onReceive---------蓝牙正在打开中");
+
+                            break;
+                        case BluetoothAdapter.STATE_ON:
+                            //                            Log.e("onReceive---------蓝牙已经打开");
+                            scanLeDevice(true);
+                            break;
+                        case BluetoothAdapter.STATE_TURNING_OFF:
+                            //                            Log.e("onReceive---------蓝牙正在关闭中");
+
+                            break;
+                        case BluetoothAdapter.STATE_OFF:
+                            //                            Log.e("onReceive---------蓝牙已经关闭");
+
+                            break;
+                    }
+                    break;
+            }
+
         }
     }
 

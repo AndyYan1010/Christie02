@@ -52,36 +52,43 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/linear_selc_pro"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:minHeight="120dp"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
-            <Spinner
-                android:id="@+id/spinner_proj"
+            <TextView
+                android:id="@+id/tv_proName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
                 android:minHeight="40dp"
-                android:spinnerMode="dialog"
-                android:visibility="gone">
-            </Spinner>
+                android:textColor="@color/word_black"
+                android:textSize="16sp"/>
 
-            <Spinner
-                android:id="@+id/spinner_village"
+            <LinearLayout
+                android:id="@+id/linear_selc_pro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:minHeight="40dp"
-                android:spinnerMode="dialog">
-            </Spinner>
-        </LinearLayout>
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dp"
+                android:gravity="center_vertical"
+                android:minHeight="120dp"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinner_village"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:minHeight="40dp"
+                    android:spinnerMode="dialog">
+                </Spinner>
+            </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 
