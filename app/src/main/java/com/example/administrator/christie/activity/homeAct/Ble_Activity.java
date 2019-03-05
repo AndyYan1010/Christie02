@@ -90,7 +90,7 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                     String state = msg.getData().getString("connect_state");
                     // connect_state.setText(state);
                     if ("connected".equals(state)) {
-                        ToastUtils.showToast(Ble_Activity.this, "蓝牙已连接");
+                        // ToastUtils.showToast(Ble_Activity.this, "蓝牙已连接");
                         mhandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {

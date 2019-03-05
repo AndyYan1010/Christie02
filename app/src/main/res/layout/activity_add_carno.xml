@@ -33,6 +33,7 @@
             android:background="@drawable/bg_round_white"
             android:gravity="center"
             android:hint="请输入车牌号码"
+            android:maxLength="8"
             android:textColor="@color/vm_black_100"
             android:textSize="20sp"/>
 

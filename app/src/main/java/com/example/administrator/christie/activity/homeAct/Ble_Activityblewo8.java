@@ -187,7 +187,7 @@ public class Ble_Activityblewo8 extends AppCompatActivity implements View.OnClic
                     String state = msg.getData().getString("connect_state");
                     //                    connect_state.setText(state);
                     if ("connected".equals(state)) {
-                        ToastUtils.showToast(Ble_Activityblewo8.this, "蓝牙已连接");
+                        //                        ToastUtils.showToast(Ble_Activityblewo8.this, "蓝牙已连接");
                     } else {
                         //                        ToastUtils.showToast(Ble_Activityblewo8.this, "蓝牙连接中断，请退出重新连接");
                     }
