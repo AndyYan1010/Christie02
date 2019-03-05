@@ -578,18 +578,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-
-    //    {
-    //        BluetoothListenerReceiver receiver = new BluetoothListenerReceiver();
-    //        registerReceiver(receiver, makeFilter());
-    //    }
-    //
-    //    private IntentFilter makeFilter() {
-    //        IntentFilter filter = new IntentFilter();
-    //        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-    //        return filter;
-    //    }
-
     public class BluetoothListenerReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

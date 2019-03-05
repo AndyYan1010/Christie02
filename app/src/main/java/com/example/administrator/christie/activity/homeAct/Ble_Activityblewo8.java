@@ -120,7 +120,7 @@ public class Ble_Activityblewo8 extends AppCompatActivity implements View.OnClic
             case R.id.centerImage:
                 rippleBackground.startRippleAnimation();
                 //发送开门命令
-                if (mConnected && times == 3) {
+                if (mConnected && times == 4) {
                     //Tip:发送模拟刷卡信息包时，蓝牙控制器对APP的外部认证必须已经成功，外部认证有效期持续3分钟，超出时间后需要重新执行外部认证。
                     //NO.3发送模拟刷卡信息包
                     // String testPackInfo = "000000004D928CFBCEAA6C01A48911B2";
@@ -161,8 +161,12 @@ public class Ble_Activityblewo8 extends AppCompatActivity implements View.OnClic
         mConnected = false;
         rippleBackground.stopRippleAnimation();
         mBluetoothLeService = null;
-        mSendMsgHandler.removeCallbacksAndMessages(null);
-        myHandler.removeCallbacksAndMessages(null);
+        if (null != mSendMsgHandler)
+            mSendMsgHandler.removeCallbacksAndMessages(null);
+        if (null != myHandler)
+            myHandler.removeCallbacksAndMessages(null);
+        mSendMsgHandler = null;
+        myHandler = null;
     }
 
     @Override
@@ -211,14 +215,18 @@ public class Ble_Activityblewo8 extends AppCompatActivity implements View.OnClic
                     times = 3;
                 }
                 if (rev_string.startsWith("<0500")) {
+                    times = 4;
                     ToastUtils.showToast(Ble_Activityblewo8.this, "已开门，欢迎您!");
                     rippleBackground.stopRippleAnimation();
-                    //                    exitBlueTooth();
+                    // exitBlueTooth();
+                    setResult(RESULT_BLE_CODE);
                     finish();
                 }
             }
         });
     }
+
+    private int RESULT_BLE_CODE = 10999;//开门界面响应码
 
     private void SetSendBlueInfo() {
         mSendMsgHandler.postDelayed(new Runnable() {
