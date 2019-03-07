@@ -114,7 +114,6 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initData() {
-        img_loading.setVisibility(View.INVISIBLE);
         Glide.with(AddBluetoothActivity.this).load(R.drawable.loadgif).into(img_loading);
         mBtData = new ArrayList();
         sumDataList = new ArrayList<>();
@@ -456,6 +455,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
                     mScanning = false;
                     scan_flag = true;
                     mTv_search.setText("开始连接");
+                    img_loading.setVisibility(View.INVISIBLE);
                     Log.i("SCAN", "stop.....................");
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 }

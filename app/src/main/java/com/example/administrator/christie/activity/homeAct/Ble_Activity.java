@@ -159,13 +159,16 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        //解除广播接收器
-        unregisterReceiver(mGattUpdateReceiver);
-        mBluetoothLeService = null;
         if (null != mProhandler)
             mProhandler.removeCallbacksAndMessages(null);
         mProhandler = null;
+        if (null != mBluetoothLeService) {
+            mBluetoothLeService.close();
+            mBluetoothLeService.stopNotifacation();
+        }
+        unbindService(mServiceConnection);
+        //解除广播接收器
+        unregisterReceiver(mGattUpdateReceiver);
     }
 
     /*
@@ -220,7 +223,7 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-        }, 1000);
+        }, 2000);
     }
 
     /**
@@ -281,10 +284,14 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
             // initialization.
             // 根据蓝牙地址，连接设备
             mBluetoothLeService.connect(mDeviceAddress);
+            mBluetoothLeService.creatNotifacation();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
+            if (null != mBluetoothLeService) {
+                mBluetoothLeService.close();
+            }
             mBluetoothLeService = null;
         }
     };
@@ -296,24 +303,19 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action))//Gatt连接成功
-            {
+            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {//Gatt连接成功
                 mConnected = true;
                 status = "connected";
                 //更新连接状态
                 updateConnectionState(status);
                 System.out.println("BroadcastReceiver :" + "device connected");
-
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED//Gatt连接失败
-                    .equals(action)) {
+            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {//Gatt连接失败
                 mConnected = false;
                 status = "disconnected";
                 //更新连接状态
                 updateConnectionState(status);
                 System.out.println("BroadcastReceiver :" + "device disconnected");
-
-            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED//发现GATT服务器
-                    .equals(action)) {
+            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {//发现GATT服务器
                 // Show all the supported services and characteristics on the
                 // user interface.
                 //获取设备的所有蓝牙服务

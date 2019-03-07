@@ -1,5 +1,6 @@
 package com.example.administrator.christie.service;
 
+import android.app.Notification;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,6 +17,9 @@ import android.hardware.Sensor;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.RemoteViews;
+
+import com.example.administrator.christie.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -233,8 +237,23 @@ public class BluetoothLeService extends Service {
         return super.onUnbind(intent);
     }
 
-    private final IBinder mBinder = new LocalBinder();
+    public void creatNotifacation() {
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notifacation_layout);
+        Notification notification = new Notification.Builder(this.getApplicationContext())
+                .setContent(remoteViews)// 设置自定义的Notification内容
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .getNotification();// 获取构建好的通知--.build()最低要求在
+        // API16及以上版本上使用，低版本上可以使用.getNotification()。
+        notification.defaults = Notification.DEFAULT_SOUND;//设置为默认的声音
+        startForeground(110, notification);//开始前台服务
+    }
 
+    public void stopNotifacation() {
+        stopForeground(true);// 停止前台服务
+    }
+
+    private final IBinder mBinder = new LocalBinder();
 
     /**
      * Initializes a reference to the local Bluetooth adapter.
