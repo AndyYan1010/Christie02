@@ -137,18 +137,18 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
 
     private void setTimeList() {
         mTimeData = new ArrayList();
-        mTimeData.add("00:00");
-        mTimeData.add("00:30");
-        mTimeData.add("01:00");
-        mTimeData.add("01:30");
-        mTimeData.add("02:00");
-        mTimeData.add("02:30");
-        mTimeData.add("03:00");
-        mTimeData.add("03:30");
-        mTimeData.add("04:00");
-        mTimeData.add("04:30");
-        mTimeData.add("05:00");
-        mTimeData.add("05:30");
+//        mTimeData.add("00:00");
+//        mTimeData.add("00:30");
+//        mTimeData.add("01:00");
+//        mTimeData.add("01:30");
+//        mTimeData.add("02:00");
+//        mTimeData.add("02:30");
+//        mTimeData.add("03:00");
+//        mTimeData.add("03:30");
+//        mTimeData.add("04:00");
+//        mTimeData.add("04:30");
+//        mTimeData.add("05:00");
+//        mTimeData.add("05:30");
         mTimeData.add("06:00");
         mTimeData.add("06:30");
         mTimeData.add("07:00");
@@ -185,6 +185,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         mTimeData.add("22:30");
         mTimeData.add("23:00");
         mTimeData.add("23:30");
+        mTimeData.add("24:00");
     }
 
     private void getBDProjectID(String userid) {
