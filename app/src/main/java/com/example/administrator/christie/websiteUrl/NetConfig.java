@@ -80,4 +80,6 @@ public class NetConfig {
     public static String INSERTMENJIN = ROOT + "insertmenjin";
     //点赞，踩
     public static String USERLIKEGOOD = ROOT + "userlikegood";
+    //获取个人中心信息
+    public static String GETGRZX      = ROOT + "getGrzx";
 }

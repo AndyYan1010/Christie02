@@ -74,6 +74,7 @@
         <activity android:name=".activity.menushowpackage.MenuDetailShowActivity"/>
         <activity android:name=".activity.homeAct.ParkinglockActivity"/>
         <activity android:name=".activity.usercenter.AboutUsActivity"/>
+        <activity android:name=".activity.usercenter.WebMoreInfoActivity"/>
         <activity
             android:name=".activity.usercenter.PlateActivity"
             android:label="@string/title_activity_plate"

@@ -119,8 +119,9 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case 1003:
                     Log.i(TAG, "下面第三次发送");
-                    send_et.setText("<05F16D9DD21E73FE716000>");
-                    sendMsg("<05F16D9DD21E73FE716000>", 0);
+
+                    send_et.setText("<05F1" + mBlueOpenInfo + "00>");
+                    sendMsg("<05F1" + mBlueOpenInfo + "00>", 0);//<05F16D9DD21E73FE716000>
                     break;
                 case 1004:
                     Log.i(TAG, "开门成功");
@@ -131,6 +132,7 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
             super.handleMessage(msg);
         }
     };
+    private String mBlueOpenInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,8 +143,8 @@ public class Ble_Activity extends AppCompatActivity implements View.OnClickListe
         mDeviceName = b.getString(EXTRAS_DEVICE_NAME);
         mDeviceAddress = b.getString(EXTRAS_DEVICE_ADDRESS);
         mRssi = b.getString(EXTRAS_DEVICE_RSSI);
-
-		/* 启动蓝牙service */
+        mBlueOpenInfo = getIntent().getStringExtra("blueOpenInfo");
+        /* 启动蓝牙service */
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
         init();

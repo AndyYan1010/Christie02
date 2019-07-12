@@ -166,7 +166,10 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            ToastUtils.showToast(this, "您的手机不支持BLE设备");
+            finish();
+        }
         // 初始化蓝牙
         init_ble();
         scan_flag = true;
@@ -180,10 +183,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
             //没有网络，获取本地存储数据解析
             getLocalBlueInfo();
         }
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            ToastUtils.showToast(this, "您的手机不支持BLE设备");
-            finish();
-        }
+
         //自动搜索
         //        mProhandler = new Handler();
         //        mProhandler.postDelayed(new Runnable() {
@@ -366,7 +366,7 @@ public class AddBluetoothActivity extends BaseActivity implements View.OnClickLi
     private void connectBT(int position) {
         ProjectMsg btDevice = mBtData.get(position);
         final Intent intent;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             intent = new Intent(AddBluetoothActivity.this, Ble_Activityblewo8.class);
             intent.putExtra(Ble_Activityblewo8.EXTRAS_DEVICE_NAME, btDevice.getProject_name());
             intent.putExtra(Ble_Activityblewo8.EXTRAS_DEVICE_ADDRESS, btDevice.getDetail_name());
