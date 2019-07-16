@@ -91,7 +91,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         tv_pData = (TextView) view.findViewById(R.id.tv_pData);
         tv_time1 = (TextView) view.findViewById(R.id.tv_time1);
         tv_time2 = (TextView) view.findViewById(R.id.tv_time2);
-//        et_arrTime = (EditText) view.findViewById(R.id.et_arrTime);
+        //        et_arrTime = (EditText) view.findViewById(R.id.et_arrTime);
         mEdit_reason = (EditText) view.findViewById(R.id.edit_reason);
         mSpinner_area = view.findViewById(R.id.spinner_area);
         mBt_create = (Button) view.findViewById(R.id.bt_create);
@@ -137,18 +137,18 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
 
     private void setTimeList() {
         mTimeData = new ArrayList();
-//        mTimeData.add("00:00");
-//        mTimeData.add("00:30");
-//        mTimeData.add("01:00");
-//        mTimeData.add("01:30");
-//        mTimeData.add("02:00");
-//        mTimeData.add("02:30");
-//        mTimeData.add("03:00");
-//        mTimeData.add("03:30");
-//        mTimeData.add("04:00");
-//        mTimeData.add("04:30");
-//        mTimeData.add("05:00");
-//        mTimeData.add("05:30");
+        //        mTimeData.add("00:00");
+        //        mTimeData.add("00:30");
+        //        mTimeData.add("01:00");
+        //        mTimeData.add("01:30");
+        //        mTimeData.add("02:00");
+        //        mTimeData.add("02:30");
+        //        mTimeData.add("03:00");
+        //        mTimeData.add("03:30");
+        //        mTimeData.add("04:00");
+        //        mTimeData.add("04:30");
+        //        mTimeData.add("05:00");
+        //        mTimeData.add("05:30");
         mTimeData.add("06:00");
         mTimeData.add("06:30");
         mTimeData.add("07:00");
@@ -392,7 +392,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                         InvitationQRcodeFragment invitationQRcodeFgt = new InvitationQRcodeFragment();
                         // String detailJson = "name:";
                         // String detailJson = "name:" + name + "phone:" + phone + "date:" + date + "longtime:" + longtime + "reason:" + reason;
-                        invitationQRcodeFgt.setInfoJson("{" + code1 + "}");
+                        invitationQRcodeFgt.setInfoJson(code1);
                         ftt.add(R.id.frame_accessdata, invitationQRcodeFgt, "invitationQRcodeFgt");
                         ftt.addToBackStack(null);
                         ftt.commit();
