@@ -170,6 +170,11 @@ public class PersonalDataInfo {
             private int    id;
             private String id_pic;
             private String relation;
+            /**
+             * fcode : 1234
+             */
+
+            private String fcode;
 
             public String getFname() {
                 return fname;
@@ -241,6 +246,14 @@ public class PersonalDataInfo {
 
             public void setRelation(String relation) {
                 this.relation = relation;
+            }
+
+            public String getFcode() {
+                return fcode;
+            }
+
+            public void setFcode(String fcode) {
+                this.fcode = fcode;
             }
         }
     }

@@ -68,8 +68,11 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     private List<ProjectMsg>     dataProList;
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
     private String               chooseProID;//小区id
+    private String               chooseProDetailID;//小区详细id
+    private String               mFcode;//小区code
     private String               markData;
     private String               mUserid;
+    private String               mUserName;
     private String               stime2;
 
     @Override
@@ -113,8 +116,12 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 ProjectMsg msg = dataProList.get(i);
                 String project_name = msg.getProject_name();
                 if (!"请选择项目".equals(project_name)) {
+                    String project_id = msg.getUpperID();
                     String detail_id = msg.getId();
-                    chooseProID = detail_id;
+                    String fcode = msg.getType();
+                    chooseProID = project_id;
+                    chooseProDetailID = detail_id;
+                    mFcode = fcode;
                 }
             }
 
@@ -125,6 +132,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         });
         UserInfo userinfo = SPref.getObject(getContext(), UserInfo.class, "userinfo");
         mUserid = userinfo.getUserid();
+        mUserName = userinfo.getUsername();
         //从网络获取个人绑定的小区
         getBDProjectID(mUserid);
         //选择时间数据设置
@@ -219,12 +227,16 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                 for (int i = 0; i < listProject.size(); i++) {
                     PersonalDataInfo.ArrBean.ListProjectBean listProjectBean = listProject.get(i);
                     String project_name = listProjectBean.getProject_name();
+                    String project_id = listProjectBean.getProject_id();
                     String fname = listProjectBean.getFname();
                     String detail_id = listProjectBean.getProjectdetail_id();
+                    String fcode = listProjectBean.getFcode();
                     ProjectMsg bdInfo = new ProjectMsg();
                     bdInfo.setProject_name(project_name);
+                    bdInfo.setUpperID(project_id);
                     bdInfo.setDetail_name(fname);
                     bdInfo.setId(detail_id);
+                    bdInfo.setType(fcode);
                     dataProList.add(bdInfo);
                 }
                 mDetailAdapter.notifyDataSetChanged();
@@ -284,9 +296,11 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     ToastUtils.showToast(mContext, "来访日期不能为空");
                     return;
                 }
-                if ("0:0".equals(stime1) || "0:0".equals(stime1)) {
-                    ToastUtils.showToast(mContext, "请选择预计到达时间");
-                    return;
+                if ("".equals(stime1) ) {
+                    stime1="06:00";
+                }
+                if ("".equals(stime2)){
+                    stime2="24:00";
                 }
                 //                if (longtime.equals("") || longtime.equals("请输入来访时长")) {
                 //                    ToastUtils.showToast(mContext, "来访时长不能为空");
@@ -296,12 +310,12 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     ToastUtils.showToast(mContext, "来访事由不能为空");
                     return;
                 }
-                if (null == chooseProID || "请选择项目".equals(chooseProID)) {
+                if (null == chooseProDetailID || "请选择项目".equals(chooseProDetailID)) {
                     ToastUtils.showToast(mContext, "请选择项目");
                     return;
                 }
                 //获取邀请二维码数据
-                getInvitationQc(name, phone, date + " " + stime1, reason, chooseProID);
+                getInvitationQc(name, phone, date + " " + stime1, reason);
                 break;
         }
     }
@@ -361,17 +375,19 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         ((Activity) getContext()).getWindow().setAttributes(lp);
     }
 
-    private void getInvitationQc(String name, String phone, String date, String reason, String detail_id) {
+    private void getInvitationQc(String name, String phone, String date, String reason) {
         String InvitationQcUrl = NetConfig.INVITE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", mUserid);
+        params.put("username", mUserName);
         params.put("fname", name);
         params.put("fmobile", phone);
         params.put("fdate", date);
         params.put("fdate2", stime2);
-        params.put("flength", "");
+        params.put("fcode", mFcode);
         params.put("freason", reason);
-        params.put("project_detail_id", detail_id);
+        params.put("project_id", chooseProID);
+        params.put("project_detail_id", chooseProDetailID);
         params.setUseJsonStreamer(true);
         HttpOkhUtils.getInstance().doPost(InvitationQcUrl, params, new HttpOkhUtils.HttpCallBack() {
             @Override
@@ -390,13 +406,10 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                         //获取开始时间 和结束时间，跳转数据结果
                         FragmentTransaction ftt = getFragmentManager().beginTransaction();
                         InvitationQRcodeFragment invitationQRcodeFgt = new InvitationQRcodeFragment();
-                        // String detailJson = "name:";
-                        // String detailJson = "name:" + name + "phone:" + phone + "date:" + date + "longtime:" + longtime + "reason:" + reason;
                         invitationQRcodeFgt.setInfoJson(code1);
                         ftt.add(R.id.frame_accessdata, invitationQRcodeFgt, "invitationQRcodeFgt");
                         ftt.addToBackStack(null);
                         ftt.commit();
-                        //                        ToastUtils.showToast(getContext(), "测试二维码");
                     } else {
                         ToastUtils.showToast(getContext(), "提交失败");
                     }
