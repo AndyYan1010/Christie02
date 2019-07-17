@@ -69,6 +69,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
     private BDInfoSpinnerAdapter mDetailAdapter;//选择小区适配器
     private String               chooseProID;//小区id
     private String               chooseProDetailID;//小区详细id
+    private String               chooseProName;//小区名称
     private String               mFcode;//小区code
     private String               markData;
     private String               mUserid;
@@ -121,6 +122,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     String fcode = msg.getType();
                     chooseProID = project_id;
                     chooseProDetailID = detail_id;
+                    chooseProName = msg.getProject_name();
                     mFcode = fcode;
                 }
             }
@@ -193,7 +195,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         mTimeData.add("22:30");
         mTimeData.add("23:00");
         mTimeData.add("23:30");
-        mTimeData.add("24:00");
+        mTimeData.add("23:59");
     }
 
     private void getBDProjectID(String userid) {
@@ -296,11 +298,11 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                     ToastUtils.showToast(mContext, "来访日期不能为空");
                     return;
                 }
-                if ("".equals(stime1) ) {
-                    stime1="06:00";
+                if ("".equals(stime1)) {
+                    stime1 = "06:00";
                 }
-                if ("".equals(stime2)){
-                    stime2="24:00";
+                if ("".equals(stime2)) {
+                    stime2 = "23:59";
                 }
                 //                if (longtime.equals("") || longtime.equals("请输入来访时长")) {
                 //                    ToastUtils.showToast(mContext, "来访时长不能为空");
@@ -375,7 +377,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         ((Activity) getContext()).getWindow().setAttributes(lp);
     }
 
-    private void getInvitationQc(String name, String phone, String date, String reason) {
+    private void getInvitationQc(String name, String phone, final String date, String reason) {
         String InvitationQcUrl = NetConfig.INVITE;
         RequestParamsFM params = new RequestParamsFM();
         params.put("userid", mUserid);
@@ -406,7 +408,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
                         //获取开始时间 和结束时间，跳转数据结果
                         FragmentTransaction ftt = getFragmentManager().beginTransaction();
                         InvitationQRcodeFragment invitationQRcodeFgt = new InvitationQRcodeFragment();
-                        invitationQRcodeFgt.setInfoJson(code1);
+                        invitationQRcodeFgt.setInfoJson(code1, chooseProName, date + "-" + stime2);
                         ftt.add(R.id.frame_accessdata, invitationQRcodeFgt, "invitationQRcodeFgt");
                         ftt.addToBackStack(null);
                         ftt.commit();

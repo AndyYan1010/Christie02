@@ -38,11 +38,15 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
     private View         mRootView;
     private LinearLayout linear_back;
     private String       mDetailJson;
+    private String       mProName;
+    private String       mTime;
     private TextView     mTv_title;
     private ImageView    mImg_code;
     private Button       mBt_share;
     private LinearLayout mLiner;
     private IWXAPI       api;
+    private TextView     tv_proName;
+    private TextView     tv_time;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +69,8 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
         linear_back = (LinearLayout) mRootView.findViewById(R.id.linear_back);
         mTv_title = (TextView) mRootView.findViewById(R.id.tv_title);
         mImg_code = (ImageView) mRootView.findViewById(R.id.img_code);
+        tv_proName = mRootView.findViewById(R.id.tv_proName);
+        tv_time = mRootView.findViewById(R.id.tv_time);
         mBt_share = (Button) mRootView.findViewById(R.id.bt_share);
     }
 
@@ -75,10 +81,14 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
         mBt_share.setOnClickListener(this);
         //生成二维码
         generateQr(mDetailJson);
+        tv_proName.setText(mProName + "  访客凭证");
+        tv_time.setText(mTime);
     }
 
-    public void setInfoJson(String detailJson) {
+    public void setInfoJson(String detailJson, String proName, String time) {
         this.mDetailJson = detailJson;
+        this.mProName = proName;
+        this.mTime = time;
     }
 
     @Override
