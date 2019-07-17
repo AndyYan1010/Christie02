@@ -1,6 +1,7 @@
 package com.example.administrator.christie.fragment;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -75,7 +76,6 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
     }
 
     private void initData() {
-        mLiner.setOnClickListener(this);
         linear_back.setOnClickListener(this);
         mTv_title.setText("二维码分享");
         mBt_share.setOnClickListener(this);
@@ -94,16 +94,13 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.liner:
-                break;
             case R.id.linear_back:
                 //弹出回退栈最上面的fragment
                 getFragmentManager().popBackStackImmediate(null, 0);
                 break;
             case R.id.bt_share:
-                mImg_code.setDrawingCacheEnabled(true);
-                Bitmap bitmap = Bitmap.createBitmap(mImg_code.getDrawingCache());
-                mImg_code.setDrawingCacheEnabled(false);
+                //获取分享的图片
+                Bitmap bitmap = getBitMapByView(mLiner);
                 WXImageObject imgObj = new WXImageObject(bitmap);
                 WXMediaMessage msg = new WXMediaMessage();
                 msg.mediaObject = imgObj;
@@ -112,18 +109,25 @@ public class InvitationQRcodeFragment extends Fragment implements View.OnClickLi
                 Bitmap mBp = Bitmap.createScaledBitmap(bitmap, 120, 120, true);
                 bitmap.recycle();
                 msg.thumbData = bmpToByteArray(mBp, true);
-                //  Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, THUMB_SIZE, THUMB_SIZE, true);
-                //  bitmap.recycle();
-                //  msg.thumbData = getBytesByBitmap(bitmap);
-
                 SendMessageToWX.Req req = new SendMessageToWX.Req();
                 req.transaction = buildTransaction("img");
-                //                req.transaction = String.valueOf(System.currentTimeMillis());
                 req.message = msg;
                 req.scene = SendMessageToWX.Req.WXSceneSession;
                 api.sendReq(req);
                 break;
         }
+    }
+
+    private Bitmap getBitMapByView(View view) {
+        //                mImg_code.setDrawingCacheEnabled(true);
+        //                Bitmap bitmap = Bitmap.createBitmap(mImg_code.getDrawingCache());
+        //                mImg_code.setDrawingCacheEnabled(false);
+
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
     }
 
     private void generateQr(String data) {
