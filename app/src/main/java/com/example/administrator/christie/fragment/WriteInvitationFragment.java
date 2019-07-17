@@ -143,6 +143,7 @@ public class WriteInvitationFragment extends Fragment implements View.OnClickLis
         tv_time1.setOnClickListener(this);
         tv_time2.setOnClickListener(this);
         mBt_create.setOnClickListener(this);
+
     }
 
     private void setTimeList() {
